@@ -140,84 +140,83 @@
         .packing-desk-live-card.running { border-top-color: #3182ce; background: #f0f7ff; }
         .packing-desk-live-card.held { border-top-color: #dd6b20; background: #fffaf0; }
 
- /* --- Desktop Side-by-Side Layout Fix for Laptop/PC --- */
-@media (min-width: 1024px) {
-    .layout-with-sidebar {
-        display: grid !important;
-        grid-template-columns: 460px 1fr !important;
-        gap: 18px !important;
-        align-items: start !important;
-    }
-    .sidebar {
-        width: 460px !important;
-        max-width: 460px !important;
-        display: block !important;
-    }
-    .main-content {
-        width: 100% !important;
-        display: block !important;
-    }
-}       
+        /* --- Desktop Side-by-Side Layout Fix for Laptop/PC --- */
+        @media (min-width: 1024px) {
+            .layout-with-sidebar {
+                display: grid !important;
+                grid-template-columns: 460px 1fr !important;
+                gap: 18px !important;
+                align-items: start !important;
+            }
+            .sidebar {
+                width: 460px !important;
+                max-width: 460px !important;
+                display: block !important;
+            }
+            .main-content {
+                width: 100% !important;
+                display: block !important;
+            }
+        }
 
-/* --- Wünderkraf ERP Final Bulletproof Mobile Fix --- */
-@media (max-width: 768px) {
-    html, body {
-        width: 100% !important;
-        max-width: 100% !important;
-        overflow-x: hidden !important;
-        margin: 0 !important;
-        padding: 4px !important;
-        box-sizing: border-box !important;
-    }
-    .header, .nav-hub-container, .card, .login-card {
-        width: 100% !important;
-        max-width: 100% !important;
-        box-sizing: border-box !important;
-        margin-left: 0 !important;
-        margin-right: 0 !important;
-        padding: 10px !important;
-    }
-    /* इसे सिर्फ मोबाइल पर ही सिंगल कॉलम रखें, लैपटॉप की ग्रिड डिस्टर्ब न करें */
-    .layout-with-sidebar {
-        display: block !important;
-        width: 100% !important;
-        padding: 0 !important;
-        margin: 0 !important;
-    }
-    .sidebar, .main-content {
-        width: 100% !important;
-        max-width: 100% !important;
-        display: block !important;
-        padding: 0 !important;
-    }
-    .card div[style*="grid-template-columns"], 
-    .card div[style*="display:grid"] {
-        display: block !important;
-        width: 100% !important;
-    }
-    .card div[style*="grid-template-columns"] > div, 
-    .card div[style*="display:grid"] > div {
-        width: 100% !important;
-        margin-bottom: 8px !important;
-    }
-    input, select, button, textarea {
-        width: 100% !important;
-        max-width: 100% !important;
-        box-sizing: border-box !important;
-        padding: 10px !important;
-        font-size: 14px !important;
-    }
-    .nav-grid {
-        display: grid !important;
-        grid-template-columns: repeat(2, 1fr) !important;
-        gap: 8px !important;
-    }
-    .table-responsive {
-        width: 100% !important;
-        overflow-x: auto !important;
-        -webkit-overflow-scrolling: touch !important;
-    }
-}
+        /* --- Wünderkraf ERP Final Bulletproof Mobile Fix --- */
+        @media (max-width: 768px) {
+            html, body {
+                width: 100% !important;
+                max-width: 100% !important;
+                overflow-x: hidden !important;
+                margin: 0 !important;
+                padding: 4px !important;
+                box-sizing: border-box !important;
+            }
+            .header, .nav-hub-container, .card, .login-card {
+                width: 100% !important;
+                max-width: 100% !important;
+                box-sizing: border-box !important;
+                margin-left: 0 !important;
+                margin-right: 0 !important;
+                padding: 10px !important;
+            }
+            .layout-with-sidebar {
+                display: block !important;
+                width: 100% !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+            .sidebar, .main-content {
+                width: 100% !important;
+                max-width: 100% !important;
+                display: block !important;
+                padding: 0 !important;
+            }
+            .card div[style*="grid-template-columns"], 
+            .card div[style*="display:grid"] {
+                display: block !important;
+                width: 100% !important;
+            }
+            .card div[style*="grid-template-columns"] > div, 
+            .card div[style*="display:grid"] > div {
+                width: 100% !important;
+                margin-bottom: 8px !important;
+            }
+            input, select, button, textarea {
+                width: 100% !important;
+                max-width: 100% !important;
+                box-sizing: border-box !important;
+                padding: 10px !important;
+                font-size: 14px !important;
+            }
+            .nav-grid {
+                display: grid !important;
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 8px !important;
+            }
+            .table-responsive {
+                width: 100% !important;
+                overflow-x: auto !important;
+                -webkit-overflow-scrolling: touch !important;
+            }
+        }
     </style>
 </head>
 <body>
@@ -523,6 +522,22 @@
                         <input type="text" id="editPaperBrand">
 
                         <button onclick="saveAdminJobCorrection()" style="background:#2b6cb0; margin-top:8px;">💾 Update Job Metadata</button>
+                    </div>
+                </div>
+
+                <!-- Master Executive Control Center Dashboard Section -->
+                <div class="card hidden" id="secMasterDashboard">
+                    <button class="btn-back" onclick="showNavHub()">⬅ Back to Main Menu</button>
+                    <h3>📊 Master Executive Control Center (Live Factory View)</h3>
+                    
+                    <div style="background:#ebf8ff; border:1px solid #bee3f8; padding:12px; border-radius:8px; margin-bottom:12px;">
+                        <span style="font-size:13px; font-weight:800; color:#2b6cb0;">⚡ QUICK FLOOR PULSE:</span>
+                        <div class="analytics-grid" id="masterDashQuickCards" style="margin-top:8px;"></div>
+                    </div>
+
+                    <div style="background:#f7fafc; border:1px solid #cbd5e0; padding:12px; border-radius:8px; margin-bottom:12px;">
+                        <h4 style="margin:0 0 8px 0; font-size:14px; color:#1a365d;">⚙️ Live Workstations & Machine Status</h4>
+                        <div class="dash-grid" id="masterDashMachineGrid"></div>
                     </div>
                 </div>
 
@@ -841,20 +856,6 @@
 
                 <!-- 10. Admin Settings, User Permission Manager & Master Controls -->
                 <div class="card hidden" id="secAdminSettings">
-                    <!-- Master Executive Control Center Dashboard Section -->
-    <div class="card hidden" id="secMasterDashboard">
-        <button class="btn-back" onclick="showNavHub()">⬅ Back to Main Menu</button>
-        <h3>📊 Master Executive Control Center (Live Factory View)</h3>
-        
-        <div style="background:#ebf8ff; border:1px solid #bee3f8; padding:12px; border-radius:8px; margin-bottom:12px;">
-            <span style="font-size:13px; font-weight:800; color:#2b6cb0;">⚡ QUICK FLOOR PULSE:</span>
-            <div class="analytics-grid" id="masterDashQuickCards" style="margin-top:8px;"></div>
-        </div>
-
-        <div style="background:#f7fafc; border:1px solid #cbd5e0; padding:12px; border-radius:8px; margin-bottom:12px;">
-            <h4 style="margin:0 0 8px 0; font-size:14px; color:#1a365d;">⚙️ Live Workstations & Machine Status</h4>
-            <div class="dash-grid" id="masterDashMachineGrid"></div>
-        </div>
                     <button class="btn-back" onclick="showNavHub()">⬅ Back to Main Menu</button>
                     <h3>📊 7. Master Settings, RBAC Permissions & Shift Timings</h3>
                     
@@ -1774,7 +1775,7 @@
             document.getElementById('sidebarContainer').classList.remove('hidden');
             document.getElementById('mainContentContainer').classList.remove('hidden');
 
-            ['secMarketing', 'secDispatch', 'secAdminJobEdit', 'secSlitting', 'secCutting', 'secForming', 'secQC', 'secPackingDesk', 'secReport', 'secAdminSettings'].forEach(id => {
+            ['secMarketing', 'secDispatch', 'secAdminJobEdit', 'secMasterDashboard', 'secSlitting', 'secCutting', 'secForming', 'secQC', 'secPackingDesk', 'secReport', 'secAdminSettings'].forEach(id => {
                 document.getElementById(id).classList.add('hidden');
             });
             document.getElementById(secId).classList.remove('hidden');
@@ -1784,7 +1785,9 @@
 
             ['dashSecAnalytics', 'dashSecStockMatrix', 'dashSecCustomerOrders', 'dashSecWorkstations'].forEach(d => document.getElementById(d).classList.add('hidden'));
 
-            if(perms.includes('Admin')) {
+            if(secId === 'secMasterDashboard') {
+                document.getElementById('dashSecWorkstations').classList.remove('hidden');
+            } else if(perms.includes('Admin')) {
                 document.getElementById('dashSecAnalytics').classList.remove('hidden');
                 document.getElementById('dashSecStockMatrix').classList.remove('hidden');
                 document.getElementById('dashSecCustomerOrders').classList.remove('hidden');
@@ -3991,70 +3994,71 @@
         applyBrandLogo();
         populateUniversalSearchSuggestions();
         initFirebaseSync();
+
         function renderMasterExecutiveDashboard() {
-        const quickCards = document.getElementById('masterDashQuickCards');
-        const machineGrid = document.getElementById('masterDashMachineGrid');
-        if(!quickCards || !machineGrid) return;
+            const quickCards = document.getElementById('masterDashQuickCards');
+            const machineGrid = document.getElementById('masterDashMachineGrid');
+            if(!quickCards || !machineGrid) return;
 
-        let totalSlitKg = 0, totalPackedBoxes = 0;
-        logs.forEach(l => {
-            if(l.action && l.action.includes('Finished') && l.stage === 'Slitting') {
-                let matchKg = l.action.match(/(\d+)\s*KG/i);
-                if(matchKg) totalSlitKg += parseInt(matchKg[1]) || 0;
-            }
-            if(l.action && l.action.includes('Packed')) {
-                let matchBox = l.action.match(/(\d+)\s*Boxes/i);
-                if(matchBox) totalPackedBoxes += parseInt(matchBox[1]) || 0;
-            }
-        });
-
-        quickCards.innerHTML = `
-            <div class="analytics-card"><h5>TOTAL SLIT PAPER</h5><div class="val" style="color:#2b6cb0;">${totalSlitKg} KG</div></div>
-            <div class="analytics-card"><h5>PACKED BOXES</h5><div class="val" style="color:#2f855a;">${totalPackedBoxes} Boxes</div></div>
-            <div class="analytics-card"><h5>SCRAP STOCK</h5><div class="val" style="color:#e53e3e;">${calculateAvailableScrapKg()} KG</div></div>
-        `;
-
-        machineGrid.innerHTML = '';
-        let allMachines = ['Slitting-1', 'Cutting-1', 'Cutting-2', 'Forming-1', 'Forming-2', 'Forming-3', 'QC-Desk', 'Packing-1', 'Packing-2'];
-        
-        allMachines.forEach(m => {
-            let isRunning = false, isHeld = false, opName = 'None', activeJob = '-';
-            jobs.forEach(j => {
-                if(j.runningBatches) {
-                    j.runningBatches.forEach(b => {
-                        if(b.machine === m && (b.status === 'Running' || b.status === 'Held')) {
-                            if(b.status === 'Running') isRunning = true;
-                            if(b.status === 'Held') isHeld = true;
-                            opName = b.worker || 'Operator';
-                            activeJob = `${j.id} (${j.product})`;
-                        }
-                    });
+            let totalSlitKg = 0, totalPackedBoxes = 0;
+            logs.forEach(l => {
+                if(l.action && l.action.includes('Finished') && l.stage === 'Slitting') {
+                    let matchKg = l.action.match(/(\d+)\s*KG/i);
+                    if(matchKg) totalSlitKg += parseInt(matchKg[1]) || 0;
                 }
-            });
-            packJobs.forEach(pj => {
-                if(pj.machine === m && (pj.status === 'Running' || pj.status === 'Held')) {
-                    if(pj.status === 'Running') isRunning = true;
-                    if(pj.status === 'Held') isHeld = true;
-                    opName = pj.worker || 'Packing';
-                    activeJob = `${pj.id} (${pj.customer})`;
+                if(l.action && l.action.includes('Packed')) {
+                    let matchBox = l.action.match(/(\d+)\s*Boxes/i);
+                    if(matchBox) totalPackedBoxes += parseInt(matchBox[1]) || 0;
                 }
             });
 
-            let statusClass = isHeld ? 'held' : isRunning ? 'running-active' : 'idle';
-            let statusBadge = isHeld ? '<span class="live-tag live-tag-held">⏸️ HELD</span>' : isRunning ? '<span class="live-tag live-tag-running">▶ RUNNING</span>' : '<span class="live-tag live-tag-idle">⚪ IDLE</span>';
+            quickCards.innerHTML = `
+                <div class="analytics-card"><h5>TOTAL SLIT PAPER</h5><div class="val" style="color:#2b6cb0;">${totalSlitKg} KG</div></div>
+                <div class="analytics-card"><h5>PACKED BOXES</h5><div class="val" style="color:#2f855a;">${totalPackedBoxes} Boxes</div></div>
+                <div class="analytics-card"><h5>SCRAP STOCK</h5><div class="val" style="color:#e53e3e;">${calculateAvailableScrapKg()} KG</div></div>
+            `;
 
-            machineGrid.innerHTML += `
-                <div class="machine-card ${statusClass}" onclick="openStationAnalytics('${m}')" style="padding:10px;">
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <b style="font-size:13px; color:#1a365d;">${m}</b>
-                        ${statusBadge}
-                    </div>
-                    <div style="font-size:11px; margin-top:4px; color:#4a5568;">
-                        Job: <b>${activeJob}</b><br>Op: <b>${opName}</b>
-                    </div>
-                </div>`;
-        });
-    }
+            machineGrid.innerHTML = '';
+            let allMachines = ['Slitting-1', 'Cutting-1', 'Cutting-2', 'Forming-1', 'Forming-2', 'Forming-3', 'QC-Desk', 'Packing-1', 'Packing-2'];
+            
+            allMachines.forEach(m => {
+                let isRunning = false, isHeld = false, opName = 'None', activeJob = '-';
+                jobs.forEach(j => {
+                    if(j.runningBatches) {
+                        j.runningBatches.forEach(b => {
+                            if(b.machine === m && (b.status === 'Running' || b.status === 'Held')) {
+                                if(b.status === 'Running') isRunning = true;
+                                if(b.status === 'Held') isHeld = true;
+                                opName = b.worker || 'Operator';
+                                activeJob = `${j.id} (${j.product})`;
+                            }
+                        });
+                    }
+                });
+                packJobs.forEach(pj => {
+                    if(pj.machine === m && (pj.status === 'Running' || pj.status === 'Held')) {
+                        if(pj.status === 'Running') isRunning = true;
+                        if(pj.status === 'Held') isHeld = true;
+                        opName = pj.worker || 'Packing';
+                        activeJob = `${pj.id} (${pj.customer})`;
+                    }
+                });
+
+                let statusClass = isHeld ? 'held' : isRunning ? 'running-active' : 'idle';
+                let statusBadge = isHeld ? '<span class="live-tag live-tag-held">⏸️ HELD</span>' : isRunning ? '<span class="live-tag live-tag-running">▶ RUNNING</span>' : '<span class="live-tag live-tag-idle">⚪ IDLE</span>';
+
+                machineGrid.innerHTML += `
+                    <div class="machine-card ${statusClass}" onclick="openStationAnalytics('${m}')" style="padding:10px;">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <b style="font-size:13px; color:#1a365d;">${m}</b>
+                            ${statusBadge}
+                        </div>
+                        <div style="font-size:11px; margin-top:4px; color:#4a5568;">
+                            Job: <b>${activeJob}</b><br>Op: <b>${opName}</b>
+                        </div>
+                    </div>`;
+            });
+        }
     </script>
 </body>
 </html>

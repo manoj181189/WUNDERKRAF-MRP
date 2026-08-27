@@ -507,6 +507,23 @@
                         </div>
                     </div>
 
+                    <!-- NEW: Admin Reverse / Un-issue Correction Box -->
+                    <div style="background:#fff5f5; border:1px solid #feb2b2; padding:14px; border-radius:8px; margin-bottom:14px;">
+                        <span style="font-size:13px; font-weight:800; color:#c53030;">⚠️ REVERSE / UN-ISSUE BATCH QUANTITY (Fix Mistaken Issue):</span>
+                        <label>Select Job ID:</label>
+                        <select id="adminReverseJobSelect" onchange="loadBatchesForAdminReverse()"></select>
+                        
+                        <label>Select Active Running / Issued Batch:</label>
+                        <select id="adminReverseBatchSelect" onchange="loadBatchReverseDetails()"></select>
+
+                        <div id="adminReverseInfoBox" class="info-box" style="background:#fff; border-color:#e53e3e; margin:8px 0; font-size:12px;">Select batch to view issue details</div>
+
+                        <label style="color:#c53030;">Quantity to Return Back to Stock (Un-issue):</label>
+                        <input type="text" inputmode="numeric" id="adminReverseQtyInput" placeholder="Enter quantity to reverse">
+
+                        <button onclick="executeAdminBatchReverse()" style="background:#e53e3e; margin-top:8px;">🔄 Reverse & Return Qty to Previous Stock</button>
+                    </div>
+
                     <!-- Job ID & Product Correction -->
                     <div style="background:#edf2f7; padding:14px; border-radius:8px;">
                         <span style="font-size:13px; font-weight:800; color:#2b6cb0;">3. CORRECT JOB ID / ITEM / PAPER BRAND:</span>
@@ -1253,6 +1270,7 @@
                     updateQcPendingDropdown();
                     updatePendingPackDropdown();
                     updateDispatchCustomerDropdown();
+                    loadAdminReverseDropdowns();
                 }
             });
         }
@@ -1821,6 +1839,7 @@
                 loadAdminBatchJobList();
                 loadReallocationDropdowns();
                 loadAdminRBACUsersList();
+                loadAdminReverseDropdowns();
             }
             updatePendingPackDropdown();
             updateDispatchCustomerDropdown();
@@ -2627,7 +2646,7 @@
             }
         }
 
-        // Dedicated Forming Desk Functions (With Same-Job Top-up & Live Card Sync)
+        // Dedicated Forming Desk Functions (With Same-Job Top-up & Scrap in Pieces)
         function onFormingDeskOpen() {
             updateFormingPendingDropdown();
             updateFormingRunningDropdown();
@@ -3351,6 +3370,85 @@
             saveData();
             loadBatchesForSelectedJob();
             alert(`✅ Batch Output & Weight (KG) Updated Successfully!`);
+        }
+
+        // --- Admin Reverse / Un-issue Functions ---
+        function loadAdminReverseDropdowns() {
+            const jobSelect = document.getElementById('adminReverseJobSelect');
+            if(!jobSelect) return;
+            jobSelect.innerHTML = '<option value="">-- SELECT JOB FOR REVERSE --</option>';
+            jobs.forEach(j => {
+                jobSelect.innerHTML += `<option value="${j.id}">${j.id} - ${j.product}</option>`;
+            });
+            loadBatchesForAdminReverse();
+        }
+
+        function loadBatchesForAdminReverse() {
+            const jobId = document.getElementById('adminReverseJobSelect').value;
+            const batchSelect = document.getElementById('adminReverseBatchSelect');
+            if(!batchSelect) return;
+            batchSelect.innerHTML = '<option value="">-- SELECT BATCH TO REVERSE --</option>';
+            if(!jobId) return;
+
+            const job = jobs.find(j => j.id === jobId);
+            if(job && job.runningBatches) {
+                job.runningBatches.forEach(b => {
+                    if(b.status === 'Running' || b.status === 'Held') {
+                        batchSelect.innerHTML += `<option value="${b.batchId}">[${b.stage}] Mach: ${b.machine} | Issued: ${b.issuedQty || 0} (Op: ${b.worker})</option>`;
+                    }
+                });
+            }
+            loadBatchReverseDetails();
+        }
+
+        function loadBatchReverseDetails() {
+            const jobId = document.getElementById('adminReverseJobSelect').value;
+            const batchId = document.getElementById('adminReverseBatchSelect').value;
+            const infoBox = document.getElementById('adminReverseInfoBox');
+            if(!infoBox) return;
+
+            const job = jobs.find(j => j.id === jobId);
+            if(!job || !job.runningBatches) { infoBox.innerText = 'Select batch'; return; }
+            const batch = job.runningBatches.find(b => b.batchId === batchId);
+            if(!batch) { infoBox.innerText = 'Batch not found'; return; }
+
+            infoBox.innerHTML = `<b>Stage:</b> ${batch.stage} | <b>Machine:</b> ${batch.machine}<br><b>Currently Issued Qty:</b> <span style="color:#e53e3e; font-weight:bold;">${batch.issuedQty || 0}</span> | <b>Operator:</b> ${batch.worker}`;
+            document.getElementById('adminReverseQtyInput').value = batch.issuedQty || 0;
+        }
+
+        function executeAdminBatchReverse() {
+            const jobId = document.getElementById('adminReverseJobSelect').value;
+            const batchId = document.getElementById('adminReverseBatchSelect').value;
+            const returnQty = parseInt(document.getElementById('adminReverseQtyInput').value) || 0;
+
+            if(!jobId || !batchId) return alert('Please select Job and Batch to reverse!');
+            if(returnQty <= 0) return alert('Enter valid quantity to return!');
+
+            const job = jobs.find(j => j.id === jobId);
+            const batch = job.runningBatches.find(b => b.batchId === batchId);
+
+            if(!batch) return alert('Batch not found!');
+            if(returnQty > (batch.issuedQty || 0)) return alert(`Cannot return more than issued quantity (${batch.issuedQty})!`);
+
+            if(batch.stage === 'Cutting') {
+                job.availableRolls = (job.availableRolls || 0) + returnQty;
+            } else if(batch.stage === 'Forming') {
+                job.availableCuttingCrates = (job.availableCuttingCrates || 0) + returnQty;
+            } else if(batch.stage === 'QC') {
+                job.availableFormingCrates = (job.availableFormingCrates || 0) + returnQty;
+            }
+
+            batch.issuedQty = (batch.issuedQty || 0) - returnQty;
+
+            logs.push({
+                jobId: job.id, product: job.product, stage: `${batch.stage} Reverse`, machine: batch.machine,
+                action: `🔄 Reversed / Un-issued ${returnQty} units back to stock from active batch ${batch.batchId}`,
+                user: currentUser.username, rawDate: new Date().toISOString().split('T')[0], timestamp: new Date().toLocaleString()
+            });
+
+            saveData();
+            loadAdminReverseDropdowns();
+            alert(`✅ Successfully reversed ${returnQty} units back to previous stock! Stock numbers are now corrected.`);
         }
 
         function loadAdminJobList() {

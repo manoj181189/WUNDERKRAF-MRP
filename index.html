@@ -140,6 +140,25 @@
         .packing-desk-live-card.running { border-top-color: #3182ce; background: #f0f7ff; }
         .packing-desk-live-card.held { border-top-color: #dd6b20; background: #fffaf0; }
 
+ /* --- Desktop Side-by-Side Layout Fix for Laptop/PC --- */
+@media (min-width: 1024px) {
+    .layout-with-sidebar {
+        display: grid !important;
+        grid-template-columns: 460px 1fr !important;
+        gap: 18px !important;
+        align-items: start !important;
+    }
+    .sidebar {
+        width: 460px !important;
+        max-width: 460px !important;
+        display: block !important;
+    }
+    .main-content {
+        width: 100% !important;
+        display: block !important;
+    }
+}       
+
 /* --- Wünderkraf ERP Final Bulletproof Mobile Fix --- */
 @media (max-width: 768px) {
     html, body {

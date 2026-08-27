@@ -140,56 +140,89 @@
         .packing-desk-live-card.running { border-top-color: #3182ce; background: #f0f7ff; }
         .packing-desk-live-card.held { border-top-color: #dd6b20; background: #fffaf0; }
 
-            /* --- Final Perfect Mobile Form & Grid Responsive Fix --- */
+        /* --- Wünderkraf ERP Final Clean Mobile Responsive Fix --- */
 @media (max-width: 768px) {
-    body { padding: 6px; font-size: 13px; overflow-x: hidden; }
-    .header { padding: 10px; margin-bottom: 12px; }
-    .brand-title h2 { font-size: 16px; }
-    .brand-title p { font-size: 11px; }
-    .login-card { margin: 20px auto; padding: 20px 15px; width: 95%; }
-    .nav-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-    .nav-card { min-height: 110px; padding: 12px 8px; }
-    .nav-card .nav-icon { font-size: 30px; }
+    body { 
+        padding: 8px; 
+        font-size: 13px; 
+        overflow-x: hidden; 
+    }
+    .header { 
+        padding: 10px; 
+        margin-bottom: 12px; 
+    }
+    .brand-title h2 { 
+        font-size: 16px; 
+    }
+    .brand-title p { 
+        font-size: 11px; 
+    }
+    .login-card { 
+        margin: 20px auto; 
+        padding: 20px 15px; 
+        width: 95%; 
+    }
+    .nav-grid { 
+        grid-template-columns: repeat(2, 1fr); 
+        gap: 10px; 
+    }
+    .nav-card { 
+        min-height: 110px; 
+        padding: 12px 8px; 
+    }
+    .nav-card .nav-icon { 
+        font-size: 30px; 
+    }
     
-    /* यह कोड स्लिटिंग, कटिंग, फॉर्मिंग और पैकिंग के अंदर के सभी ग्रिड्स को मोबाइल पर एक के नीचे एक (1 Column) सेट कर देगा */
+    /* फॉर्म के अंदर के सभी ग्रिड्स को मोबाइल पर 1 कॉलम करना */
     .card div[style*="grid-template-columns"], 
     .card div[style*="display:grid"] {
         grid-template-columns: 1fr !important;
         gap: 8px !important;
     }
-    /* --- Perfect Mobile Responsive Form & Scroll Fix --- */
-@media (max-width: 768px) {
-    body { padding: 8px; font-size: 13px; }
-    .header { padding: 10px; margin-bottom: 12px; }
-    .brand-title h2 { font-size: 16px; }
-    .brand-title p { font-size: 11px; }
-    .login-card { margin: 20px auto; padding: 20px 15px; width: 95%; }
-    .nav-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-    .nav-card { min-height: 110px; padding: 12px 8px; }
-    .nav-card .nav-icon { font-size: 30px; }
     
-    /* फॉर्म के अंदर के दो-कॉलम वाले ग्रिड को मोबाइल पर 1 कॉलम करना */
-    .card div[style*="grid-template-columns"], 
-    .card div[style*="display:grid"] {
-        grid-template-columns: 1fr !important;
-        gap: 8px !important;
-    }
-    
+    /* सभी इनपुट, सेलेक्ट और बटन को मोबाइल पर फिट करना */
     input, select, button, textarea {
         width: 100% !important;
         box-sizing: border-box !important;
         padding: 10px;
         font-size: 13px;
     }
-    .table-responsive { overflow-x: auto; display: block; width: 100%; }
-}
-    input, select, button, textarea {
-        width: 100% !important;
-        box-sizing: border-box !important;
-        padding: 10px;
-        font-size: 13px;
+    
+    .table-responsive { 
+        overflow-x: auto; 
+        display: block; 
+        width: 100%; 
     }
-    .table-responsive { overflow-x: auto; display: block; width: 100%; }
+
+    /* टिशू और किट चेकबॉक्स फिक्स (मोबाइल के लिए) */
+    .kit-checkboxes {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        gap: 10px !important;
+        justify-content: flex-start !important;
+    }
+    .kit-checkboxes label {
+        width: 45% !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 6px !important;
+        background: #fff;
+        padding: 6px;
+        border-radius: 4px;
+        border: 1px solid #cbd5e0;
+        font-size: 12px !important;
+    }
+    .kit-checkboxes input[type="checkbox"] {
+        width: 18px !important;
+        height: 18px !important;
+        margin: 0 !important;
+    }
+    #mktKitBadge {
+        margin-top: 8px !important;
+        font-size: 12px !important;
+        padding: 6px !important;
+    }
 }
     </style>
 </head>

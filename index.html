@@ -821,6 +821,20 @@
 
                 <!-- 10. Admin Settings, User Permission Manager & Master Controls -->
                 <div class="card hidden" id="secAdminSettings">
+                    <!-- Master Executive Control Center Dashboard Section -->
+    <div class="card hidden" id="secMasterDashboard">
+        <button class="btn-back" onclick="showNavHub()">⬅ Back to Main Menu</button>
+        <h3>📊 Master Executive Control Center (Live Factory View)</h3>
+        
+        <div style="background:#ebf8ff; border:1px solid #bee3f8; padding:12px; border-radius:8px; margin-bottom:12px;">
+            <span style="font-size:13px; font-weight:800; color:#2b6cb0;">⚡ QUICK FLOOR PULSE:</span>
+            <div class="analytics-grid" id="masterDashQuickCards" style="margin-top:8px;"></div>
+        </div>
+
+        <div style="background:#f7fafc; border:1px solid #cbd5e0; padding:12px; border-radius:8px; margin-bottom:12px;">
+            <h4 style="margin:0 0 8px 0; font-size:14px; color:#1a365d;">⚙️ Live Workstations & Machine Status</h4>
+            <div class="dash-grid" id="masterDashMachineGrid"></div>
+        </div>
                     <button class="btn-back" onclick="showNavHub()">⬅ Back to Main Menu</button>
                     <h3>📊 7. Master Settings, RBAC Permissions & Shift Timings</h3>
                     
@@ -1712,6 +1726,7 @@
             if(perms.includes('Admin') || perms.includes('Marketing')) addHubCard('Marketing Orders', '📝', 'Customer Orders & Finished Stock', 'secMarketing');
             if(perms.includes('Admin') || perms.includes('Dispatch')) addHubCard('Multi-Dispatch', '🚚', 'Invoicing & Challan Gatepass', 'secDispatch');
             if(perms.includes('Admin')) addHubCard('Admin & Scrap', '🛠️', 'Scrap Ledger & Series Manager', 'secAdminJobEdit');
+            if(perms.includes('Admin')) addHubCard('Executive Dashboard', '📊', 'Live Factory Single-View Control', 'secMasterDashboard');
             if(perms.includes('Admin') || perms.includes('Slitting')) addHubCard('Slitting Desk', '📜', 'Paper Rolls Slitting Run', 'secSlitting');
             if(perms.includes('Admin') || perms.includes('Cutting')) addHubCard('Cutting Desk', '✂️', 'Rolls to Cut Pieces Crates', 'secCutting');
             if(perms.includes('Admin') || perms.includes('Forming')) addHubCard('Forming Desk', '⚙️', 'Formed Cut Pieces to Products', 'secForming');
@@ -1723,7 +1738,8 @@
 
         function openModule(secId) {
             const perms = currentUser.perms || [];
-            
+
+            if(secId === 'secMasterDashboard') renderMasterExecutiveDashboard();
             if(secId === 'secAdminJobEdit' && !perms.includes('Admin')) return showNavHub();
             if(secId === 'secAdminSettings' && !perms.includes('Admin')) return showNavHub();
             if(secId === 'secMarketing' && !perms.includes('Admin') && !perms.includes('Marketing')) return showNavHub();
@@ -3955,6 +3971,70 @@
         applyBrandLogo();
         populateUniversalSearchSuggestions();
         initFirebaseSync();
+        function renderMasterExecutiveDashboard() {
+        const quickCards = document.getElementById('masterDashQuickCards');
+        const machineGrid = document.getElementById('masterDashMachineGrid');
+        if(!quickCards || !machineGrid) return;
+
+        let totalSlitKg = 0, totalPackedBoxes = 0;
+        logs.forEach(l => {
+            if(l.action && l.action.includes('Finished') && l.stage === 'Slitting') {
+                let matchKg = l.action.match(/(\d+)\s*KG/i);
+                if(matchKg) totalSlitKg += parseInt(matchKg[1]) || 0;
+            }
+            if(l.action && l.action.includes('Packed')) {
+                let matchBox = l.action.match(/(\d+)\s*Boxes/i);
+                if(matchBox) totalPackedBoxes += parseInt(matchBox[1]) || 0;
+            }
+        });
+
+        quickCards.innerHTML = `
+            <div class="analytics-card"><h5>TOTAL SLIT PAPER</h5><div class="val" style="color:#2b6cb0;">${totalSlitKg} KG</div></div>
+            <div class="analytics-card"><h5>PACKED BOXES</h5><div class="val" style="color:#2f855a;">${totalPackedBoxes} Boxes</div></div>
+            <div class="analytics-card"><h5>SCRAP STOCK</h5><div class="val" style="color:#e53e3e;">${calculateAvailableScrapKg()} KG</div></div>
+        `;
+
+        machineGrid.innerHTML = '';
+        let allMachines = ['Slitting-1', 'Cutting-1', 'Cutting-2', 'Forming-1', 'Forming-2', 'Forming-3', 'QC-Desk', 'Packing-1', 'Packing-2'];
+        
+        allMachines.forEach(m => {
+            let isRunning = false, isHeld = false, opName = 'None', activeJob = '-';
+            jobs.forEach(j => {
+                if(j.runningBatches) {
+                    j.runningBatches.forEach(b => {
+                        if(b.machine === m && (b.status === 'Running' || b.status === 'Held')) {
+                            if(b.status === 'Running') isRunning = true;
+                            if(b.status === 'Held') isHeld = true;
+                            opName = b.worker || 'Operator';
+                            activeJob = `${j.id} (${j.product})`;
+                        }
+                    });
+                }
+            });
+            packJobs.forEach(pj => {
+                if(pj.machine === m && (pj.status === 'Running' || pj.status === 'Held')) {
+                    if(pj.status === 'Running') isRunning = true;
+                    if(pj.status === 'Held') isHeld = true;
+                    opName = pj.worker || 'Packing';
+                    activeJob = `${pj.id} (${pj.customer})`;
+                }
+            });
+
+            let statusClass = isHeld ? 'held' : isRunning ? 'running-active' : 'idle';
+            let statusBadge = isHeld ? '<span class="live-tag live-tag-held">⏸️ HELD</span>' : isRunning ? '<span class="live-tag live-tag-running">▶ RUNNING</span>' : '<span class="live-tag live-tag-idle">⚪ IDLE</span>';
+
+            machineGrid.innerHTML += `
+                <div class="machine-card ${statusClass}" onclick="openStationAnalytics('${m}')" style="padding:10px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <b style="font-size:13px; color:#1a365d;">${m}</b>
+                        ${statusBadge}
+                    </div>
+                    <div style="font-size:11px; margin-top:4px; color:#4a5568;">
+                        Job: <b>${activeJob}</b><br>Op: <b>${opName}</b>
+                    </div>
+                </div>`;
+        });
+    }
     </script>
 </body>
 </html>

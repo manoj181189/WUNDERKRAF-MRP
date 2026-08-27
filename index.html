@@ -140,11 +140,21 @@
         .packing-desk-live-card.running { border-top-color: #3182ce; background: #f0f7ff; }
         .packing-desk-live-card.held { border-top-color: #dd6b20; background: #fffaf0; }
 
-        @media print {
-            body * { visibility: hidden; }
-            #challanPrintArea, #challanPrintArea * { visibility: visible; }
-            #challanPrintArea { position: absolute; left: 0; top: 0; width: 100%; padding: 0; margin: 0; }
-        }
+        /* --- Mobile Responsive Extra Fix --- */
+    @media (max-width: 768px) {
+    body { padding: 6px; font-size: 13px; }
+    .header { padding: 10px; margin-bottom: 12px; }
+    .brand-title h2 { font-size: 16px; }
+    .brand-title p { font-size: 11px; }
+    .login-card { margin: 20px auto; padding: 20px 15px; width: 95%; }
+    .nav-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .nav-card { min-height: 110px; padding: 12px 8px; }
+    .nav-card .nav-icon { font-size: 30px; }
+    .layout-with-sidebar { grid-template-columns: 1fr; gap: 10px; }
+    .card { padding: 12px; margin-bottom: 12px; }
+    input, select, button, textarea { padding: 10px; font-size: 13px; }
+    .table-responsive { overflow-x: auto; display: block; width: 100%; }
+}
     </style>
 </head>
 <body>

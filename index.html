@@ -155,7 +155,6 @@
     input, select, button, textarea { padding: 10px; font-size: 13px; }
     .table-responsive { overflow-x: auto; display: block; width: 100%; }
 }
-        /* --- Mobile Form & Input Grid Fix --- */
 @media (max-width: 768px) {
     .card div[style*="grid-template-columns"], 
     .card div[style*="display:grid"] {
@@ -168,6 +167,18 @@
     }
     .main-content {
         padding: 0 !important;
+    }
+}
+        /* --- Force Mobile Full Width Fix --- */
+@media (max-width: 768px) {
+    #sidebarContainer, .sidebar, .main-content {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 0 !important;
+    }
+    .card {
+        padding: 10px !important;
+        overflow-x: hidden !important;
     }
 }
     </style>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Wünderkraf Paperware - Master Factory ERP (v4.1 Cloud Enterprise)</title>
+    <title>Wünderkraf Paperware - Master Factory ERP (v4.3 Master Enterprise)</title>
     <meta name="theme-color" content="#1a365d">
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -230,7 +230,7 @@
             </div>
             <div class="brand-title">
                 <h2>Wünderkraf Paperware</h2>
-                <p>Factory ERP & Master Production Suite (v4.1 Cloud Enterprise)</p>
+                <p>Factory ERP & Master Production Suite (v4.3 Master Enterprise)</p>
             </div>
         </div>
         <div id="userInfo" class="hidden user-pill">
@@ -382,6 +382,93 @@
                     <h3>🛠️ Admin - Corrections, Scrap Ledger & Series</h3>
                     
                     <!-- Scrap Inventory Ledger & Sales Record -->
+                    <!-- 1. Direct Stage-to-Stage Stock Balancing & Rollback Manager -->
+                    <div style="background:#edf2f7; border:1px solid #cbd5e0; padding:14px; border-radius:8px; margin-bottom:14px;">
+                        <span style="font-size:13px; font-weight:800; color:#2b6cb0;">🔄 DIRECT STAGE-TO-STAGE STOCK BALANCING & ROLLBACK:</span>
+                        <label>Select Job to Balance / Correct Stages:</label>
+                        <select id="adminStageBalanceJobSelect" onchange="loadJobStagesForAdminBalance()" style="margin-top:6px;"></select>
+
+                        <div id="adminStageBalancePanel" class="hidden" style="margin-top:10px;">
+                            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
+                                <div>
+                                    <label>1. Slit Rolls in Stock:</label>
+                                    <input type="text" inputmode="numeric" id="balRollsInput">
+                                </div>
+                                <div>
+                                    <label>2. Cut Crates in Stock:</label>
+                                    <input type="text" inputmode="numeric" id="balCutCratesInput">
+                                </div>
+                                <div>
+                                    <label>3. Formed Crates in Stock:</label>
+                                    <input type="text" inputmode="numeric" id="balFormedCratesInput">
+                                </div>
+                                <div>
+                                    <label>4. QC Approved Crates:</label>
+                                    <input type="text" inputmode="numeric" id="balQcCratesInput">
+                                </div>
+                            </div>
+
+                            <!-- Quick Rollback Helper -->
+                            <div style="background:#fffaf0; border:1px dashed #dd6b20; padding:10px; border-radius:6px; margin:10px 0;">
+                                <b style="color:#dd6b20; font-size:12px;">⚡ QUICK STAGE ROLLBACK SHORTCUT:</b>
+                                <div style="display:grid; grid-template-columns: 1.2fr 1fr 0.8fr; gap:6px; margin-top:6px; align-items:center;">
+                                    <select id="quickRollbackFromStage" style="margin:0;">
+                                        <option value="Forming_to_Cutting">Forming ➔ Back to Cutting</option>
+                                        <option value="Cutting_to_Rolls">Cutting ➔ Back to Rolls</option>
+                                        <option value="QC_to_Forming">QC ➔ Back to Forming</option>
+                                    </select>
+                                    <input type="text" inputmode="numeric" id="quickRollbackQtyInput" placeholder="Crates Qty" style="margin:0;">
+                                    <button onclick="executeQuickStageRollback()" style="background:#dd6b20; padding:8px 12px; margin:0; font-size:12px;">↩️ Rollback</button>
+                                </div>
+                            </div>
+
+                            <button onclick="saveAdminStageBalanceCorrection()" style="background:#2b6cb0; margin-top:6px;">💾 Save & Update All Stage Stocks</button>
+                        </div>
+                    </div>
+
+                    <!-- 2. Time & Operator Entry Correction Manager -->
+                    <div style="background:#fffaf0; border:1px solid #feebc8; padding:14px; border-radius:8px; margin-bottom:14px;">
+                        <span style="font-size:13px; font-weight:800; color:#dd6b20;">⏱️ TIME, OPERATOR & AUDIT LOG ENTRY CORRECTION:</span>
+                        <label>Select Job ID / Order:</label>
+                        <select id="adminEditLogJobSelect" onchange="loadLogEntriesForAdminCorrection()" style="margin-top:6px;"></select>
+                        
+                        <div id="adminLogEditPanel" class="hidden" style="margin-top:10px;">
+                            <label>Select Specific Log Entry / Workstation Run:</label>
+                            <select id="adminSelectedLogEntry" onchange="populateAdminLogCorrectionFields()"></select>
+
+                            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px; margin-top:6px;">
+                                <div>
+                                    <label>Start Time:</label>
+                                    <input type="text" id="editLogStartTime" placeholder="e.g. 09:30 AM">
+                                </div>
+                                <div>
+                                    <label>End Time:</label>
+                                    <input type="text" id="editLogEndTime" placeholder="e.g. 11:45 AM">
+                                </div>
+                            </div>
+                            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
+                                <div>
+                                    <label>Floor Operator Name:</label>
+                                    <input type="text" id="editLogWorkerName">
+                                </div>
+                                <div>
+                                    <label>Working Shift:</label>
+                                    <select id="editLogShift">
+                                        <option value="DAY">DAY SHIFT</option>
+                                        <option value="NIGHT">NIGHT SHIFT</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <label>Action / Log Description Text:</label>
+                            <input type="text" id="editLogActionText">
+
+                            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px; margin-top:6px;">
+                                <button onclick="saveAdminLogCorrection()" style="background:#dd6b20; font-size:13px; padding:10px;">💾 Save Log Correction</button>
+                                <button onclick="deleteAdminLogEntry()" style="background:#e53e3e; font-size:13px; padding:10px;">🗑️ Delete Log Entry</button>
+                            </div>
+                        </div>
+                    </div>
+
                     <div style="background:#fffaf0; border:1px solid #feebc8; padding:14px; border-radius:8px; margin-bottom:14px;">
                         <span style="font-size:13px; font-weight:800; color:#dd6b20;">🗑️ SCRAP INVENTORY & SALE RECORD:</span>
                         <div style="background:#fff; padding:10px; border-radius:6px; border:1px solid #cbd5e0; margin:8px 0; font-size:13px;">
@@ -662,10 +749,12 @@
                         </div>
                     </div>
 
-                    <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:8px;">
-                        <button class="btn-hold" onclick="openHoldModal(document.getElementById('cuttingMachineSelect').value)">⏸️ Hold</button>
+                    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap:8px; margin-top:8px;">
+                        <button class="btn-partial" onclick="forwardPartialStageOutput('cutting')" style="background:#805ad5;">⚡ Forward Partial</button>
+                        <button class="btn-reverse" onclick="quickReturnUnprocessedCrates('cutting')" style="background:#e53e3e;">↩️ Quick Un-issue</button>
+                        <button class="btn-hold" onclick="openHoldModal(document.getElementById('cuttingMachineSelect').value)">⏸️ Hold / Shift</button>
                         <button class="btn-resume" onclick="resumeStageJob('cutting')">▶️ Resume</button>
-                        <button class="btn-done" onclick="completeCuttingJob()">⏹️ Finish</button>
+                        <button class="btn-done" onclick="completeCuttingJob()">⏹️ Finish Run</button>
                     </div>
                 </div>
 
@@ -725,10 +814,12 @@
                         </div>
                     </div>
 
-                    <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:8px;">
-                        <button class="btn-hold" onclick="openHoldModal(document.getElementById('formingMachineSelect').value)">⏸️ Hold</button>
+                    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap:8px; margin-top:8px;">
+                        <button class="btn-partial" onclick="forwardPartialStageOutput('forming')" style="background:#805ad5;">⚡ Forward to QC</button>
+                        <button class="btn-reverse" onclick="quickReturnUnprocessedCrates('forming')" style="background:#e53e3e;">↩️ Quick Un-issue</button>
+                        <button class="btn-hold" onclick="openHoldModal(document.getElementById('formingMachineSelect').value)">⏸️ Hold / Shift</button>
                         <button class="btn-resume" onclick="resumeStageJob('forming')">▶️ Resume</button>
-                        <button class="btn-done" onclick="completeFormingJob()">⏹️ Finish</button>
+                        <button class="btn-done" onclick="completeFormingJob()">⏹️ Finish Run</button>
                     </div>
                 </div>
 
@@ -782,10 +873,11 @@
                         </div>
                     </div>
 
-                    <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:8px;">
+                    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap:8px; margin-top:8px;">
+                        <button class="btn-reverse" onclick="quickReturnUnprocessedCrates('qc')" style="background:#e53e3e;">↩️ Quick Un-issue</button>
                         <button class="btn-hold" onclick="openHoldModal('QC-Desk')">⏸️ Hold</button>
                         <button class="btn-resume" onclick="resumeStageJob('qc')">▶️ Resume</button>
-                        <button class="btn-done" onclick="completeQcJob()">⏹️ Pass</button>
+                        <button class="btn-done" onclick="completeQcJob()">⏹️ Pass Crates</button>
                     </div>
                 </div>
 
@@ -975,46 +1067,11 @@
             <div class="main-content" id="mainContentContainer">
 
                 <!-- 1. Pure Factory Analytics & Bar Charts -->
-                <div class="card hidden" id="dashSecAnalytics">
-                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
-                        <h3 style="margin:0; border:none; padding:0;">📈 Monthly Factory Analytics (Pure Floor Data)</h3>
-                        <div style="display:flex; gap:8px; align-items:center;">
-                            <input type="date" id="dashStartDate" style="width:auto; margin:0; padding:6px 10px; font-size:12px;">
-                            <span style="font-size:12px; font-weight:bold;">to</span>
-                            <input type="date" id="dashEndDate" style="width:auto; margin:0; padding:6px 10px; font-size:12px;">
-                            <button onclick="renderDashboardAnalytics()" style="width:auto; margin:0; padding:6px 12px; font-size:12px; background:#2b6cb0;">Apply Filter</button>
-                            <button onclick="exportDailyExecutiveSummaryReport()" class="btn-excel" style="width:auto; margin:0; padding:6px 12px; font-size:12px;">📊 Download Daily Summary</button>
-                        </div>
-                    </div>
-
-                    <div id="dashBarGraphContainer" style="margin-top:14px;"></div>
-                    <div class="analytics-grid" id="dashAnalyticsCards"></div>
-
-                    <div style="display:grid; grid-template-columns: 1fr; gap:14px; margin-top:16px;">
-                        <div style="background:#f7fafc; padding:12px; border-radius:8px; border:1px solid #e2e8f0;">
-                            <h4 style="margin:0 0 8px 0; font-size:14px; color:#2b6cb0;">⚙️ Machine-Wise Monthly Output (Pure Operating Machines Only)</h4>
-                            <div class="table-responsive">
-                                <table class="summary-table">
-                                    <thead><tr><th>Machine Name</th><th>Runs</th><th>Total Produced</th><th>Logged Run Time</th></tr></thead>
-                                    <tbody id="dashMachineSummaryBody"></tbody>
-                                </table>
-                            </div>
-                        </div>
-                        <div style="background:#f7fafc; padding:12px; border-radius:8px; border:1px solid #e2e8f0;">
-                            <h4 style="margin:0 0 8px 0; font-size:14px; color:#2f855a;">🏆 Worker / Operator Performance Ranking (Real Operators Only)</h4>
-                            <div class="table-responsive">
-                                <table class="summary-table">
-                                    <thead><tr><th>Operator / Worker Name</th><th>Batches Worked</th><th>Total Output</th><th>Total Time Logged</th></tr></thead>
-                                    <tbody id="dashWorkerSummaryBody"></tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- 2. Live Inventory Stock Matrix -->
                 <div class="card hidden" id="dashSecStockMatrix">
-                    <h3>📊 Raw & Processed Stock Matrix (Click Any Number for Lot Breakdown)</h3>
+                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; border-bottom: 2px solid #edf2f7; padding-bottom: 8px;">
+                        <h3 style="margin:0; border:none; padding:0;">📊 Raw & Processed Stock Matrix (Click Any Number for Lot Breakdown)</h3>
+                        <button onclick="exportStockMatrixCSV()" class="btn-excel" style="width:auto; padding:5px 12px; font-size:12px; margin:0;">📥 Export Stock Matrix (CSV)</button>
+                    </div>
                     <div class="table-responsive">
                         <table class="summary-table">
                             <thead>
@@ -1033,6 +1090,13 @@
                 </div>
 
                 <!-- 3. Customer Packing Orders & Finished Stock -->
+                
+                <div class="card hidden" id="dashSecWorkstations">
+                    <h3>⚙️ Factory Workstations Status (Real-Time Running Details)</h3>
+                    <div class="dash-grid" id="machineDashboard"></div>
+                </div>
+
+            
                 <div class="card hidden" id="dashSecCustomerOrders">
                     <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
                         <h3 style="margin:0; border:none; padding:0;">📦 Live Customer Orders & Ready Warehouse Stock</h3>
@@ -1078,21 +1142,55 @@
                 </div>
 
                 <!-- 4. Workstations Live Status Tracker -->
-                <div class="card hidden" id="dashSecWorkstations">
-                    <h3>⚙️ Factory Workstations Status (Real-Time Running Details)</h3>
-                    <div class="dash-grid" id="machineDashboard"></div>
-                </div>
+                
+                <div class="card hidden" id="dashSecAnalytics">
+                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+                        <h3 style="margin:0; border:none; padding:0;">📈 Monthly Factory Analytics (Pure Floor Data)</h3>
+                        <div style="display:flex; gap:8px; align-items:center;">
+                            <input type="date" id="dashStartDate" style="width:auto; margin:0; padding:6px 10px; font-size:12px;">
+                            <span style="font-size:12px; font-weight:bold;">to</span>
+                            <input type="date" id="dashEndDate" style="width:auto; margin:0; padding:6px 10px; font-size:12px;">
+                            <button onclick="renderDashboardAnalytics()" style="width:auto; margin:0; padding:6px 12px; font-size:12px; background:#2b6cb0;">Apply Filter</button>
+                            <button onclick="exportDailyExecutiveSummaryReport()" class="btn-excel" style="width:auto; margin:0; padding:6px 12px; font-size:12px;">📊 Download Daily Summary</button>
+                        </div>
+                    </div>
 
-            </div>
+                    <div id="dashBarGraphContainer" style="margin-top:14px;"></div>
+                    <div class="analytics-grid" id="dashAnalyticsCards"></div>
+
+                    <div style="display:grid; grid-template-columns: 1fr; gap:14px; margin-top:16px;">
+                        <div style="background:#f7fafc; padding:12px; border-radius:8px; border:1px solid #e2e8f0;">
+                            <h4 style="margin:0 0 8px 0; font-size:14px; color:#2b6cb0;">⚙️ Machine-Wise Monthly Output (Pure Operating Machines Only)</h4>
+                            <div class="table-responsive">
+                                <table class="summary-table">
+                                    <thead><tr><th>Machine Name</th><th>Runs</th><th>Total Produced</th><th>Logged Run Time</th></tr></thead>
+                                    <tbody id="dashMachineSummaryBody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div style="background:#f7fafc; padding:12px; border-radius:8px; border:1px solid #e2e8f0;">
+                            <h4 style="margin:0 0 8px 0; font-size:14px; color:#2f855a;">🏆 Worker / Operator Performance Ranking (Real Operators Only)</h4>
+                            <div class="table-responsive">
+                                <table class="summary-table">
+                                    <thead><tr><th>Operator / Worker Name</th><th>Batches Worked</th><th>Total Output</th><th>Total Time Logged</th></tr></thead>
+                                    <tbody id="dashWorkerSummaryBody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 2. Live Inventory Stock Matrix -->
+                </div>
 
         </div>
     </div>
 
     <!-- Modals -->
     <div id="holdBreakdownModal" class="modal">
-        <div class="modal-content" style="max-width:440px; border-top:5px solid #dd6b20;">
+        <div class="modal-content" style="max-width:480px; border-top:5px solid #dd6b20;">
             <span class="close-btn" onclick="closeHoldModal()">&times;</span>
-            <h3 style="color:#dd6b20; margin-top:0;">⏸️ Machine Hold & Breakdown Notice</h3>
+            <h3 style="color:#dd6b20; margin-top:0;">⏸️ Machine Hold, Breakdown & Crate Re-routing</h3>
             <label>Target Machine:</label>
             <input type="text" id="holdMachineNameInput" readonly style="background:#edf2f7; font-weight:bold;">
             <label>Breakdown / Pause Reason:</label>
@@ -1103,12 +1201,22 @@
                 <option value="Operator Lunch / Tea Break">Operator Lunch / Tea Break</option>
                 <option value="Routine Cleaning & Maintenance">Routine Cleaning & Maintenance</option>
             </select>
-            <label>Specific Remarks (Optional):</label>
-            <input type="text" id="holdRemarksInput" placeholder="e.g. Temp controller error">
+            <label>Specific Remarks (Will be shown live on Machine Card):</label>
+            <input type="text" id="holdRemarksInput" placeholder="e.g. Temp controller error, waiting for technician">
+            
+            <div style="background:#ebf8ff; border:1px solid #bee3f8; padding:10px; border-radius:6px; margin:10px 0;">
+                <b style="color:#2b6cb0; font-size:12px;">🔄 CRATE RE-ROUTING (Shift Running Stock to Another Machine):</b>
+                <label style="font-size:11px; margin-top:4px;">Select Target Available Machine:</label>
+                <select id="rerouteTargetMachineSelect">
+                    <option value="">-- DO NOT RE-ROUTE (HOLD IN PLACE) --</option>
+                </select>
+            </div>
+
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:12px;">
                 <button class="btn-hold" onclick="confirmExecuteHold(false)">Pause Silently</button>
                 <button class="btn-wa" onclick="confirmExecuteHold(true)">🚨 Alert on WhatsApp</button>
             </div>
+            <button class="btn-resume" onclick="confirmExecuteHoldAndReroute()" style="margin-top:8px; width:100%;">🔄 Confirm Hold & Shift Stock to Selected Machine</button>
         </div>
     </div>
 
@@ -1156,12 +1264,13 @@
                         <tr>
                             <th>Job ID / Order</th>
                             <th>Product (Paper Origin)</th>
-                            <th>Operator</th>
+                            <th>Floor Operator</th>
                             <th>Output Produced</th>
                             <th>Start Time</th>
                             <th>End Time</th>
                             <th>Duration</th>
                             <th>Stage / Status</th>
+                            <th>Logged By</th>
                         </tr>
                     </thead>
                     <tbody id="stationConsolidatedHistoryBody"></tbody>
@@ -3216,10 +3325,31 @@
             let pj = packJobs.find(p => p.id === packId);
             const stopTime = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
 
+            // Capture component traceability lots
+            let componentLots = {};
+            document.querySelectorAll('.pack-job-select').forEach(sel => {
+                let pName = sel.getAttribute('data-product');
+                let jId = sel.value;
+                if(pName && jId) {
+                    let inp = document.querySelector(`.pack-crate-input[data-product="${pName}"]`);
+                    let q = inp ? inp.value : '1';
+                    componentLots[pName] = `${jId} (${q} Crates)`;
+                }
+            });
+
             if(pj) {
                 pj.packedBoxes = (pj.packedBoxes || 0) + boxesDone;
                 if(!pj.historyRuns) pj.historyRuns = [];
-                pj.historyRuns.push({ machine: targetMachine, boxes: boxesDone, pcs: boxesDone * pj.pcsPerBox, date: new Date().toISOString().split('T')[0], time: stopTime, worker: worker });
+                if(!pj.tracedLots) pj.tracedLots = {};
+                Object.assign(pj.tracedLots, componentLots);
+
+                let lotSummaryStr = Object.keys(componentLots).map(k => `${k}: ${componentLots[k]}`).join(' | ');
+
+                pj.historyRuns.push({
+                    machine: targetMachine, boxes: boxesDone, pcs: boxesDone * pj.pcsPerBox,
+                    date: new Date().toISOString().split('T')[0], time: stopTime, worker: worker,
+                    usedLots: componentLots
+                });
 
                 let balance = (pj.orderQty || 0) - ((pj.packedBoxes || 0) * (pj.pcsPerBox || 0));
                 if(balance <= 0) pj.status = '100% Packed & Completed';
@@ -3227,7 +3357,8 @@
 
                 logs.push({
                     jobId: pj.id, product: pj.kitType, stage: 'Packing', machine: targetMachine,
-                    shift: document.getElementById('packShiftSelect').value, action: `⏹ Packed ${boxesDone} Boxes | Worker: ${worker}`,
+                    shift: document.getElementById('packShiftSelect') ? document.getElementById('packShiftSelect').value : 'DAY',
+                    action: `⏹ Packed ${boxesDone} Boxes | Worker: ${worker}${lotSummaryStr ? ' | Lots Used: [' + lotSummaryStr + ']' : ''}`,
                     worker: worker, user: currentUser.username, startTime: pj.startTime, endTime: stopTime,
                     rawDate: new Date().toISOString().split('T')[0], timestamp: new Date().toLocaleString()
                 });
@@ -3393,9 +3524,7 @@
             const job = jobs.find(j => j.id === jobId);
             if(job && job.runningBatches) {
                 job.runningBatches.forEach(b => {
-                    if(b.status === 'Running' || b.status === 'Held') {
-                        batchSelect.innerHTML += `<option value="${b.batchId}">[${b.stage}] Mach: ${b.machine} | Issued: ${b.issuedQty || 0} (Op: ${b.worker})</option>`;
-                    }
+                    batchSelect.innerHTML += `<option value="${b.batchId}">[${b.stage} - ${b.status}] Mach: ${b.machine} | Issued: ${b.issuedQty || 0} | Output: ${b.producedQty || 0} (Op: ${b.worker || 'Op'})</option>`;
                 });
             }
             loadBatchReverseDetails();
@@ -3412,8 +3541,10 @@
             const batch = job.runningBatches.find(b => b.batchId === batchId);
             if(!batch) { infoBox.innerText = 'Batch not found'; return; }
 
-            infoBox.innerHTML = `<b>Stage:</b> ${batch.stage} | <b>Machine:</b> ${batch.machine}<br><b>Currently Issued Qty:</b> <span style="color:#e53e3e; font-weight:bold;">${batch.issuedQty || 0}</span> | <b>Operator:</b> ${batch.worker}`;
-            document.getElementById('adminReverseQtyInput').value = batch.issuedQty || 0;
+            let curStockStr = `Slit: ${job.availableRolls || 0} Rolls | Cut: ${job.availableCuttingCrates || 0} Crates | Form: ${job.availableFormingCrates || 0} Crates | QC: ${job.availableQcCrates || 0} Crates`;
+
+            infoBox.innerHTML = `<b>Stage:</b> ${batch.stage} (${batch.status}) | <b>Machine:</b> ${batch.machine}<br><b>Batch Issued Qty:</b> ${batch.issuedQty || 0} | <b>Produced Output:</b> ${batch.producedQty || 0} | <b>Operator:</b> ${batch.worker}<br><span style="color:#2b6cb0; font-size:11px;">Current Job Stocks: ${curStockStr}</span>`;
+            document.getElementById('adminReverseQtyInput').value = (batch.issuedQty || batch.producedQty || 0);
         }
 
         function executeAdminBatchReverse() {
@@ -3529,6 +3660,20 @@
             currentTargetHoldMachine = machineName;
             document.getElementById('holdMachineNameInput').value = machineName;
             document.getElementById('holdRemarksInput').value = '';
+            
+            const rSelect = document.getElementById('rerouteTargetMachineSelect');
+            if(rSelect) {
+                rSelect.innerHTML = '<option value="">-- DO NOT RE-ROUTE (HOLD IN PLACE) --</option>';
+                let targetGroup = [];
+                if(machineName.startsWith('Cutting-')) targetGroup = machines['Cutting'] || [];
+                else if(machineName.startsWith('Forming-')) targetGroup = machines['Forming'] || [];
+                else if(machineName.startsWith('Packing-')) targetGroup = machines['Packing'] || [];
+                else if(machineName.startsWith('Slitting-')) targetGroup = machines['Slitting'] || [];
+                
+                targetGroup.forEach(m => {
+                    if(m !== machineName) rSelect.innerHTML += `<option value="${m}">Shift to ${m}</option>`;
+                });
+            }
             document.getElementById('holdBreakdownModal').style.display = 'block';
         }
         function closeHoldModal() { document.getElementById('holdBreakdownModal').style.display = 'none'; }
@@ -3565,6 +3710,7 @@
             if(targetBatch) {
                 targetBatch.status = 'Held';
                 targetBatch.endTime = nowTime;
+                targetBatch.holdReason = fullReason;
                 logs.push({
                     jobId: targetJob.id, product: targetJob.product, stage: targetBatch.stage, machine: machine,
                     shift: targetBatch.shift, action: `⏸️ Machine HELD: ${fullReason}`,
@@ -3704,6 +3850,10 @@
                         <div><b>Outer Box Wrapping:</b> <b>${pj.wrapping || 'NO'}</b></div>
                         <div><b>Brand Label Placement:</b> <b>${pj.labeling || 'NO'}</b></div>
                         <div style="grid-column: span 2;"><b>Special Packaging Remarks:</b> <span style="font-style:italic; color:#4a5568;">${pj.remarks || 'None'}</span></div>
+                        <div style="grid-column: span 2; background:#f0fff4; border:1px solid #c6f6d5; padding:8px; border-radius:6px; margin-top:6px;">
+                            <b>🔍 Component Lots Used in Packing:</b><br>
+                            <span style="color:#22543d; font-weight:700;">${pj.tracedLots ? Object.keys(pj.tracedLots).map(k => `• ${k}: ${pj.tracedLots[k]}`).join('<br>') : 'Standard Factory Lot Allocation'}</span>
+                        </div>
                     </div>
                 </div>
 
@@ -3830,7 +3980,8 @@
                                     worker: b.worker || 'Operator', outputText: outStr,
                                     startTime: b.startTime || '-',
                                     endTime: b.endTime || (b.status === 'Held' ? 'HELD' : 'RUNNING'),
-                                    duration: dur, stageStatus: `${b.stage} (${b.status})`
+                                    duration: dur, stageStatus: `${b.stage} (${b.status})`,
+                                    loggedBy: b.user || 'SYSTEM'
                                 });
                             }
                         });
@@ -3852,6 +4003,7 @@
                             <td>${r.endTime}</td>
                             <td><b>${r.duration}</b></td>
                             <td><span style="background:#edf2f7; padding:3px 8px; border-radius:4px; font-weight:bold;">${r.stageStatus}</span></td>
+                            <td><span style="color:#2b6cb0; font-weight:bold; font-size:11px;">${r.loggedBy || 'SYSTEM'}</span></td>
                         </tr>`;
                 });
             }
@@ -3864,9 +4016,9 @@
                 return alert('No records to export for this machine.');
             }
 
-            let csv = "data:text/csv;charset=utf-8,Job_ID,Product_Origin,Operator_Name,Output_Produced,Start_Time,End_Time,Duration,Stage_Status\n";
+            let csv = "data:text/csv;charset=utf-8,Job_ID,Product_Origin,Operator_Name,Output_Produced,Start_Time,End_Time,Duration,Stage_Status,Logged_By\n";
             currentStationModalRecords.slice().reverse().forEach(r => {
-                csv += `"${r.jobId}","${r.product}","${r.worker}","${r.outputText}","${r.startTime}","${r.endTime}","${r.duration}","${r.stageStatus}"\n`;
+                csv += `"${r.jobId}","${r.product}","${r.worker}","${r.outputText}","${r.startTime}","${r.endTime}","${r.duration}","${r.stageStatus}","${r.loggedBy || 'SYSTEM'}"\n`;
             });
 
             const link = document.createElement("a");
@@ -3953,9 +4105,9 @@
             }
 
             if(matchedLogs.length > 0) {
-                html += '<div class="table-responsive"><table class="history-table"><thead><tr><th>Date & Time</th><th>Stage</th><th>Machine</th><th>Job / Order</th><th>Action / Result</th><th>Worker</th></tr></thead><tbody>';
+                html += '<div class="table-responsive"><table class="history-table"><thead><tr><th>Date & Time</th><th>Stage</th><th>Machine</th><th>Job / Order</th><th>Action / Result</th><th>Floor Operator</th><th>Logged By (User ID)</th></tr></thead><tbody>';
                 matchedLogs.forEach(l => {
-                    html += `<tr><td>${l.timestamp || l.rawDate}</td><td><b>${l.stage}</b></td><td>${l.machine}</td><td><b>${l.jobId}</b></td><td style="text-align:left;">${l.action}</td><td>${l.worker || l.user}</td></tr>`;
+                    html += `<tr><td>${l.timestamp || l.rawDate}</td><td><b>${l.stage}</b></td><td>${l.machine}</td><td><b>${l.jobId}</b></td><td style="text-align:left;">${l.action}</td><td><b>${l.worker || 'N/A'}</b></td><td><span style="background:#edf2f7; padding:2px 6px; border-radius:4px; font-weight:bold; color:#2b6cb0;">${l.user || 'SYSTEM'}</span></td></tr>`;
                 });
                 html += '</tbody></table></div>';
             }
@@ -4049,7 +4201,8 @@
                                         if(b.status === 'Held') isHeld = true;
                                         activeInfoList.push({
                                             jobId: j.id, product: j.product,
-                                            worker: b.worker || 'Operator', startTime: b.startTime || '-'
+                                            worker: b.worker || 'Operator', startTime: b.startTime || '-',
+                                            holdReason: b.holdReason || ''
                                         });
                                     }
                                 });
@@ -4065,6 +4218,9 @@
                         detailHtml = `<div style="font-size:12px; margin-top:6px; color:#2d3748; line-height:1.4; border-top:1px solid #e2e8f0; padding-top:6px;">`;
                         activeInfoList.forEach((info, idx) => {
                             detailHtml += `<div><b>${idx+1}.</b> <span style="color:#2b6cb0; font-weight:800;">${info.jobId}</span> (${info.product}) | Op: <b>${info.worker}</b> (${info.startTime})</div>`;
+                            if(info.holdReason) {
+                                detailHtml += `<div style="color:#c05621; font-size:11px; font-weight:bold; margin-top:3px; background:#feebc8; padding:3px 6px; border-radius:4px; border-left:3px solid #dd6b20;">⏸️ Reason: ${info.holdReason}</div>`;
+                            }
                         });
                         detailHtml += `</div>`;
                     } else {
@@ -4157,6 +4313,120 @@
                     </div>`;
             });
         }
+    
+        // ==========================================
+        // UPGRADED FEATURE: DIRECT STAGE-TO-STAGE INVENTORY BALANCING & ROLLBACK
+        // ==========================================
+        function loadAdminStageBalanceJobList() {
+            const select = document.getElementById('adminStageBalanceJobSelect');
+            if(!select) return;
+            select.innerHTML = '<option value="">-- SELECT JOB FOR STAGE BALANCING --</option>';
+            jobs.forEach(j => select.innerHTML += `<option value="${j.id}">${j.id} - ${j.product} (${j.paperBrand || 'ITC'})</option>`);
+            loadJobStagesForAdminBalance();
+        }
+
+        function loadJobStagesForAdminBalance() {
+            const jobId = document.getElementById('adminStageBalanceJobSelect') ? document.getElementById('adminStageBalanceJobSelect').value : '';
+            const panel = document.getElementById('adminStageBalancePanel');
+            if(!panel) return;
+            if(!jobId) { panel.classList.add('hidden'); return; }
+            panel.classList.remove('hidden');
+
+            const job = jobs.find(j => j.id === jobId);
+            if(job) {
+                document.getElementById('balRollsInput').value = job.availableRolls || 0;
+                document.getElementById('balCutCratesInput').value = job.availableCuttingCrates || 0;
+                document.getElementById('balFormedCratesInput').value = job.availableFormingCrates || 0;
+                document.getElementById('balQcCratesInput').value = job.availableQcCrates || 0;
+            }
+        }
+
+        function saveAdminStageBalanceCorrection() {
+            const jobId = document.getElementById('adminStageBalanceJobSelect').value;
+            const job = jobs.find(j => j.id === jobId);
+            if(!job) return alert('Select a Job first!');
+
+            const newRolls = parseInt(document.getElementById('balRollsInput').value) || 0;
+            const newCut = parseInt(document.getElementById('balCutCratesInput').value) || 0;
+            const newForm = parseInt(document.getElementById('balFormedCratesInput').value) || 0;
+            const newQc = parseInt(document.getElementById('balQcCratesInput').value) || 0;
+
+            let oldSummary = `Rolls: ${job.availableRolls || 0}, Cut: ${job.availableCuttingCrates || 0}, Form: ${job.availableFormingCrates || 0}, QC: ${job.availableQcCrates || 0}`;
+            let newSummary = `Rolls: ${newRolls}, Cut: ${newCut}, Form: ${newForm}, QC: ${newQc}`;
+
+            job.availableRolls = newRolls;
+            job.availableCuttingCrates = newCut;
+            job.availableFormingCrates = newForm;
+            job.availableQcCrates = newQc;
+
+            logs.push({
+                jobId: job.id, product: job.product, stage: 'Admin Stock Balance', machine: 'ADMIN',
+                action: `🔄 Direct Stage Balance: Changed from [${oldSummary}] ➔ to [${newSummary}]`,
+                worker: 'ADMIN', user: currentUser.username, rawDate: new Date().toISOString().split('T')[0], timestamp: new Date().toLocaleString()
+            });
+
+            saveData();
+            loadJobStagesForAdminBalance();
+            alert(`✅ Stage Inventory for Job [${job.id}] balanced and saved successfully!`);
+        }
+
+        function executeQuickStageRollback() {
+            const jobId = document.getElementById('adminStageBalanceJobSelect').value;
+            const job = jobs.find(j => j.id === jobId);
+            if(!job) return alert('Select Job first!');
+
+            const mode = document.getElementById('quickRollbackFromStage').value;
+            const qty = parseInt(document.getElementById('quickRollbackQtyInput').value) || 0;
+
+            if(qty <= 0) return alert('Please enter valid crates/units quantity to rollback!');
+
+            if(mode === 'Forming_to_Cutting') {
+                if((job.availableFormingCrates || 0) < qty) return alert(`Cannot rollback more than available Formed crates (${job.availableFormingCrates || 0})!`);
+                job.availableFormingCrates -= qty;
+                job.availableCuttingCrates = (job.availableCuttingCrates || 0) + qty;
+                logs.push({
+                    jobId: job.id, product: job.product, stage: 'Admin Rollback', machine: 'ADMIN',
+                    action: `↩️ Quick Rollback: Returned -${qty} Formed Crates back to +${qty} Cut Crates`,
+                    worker: 'ADMIN', user: currentUser.username, rawDate: new Date().toISOString().split('T')[0], timestamp: new Date().toLocaleString()
+                });
+            } else if(mode === 'Cutting_to_Rolls') {
+                if((job.availableCuttingCrates || 0) < qty) return alert(`Cannot rollback more than available Cut crates (${job.availableCuttingCrates || 0})!`);
+                job.availableCuttingCrates -= qty;
+                job.availableRolls = (job.availableRolls || 0) + qty;
+                logs.push({
+                    jobId: job.id, product: job.product, stage: 'Admin Rollback', machine: 'ADMIN',
+                    action: `↩️ Quick Rollback: Returned -${qty} Cut Crates back to +${qty} Slit Rolls`,
+                    worker: 'ADMIN', user: currentUser.username, rawDate: new Date().toISOString().split('T')[0], timestamp: new Date().toLocaleString()
+                });
+            } else if(mode === 'QC_to_Forming') {
+                if((job.availableQcCrates || 0) < qty) return alert(`Cannot rollback more than available QC crates (${job.availableQcCrates || 0})!`);
+                job.availableQcCrates -= qty;
+                job.availableFormingCrates = (job.availableFormingCrates || 0) + qty;
+                logs.push({
+                    jobId: job.id, product: job.product, stage: 'Admin Rollback', machine: 'ADMIN',
+                    action: `↩️ Quick Rollback: Returned -${qty} QC Crates back to +${qty} Formed Crates`,
+                    worker: 'ADMIN', user: currentUser.username, rawDate: new Date().toISOString().split('T')[0], timestamp: new Date().toLocaleString()
+                });
+            }
+
+            saveData();
+            loadJobStagesForAdminBalance();
+            document.getElementById('quickRollbackQtyInput').value = '';
+            alert(`✅ Rollback of ${qty} units completed successfully!`);
+        }
+
+        // Admin Log Entry Deletion
+        function deleteAdminLogEntry() {
+            const idx = document.getElementById('adminSelectedLogEntry') ? document.getElementById('adminSelectedLogEntry').value : '';
+            if(idx === '') return alert('Select log entry to delete!');
+            if(!confirm('Are you sure you want to PERMANENTLY remove this audit log entry?')) return;
+
+            let removed = logs.splice(idx, 1);
+            saveData();
+            loadLogEntriesForAdminCorrection();
+            alert('🗑️ Log entry removed from audit trail.');
+        }
+
     </script>
 </body>
 </html>

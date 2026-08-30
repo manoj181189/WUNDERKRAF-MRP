@@ -2640,45 +2640,47 @@
         }
 
         function completeCuttingJob() {
-            const batchId = document.getElementById('cuttingRunningJobsSelect').value;
-            const outInput = parseInt(document.getElementById('cuttingOutputCount').value) || 0;
-            const scrapKg = parseInt(document.getElementById('cuttingScrapKgInput').value) || 0;
+    const batchId = document.getElementById('cuttingRunningJobsSelect').value;
+    const outInput = parseInt(document.getElementById('cuttingOutputCount').value) || 0;
+    const scrapKg = parseInt(document.getElementById('cuttingScrapKgInput').value) || 0;
 
-            if(!batchId) return alert('Please select running cutting batch!');
-            if(outInput <= 0) return alert('Please enter passed cut crates count (minimum 0)!');
+    if(!batchId) return alert('कृपया रनिंग कटिंग बैच सेलेक्ट करें!');
 
-            let targetJob = null, targetBatch = null;
-            jobs.forEach(j => {
-                if(j.runningBatches) {
-                    let b = j.runningBatches.find(b => b.batchId === batchId && (b.status === 'Running' || b.status === 'Held'));
-                    if(b) { targetJob = j; targetBatch = b; }
-                }
-            });
-
-            if(targetBatch) {
-                const stopTime = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-                targetBatch.status = 'Completed';
-                targetBatch.endTime = stopTime;
-                targetBatch.producedQty = outInput;
-                targetBatch.scrapKg = scrapKg;
-
-                targetJob.availableCuttingCrates += outInput;
-
-                logs.push({
-                    jobId: targetJob.id, product: targetJob.product, stage: 'Cutting', machine: targetBatch.machine,
-                    shift: targetBatch.shift, action: `⏹️ Completed Cutting (${outInput} Crates, Scrap: ${scrapKg} KG)`,
-                    worker: targetBatch.worker, user: currentUser.username, startTime: targetBatch.startTime, endTime: stopTime,
-                    rawDate: new Date().toISOString().split('T')[0], timestamp: new Date().toLocaleString()
-                });
-
-                document.getElementById('cuttingOutputCount').value = '';
-                document.getElementById('cuttingScrapKgInput').value = '0';
-                saveData();
-                updateCuttingPendingDropdown();
-                updateCuttingRunningDropdown();
-                alert(`✅ Cutting Finished on ${targetBatch.machine}! Credited ${outInput} Cut Crates.`);
-            }
+    let targetJob = null, targetBatch = null;
+    jobs.forEach(j => {
+        if(j.runningBatches) {
+            let b = j.runningBatches.find(b => b.batchId === batchId && (b.status === 'Running' || b.status === 'Held'));
+            if(b) { targetJob = j; targetBatch = b; }
         }
+    });
+
+    if(targetBatch) {
+        const stopTime = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        targetBatch.status = 'Completed';
+        targetBatch.endTime = stopTime;
+        targetBatch.producedQty = outInput;
+        targetBatch.scrapKg = scrapKg;
+
+        if(outInput > 0) {
+            targetJob.availableCuttingCrates += outInput;
+        }
+
+        logs.push({
+            jobId: targetJob.id, product: targetJob.product, stage: 'Cutting', machine: targetBatch.machine,
+            shift: targetBatch.shift, action: `⏹️ Finished Cutting Batch ${targetBatch.batchId} (${outInput} Crates, Scrap: ${scrapKg} KG)`,
+            worker: targetBatch.worker, user: currentUser.username, startTime: targetBatch.startTime, endTime: stopTime,
+            rawDate: new Date().toISOString().split('T')[0], timestamp: new Date().toLocaleString()
+        });
+
+        document.getElementById('cuttingOutputCount').value = '';
+        document.getElementById('cuttingScrapKgInput').value = '0';
+        saveData();
+        updateCuttingPendingDropdown();
+        updateCuttingRunningDropdown();
+        renderUI();
+        alert(`✅ पुराना कटिंग बैच सफलतापूर्वक Finish कर दिया गया है!`);
+    }
+}
 
         function updateCuttingRunningDropdown() {
             const machine = document.getElementById('cuttingMachineSelect') ? document.getElementById('cuttingMachineSelect').value : 'Cutting-1';

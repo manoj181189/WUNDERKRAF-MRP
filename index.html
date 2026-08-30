@@ -4526,64 +4526,7 @@ function quickReturnUnprocessedCrates(deskType) {
         
         alert(`✅ सफलतापूर्वक ${qty} यूनिट्स वापस स्टॉक में आ गए हैं!`);
     }
-    // 1. QC Desk Dropdown Update
-function updateQcRunningDropdown() {
-    const rSelect = document.getElementById('qcRunningJobsSelect');
-    if(!rSelect) return;
-    rSelect.innerHTML = '<option value="">-- SELECT ACTIVE / HELD QC BATCH --</option>';
-    let count = 0;
-    jobs.forEach(j => {
-        if(j.runningBatches) {
-            j.runningBatches.forEach(b => {
-                if(b.machine === 'QC-Desk' && (b.status === 'Running' || b.status === 'Held')) {
-                    rSelect.innerHTML += `<option value="${b.batchId}" ${count===0?'selected':''}>${j.id} [${j.product}] - Batch: ${b.batchId} | Op: ${b.worker || 'N/A'} (Issued: ${b.issuedQty || 0}) - ${b.status}</option>`;
-                    count++;
-                }
-            });
-        }
-    });
-    updateQcRunningDisplayInfo();
-}
 
-// 2. Cutting Desk Dropdown Update
-function updateCuttingRunningDropdown() {
-    const machine = document.getElementById('cuttingMachineSelect') ? document.getElementById('cuttingMachineSelect').value : 'Cutting-1';
-    const rSelect = document.getElementById('cuttingRunningJobsSelect');
-    if(!rSelect) return;
-    rSelect.innerHTML = '<option value="">-- SELECT RUNNING / HELD BATCH --</option>';
-    let count = 0;
-    jobs.forEach(j => {
-        if(j.runningBatches) {
-            j.runningBatches.forEach(b => {
-                if(b.machine === machine && (b.status === 'Running' || b.status === 'Held')) {
-                    rSelect.innerHTML += `<option value="${b.batchId}" ${count===0?'selected':''}>${j.id} [${j.product}] - Batch: ${b.batchId} | Op: ${b.worker || 'N/A'} (Issued: ${b.issuedQty || 0}) - ${b.status}</option>`;
-                    count++;
-                }
-            });
-        }
-    });
-    updateCuttingRunningDisplayInfo();
-}
-
-// 3. Forming Desk Dropdown Update
-function updateFormingRunningDropdown() {
-    const machine = document.getElementById('formingMachineSelect') ? document.getElementById('formingMachineSelect').value : 'Forming-1';
-    const rSelect = document.getElementById('formingRunningJobsSelect');
-    if(!rSelect) return;
-    rSelect.innerHTML = '<option value="">-- SELECT RUNNING / HELD BATCH --</option>';
-    let count = 0;
-    jobs.forEach(j => {
-        if(j.runningBatches) {
-            j.runningBatches.forEach(b => {
-                if(b.machine === machine && (b.status === 'Running' || b.status === 'Held')) {
-                    rSelect.innerHTML += `<option value="${b.batchId}" ${count===0?'selected':''}>${j.id} [${j.product}] - Batch: ${b.batchId} | Op: ${b.worker || 'N/A'} (Issued: ${b.issuedQty || 0}) - ${b.status}</option>`;
-                    count++;
-                }
-            });
-        }
-    });
-    updateFormingRunningDisplayInfo();
-}
     </script>
 </body>
 </html>

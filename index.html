@@ -2487,6 +2487,7 @@
                 const nowTime = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
                 targetBatch.status = 'Running';
                 targetBatch.endTime = '';
+                targetBatch.holdReason = ""; // <-- यह लाइन पुरानी होल्ड रीज़न को तुरंत साफ़ (Blank) कर देती है
 
                 logs.push({
                     jobId: targetJob.id, product: targetJob.product, stage: 'Slitting', machine: 'Slitting-1',

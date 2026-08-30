@@ -4527,7 +4527,7 @@ function quickReturnUnprocessedCrates(deskType) {
         alert(`✅ सफलतापूर्वक ${qty} यूनिट्स वापस स्टॉक में आ गए हैं!`);
     }
 }
-        // मशीन होल्ड करके रनिंग स्टॉक/बैच को तुरंत दूसरी मशीन पर शिफ्ट (Re-route) करने के लिए
+        // मशीन होल्ड करके रनिंग स्टॉक/बैच को तुरंत दूसरी मशीन पर शिफ्ट (Re-route) करने के लिए (Fixed)
 function confirmExecuteHoldAndReroute() {
     const reason = document.getElementById('holdReasonSelect').value;
     const remarks = document.getElementById('holdRemarksInput').value.trim();
@@ -4566,11 +4566,12 @@ function confirmExecuteHoldAndReroute() {
         rawDate: new Date().toISOString().split('T')[0], timestamp: new Date().toLocaleString()
     });
 
-    // 2. टारगेट मशीन पर उसी जॉब का नया रनिंग बैच चालू करें (बचा हुआ या कुल इश्यू माल लेकर)
+    // 2. टारगेट मशीन पर उसी जॉब का नया रनिंग बैच चालू करें (यहाँ targetJob इस्तेमाल किया गया है)
     let newBatchId = 'B-' + Math.floor(1000 + Math.random()*9000);
     let remainingQty = targetBatch.issuedQty || 0;
 
-    job.runningBatches.push({
+    if(!targetJob.runningBatches) targetJob.runningBatches = [];
+    targetJob.runningBatches.push({
         batchId: newBatchId,
         stage: targetBatch.stage,
         machine: targetMachine, // नई मशीन असाइन की गई

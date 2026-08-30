@@ -892,11 +892,12 @@
                         <div class="packing-desk-live-grid" id="packingDeskLiveGrid"></div>
                     </div>
 
-                    <label style="color:#2b6cb0; font-weight:800;">SELECT PACKING MACHINE:</label>
+                    <label style="color:#2b6cb0; font-weight:800;">SELECT PACKING MACHINE / WORKSTATION:</label>
                     <select id="packMachineSelect" onchange="onPackingMachineChange()">
                         <option value="Packing-1">Packing-1 (Kit Machine 1)</option>
                         <option value="Packing-2">Packing-2 (Kit Machine 2)</option>
-                    </select>
+                 <option value="Manual-Work">Manual Packing Desk (Hand Work)</option>
+                 </select>
 
                     <label style="color:#2b6cb0; font-weight:800;">SELECT PENDING PACKING ORDER (Auto-Hides 100% Finished):</label>
                     <select id="pendingPackOrderSelect" onchange="loadPackJobDetails()"></select>
@@ -1324,7 +1325,7 @@
             'Cutting': ['Cutting-1', 'Cutting-2'],
             'Forming': ['Forming-1', 'Forming-2', 'Forming-3', 'Forming-4', 'Forming-5', 'Forming-6', 'Forming-7'],
             'QC': ['QC-Desk'],
-            'Packing': ['Packing-1', 'Packing-2']
+            'Packing': ['Packing-1', 'Packing-2', 'Manual-Work'] // <-- यहाँ Manual-Work जोड़ दिया गया है
         };
 
         let products = ['Spoon', 'Fork', 'Knife', 'Dessert Spoon'];

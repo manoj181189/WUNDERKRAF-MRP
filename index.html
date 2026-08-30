@@ -2478,7 +2478,7 @@
             const weightInput = parseInt(document.getElementById('slitOutputWeightKg').value) || 0;
 
             if(!batchId) return alert('Please select active slitting job!');
-            if(outInput <= 0) return alert('Please enter output rolls count (minimum 1)!');
+            if(outInput <= 0) return alert('Please enter output rolls count (minimum 0)!');
             if(weightInput <= 0) return alert('⚠️ MANDATORY FIELD MISSING!\nYou CANNOT finish slitting without entering Output Weight in KG.');
 
             let targetJob = null, targetBatch = null;
@@ -2645,7 +2645,7 @@
             const scrapKg = parseInt(document.getElementById('cuttingScrapKgInput').value) || 0;
 
             if(!batchId) return alert('Please select running cutting batch!');
-            if(outInput <= 0) return alert('Please enter passed cut crates count (minimum 1)!');
+            if(outInput <= 0) return alert('Please enter passed cut crates count (minimum 0)!');
 
             let targetJob = null, targetBatch = null;
             jobs.forEach(j => {
@@ -2862,7 +2862,7 @@
             const scrapPcs = parseInt(document.getElementById('formingScrapPcsInput').value) || 0;
 
             if(!batchId) return alert('Please select running forming batch!');
-            if(outInput <= 0) return alert('Please enter passed formed crates count (minimum 1)!');
+            if(outInput <= 0) return alert('Please enter passed formed crates count (minimum 0)!');
 
             let targetJob = null, targetBatch = null;
             jobs.forEach(j => {
@@ -3019,7 +3019,7 @@
             const scrapKg = parseInt(document.getElementById('qcScrapKgInput').value) || 0;
 
             if(!batchId) return alert('Please select active inspection batch!');
-            if(outInput <= 0) return alert('Please enter approved QC crates count (minimum 1)!');
+            if(outInput <= 0) return alert('Please enter approved QC crates count (minimum 0)!');
 
             let targetJob = null, targetBatch = null;
             jobs.forEach(j => {

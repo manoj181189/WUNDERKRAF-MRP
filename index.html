@@ -896,8 +896,10 @@
                     <select id="packMachineSelect" onchange="onPackingMachineChange()">
                         <option value="Packing-1">Packing-1 (Kit Machine 1)</option>
                         <option value="Packing-2">Packing-2 (Kit Machine 2)</option>
-                 <option value="Manual-Work">Manual Packing Desk (Hand Work)</option>
-                 </select>
+                        <option value="Manual-1">Manual Packing Desk 1 (Hand Work)</option>
+                        <option value="Manual-2">Manual Packing Desk 2 (Hand Work)</option>
+                        <option value="Manual-3">Manual Packing Desk 3 (Hand Work)</option>
+                  </select>
 
                     <label style="color:#2b6cb0; font-weight:800;">SELECT PENDING PACKING ORDER (Auto-Hides 100% Finished):</label>
                     <select id="pendingPackOrderSelect" onchange="loadPackJobDetails()"></select>
@@ -1325,8 +1327,8 @@
             'Cutting': ['Cutting-1', 'Cutting-2'],
             'Forming': ['Forming-1', 'Forming-2', 'Forming-3', 'Forming-4', 'Forming-5', 'Forming-6', 'Forming-7'],
             'QC': ['QC-Desk'],
-            'Packing': ['Packing-1', 'Packing-2', 'Manual-Work'] // <-- यहाँ Manual-Work जोड़ दिया गया है
-        };
+            'Packing': ['Packing-1', 'Packing-2', 'Manual-1', 'Manual-2', 'Manual-3'] // <-- ये नई मैनुअल लेन्स जोड़ दी गई हैं
+         };
 
         let products = ['Spoon', 'Fork', 'Knife', 'Dessert Spoon'];
         let deptWorkers = {
@@ -3103,29 +3105,32 @@
 
         // Dedicated Packing Desk Real-Time Local Status Update & Auto-Hide 100% finished orders
         function renderPackingDeskLiveCards() {
-            const container = document.getElementById('packingDeskLiveGrid');
-            if(!container) return;
-            container.innerHTML = '';
+    const container = document.getElementById('packingDeskLiveGrid');
+    if(!container) return;
+    container.innerHTML = '';
 
-            ['Packing-1', 'Packing-2'].forEach(mName => {
-                let activePack = packJobs.find(p => p.machine === mName && (p.status === 'Running' || p.status === 'Held'));
-                let statusClass = activePack ? (activePack.status === 'Held' ? 'held' : 'running') : 'idle';
-                let statusText = activePack ? (activePack.status === 'Held' ? '⏸️ HELD' : '▶ RUNNING') : '⚪ IDLE / READY';
-                
-                let detail = activePack ? 
-                    `<b>${activePack.customer}</b><br>Item: ${activePack.kitType}<br>Op: <b>${activePack.worker || 'Packing'}</b> (${activePack.startTime || '-'})` : 
-                    `<span style="color:#718096;">Available for assignment</span>`;
+    // अब इसमें मशीनों के साथ-साथ सभी मैनुअल लेन्स भी लाइव दिखेंगी
+    let packingLanes = ['Packing-1', 'Packing-2', 'Manual-1', 'Manual-2', 'Manual-3'];
 
-                container.innerHTML += `
-                    <div class="packing-desk-live-card ${statusClass}">
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
-                            <b style="color:#1a365d;">${mName}</b>
-                            <span style="font-weight:bold; font-size:10px;">${statusText}</span>
-                        </div>
-                        ${detail}
-                    </div>`;
-            });
-        }
+    packingLanes.forEach(mName => {
+        let activePack = packJobs.find(p => p.machine === mName && (p.status === 'Running' || p.status === 'Held'));
+        let statusClass = activePack ? (activePack.status === 'Held' ? 'held' : 'running') : 'idle';
+        let statusText = activePack ? (activePack.status === 'Held' ? '⏸️ HELD' : '▶ RUNNING') : '⚪ IDLE';
+        
+        let detail = activePack ? 
+            `<b>${activePack.customer}</b><br>Item: ${activePack.kitType}<br>Op: <b>${activePack.worker || 'Packing'}</b>` : 
+            `<span style="color:#718096;">Ready for assignment</span>`;
+
+        container.innerHTML += `
+            <div class="packing-desk-live-card ${statusClass}">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                    <b style="color:#1a365d; font-size:11px;">${mName}</b>
+                    <span style="font-weight:bold; font-size:10px;">${statusText}</span>
+                </div>
+                <div style="font-size:10px; line-height:1.3;">${detail}</div>
+            </div>`;
+    });
+}
 
         // Packing Station Module
         function onPackingMachineChange() {

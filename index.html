@@ -4527,6 +4527,81 @@ function quickReturnUnprocessedCrates(deskType) {
         alert(`✅ सफलतापूर्वक ${qty} यूनिट्स वापस स्टॉक में आ गए हैं!`);
     }
 }
+        // मशीन होल्ड करके रनिंग स्टॉक/बैच को तुरंत दूसरी मशीन पर शिफ्ट (Re-route) करने के लिए
+function confirmExecuteHoldAndReroute() {
+    const reason = document.getElementById('holdReasonSelect').value;
+    const remarks = document.getElementById('holdRemarksInput').value.trim();
+    const sourceMachine = currentTargetHoldMachine; // जिस मशीन को होल्ड किया जा रहा है
+    const targetMachine = document.getElementById('rerouteTargetMachineSelect').value; // जिस मशीन पर माल भेजना है
+    
+    if(!targetMachine) {
+        return alert('कृपया ड्रॉपडाउन से वह टारगेट मशीन सेलेक्ट करें जिसपर स्टॉक शिफ्ट करना है!');
+    }
+
+    const nowTime = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    let fullReason = reason + (remarks ? ` (${remarks})` : '');
+    let targetJob = null, targetBatch = null;
+
+    // सोर्स मशीन पर चल रहे एक्टिव बैच को ढूंढें
+    jobs.forEach(j => {
+        if(j.runningBatches) {
+            let b = j.runningBatches.find(x => x.machine === sourceMachine && (x.status === 'Running' || x.status === 'Held'));
+            if(b) { targetJob = j; targetBatch = b; }
+        }
+    });
+
+    if(!targetBatch) {
+        return alert(`⚠️ एरर: ${sourceMachine} पर कोई भी एक्टिव बैच नहीं मिला जिसे री-रूट किया जाए!`);
+    }
+
+    // 1. पुरानी मशीन वाले बैच को होल्ड/बंद करें
+    targetBatch.status = 'Held';
+    targetBatch.endTime = nowTime;
+    targetBatch.holdReason = `Re-routed to ${targetMachine}: ${fullReason}`;
+
+    logs.push({
+        jobId: targetJob.id, product: targetJob.product, stage: targetBatch.stage, machine: sourceMachine,
+        shift: targetBatch.shift, action: `⏸️ Machine HELD & Re-routed: ${sourceMachine} ➔ ${targetMachine} (${fullReason})`,
+        worker: targetBatch.worker, user: currentUser.username, startTime: targetBatch.startTime, endTime: nowTime,
+        rawDate: new Date().toISOString().split('T')[0], timestamp: new Date().toLocaleString()
+    });
+
+    // 2. टारगेट मशीन पर उसी जॉब का नया रनिंग बैच चालू करें (बचा हुआ या कुल इश्यू माल लेकर)
+    let newBatchId = 'B-' + Math.floor(1000 + Math.random()*9000);
+    let remainingQty = targetBatch.issuedQty || 0;
+
+    job.runningBatches.push({
+        batchId: newBatchId,
+        stage: targetBatch.stage,
+        machine: targetMachine, // नई मशीन असाइन की गई
+        shift: targetBatch.shift,
+        issuedQty: remainingQty,
+        producedQty: 0,
+        worker: targetBatch.worker, // वही ऑपरेटर
+        user: currentUser.username,
+        startTime: nowTime,
+        endTime: '',
+        status: 'Running' // नई मशीन पर रनिंग हो गया
+    });
+
+    logs.push({
+        jobId: targetJob.id, product: targetJob.product, stage: targetBatch.stage, machine: targetMachine,
+        shift: targetBatch.shift, action: `▶️ Re-routed Batch Started on ${targetMachine} (${remainingQty} Units Shifted from ${sourceMachine})`,
+        worker: targetBatch.worker, user: currentUser.username, startTime: nowTime, endTime: '',
+        rawDate: new Date().toISOString().split('T')[0], timestamp: new Date().toLocaleString()
+    });
+
+    saveData();
+    closeHoldModal();
+    
+    // सभी डैशबोर्ड और ड्रॉपडाउन रिफ्रेश करें
+    updateCuttingRunningDropdown();
+    updateFormingRunningDropdown();
+    updateQcRunningDropdown();
+    renderUI();
+
+    alert(`✅ सफलतापूर्वक मशीन [${sourceMachine}] को होल्ड कर दिया गया है और उसका रनिंग स्टॉक [${targetMachine}] पर ट्रांसफर हो गया है!`);
+}
     </script>
 </body>
 </html>

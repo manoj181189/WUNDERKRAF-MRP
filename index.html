@@ -874,6 +874,7 @@
                     </div>
 
                     <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap:8px; margin-top:8px;">
+                        <button class="btn-partial" onclick="forwardPartialStageOutput('qc')" style="background:#805ad5;">⚡ Forward Partial</button>
                         <button class="btn-reverse" onclick="quickReturnUnprocessedCrates('qc')" style="background:#e53e3e;">↩️ Quick Un-issue</button>
                         <button class="btn-hold" onclick="openHoldModal('QC-Desk')">⏸️ Hold</button>
                         <button class="btn-resume" onclick="resumeStageJob('qc')">▶️ Resume</button>
@@ -4426,13 +4427,13 @@
             loadLogEntriesForAdminCorrection();
             alert('🗑️ Log entry removed from audit trail.');
         }
-// 1. Forward Partial Stage Output (रनिंग जॉब से कुछ माल आगे फॉरवर्ड करने के लिए)
+// Upgraded Forward Partial Function (Cutting, Forming aur QC तीनों के लिए)
 function forwardPartialStageOutput(deskType) {
-    let selectId = deskType === 'cutting' ? 'cuttingRunningJobsSelect' : 'formingRunningJobsSelect';
+    let selectId = deskType === 'cutting' ? 'cuttingRunningJobsSelect' : deskType === 'forming' ? 'formingRunningJobsSelect' : 'qcRunningJobsSelect';
     let batchId = document.getElementById(selectId).value;
     if(!batchId) return alert('कृपया पहले कोई एक्टिव रनिंग बैच सेलेक्ट करें!');
 
-    let qtyStr = prompt(`आप ${deskType.toUpperCase()} से नेक्स्ट प्रोसेस में कितने क्रेट्स (Crates) फॉरवर्ड करना चाहते हैं?`);
+    let qtyStr = prompt(`आप ${deskType.toUpperCase()} से कितने क्रेट्स आगे पास (Forward) करना चाहते हैं?`);
     let qty = parseInt(qtyStr);
     if(isNaN(qty) || qty <= 0) return alert('अमान्य संख्या! कृपया सही क्वांटिटी डालें।');
 
@@ -4445,22 +4446,38 @@ function forwardPartialStageOutput(deskType) {
     });
 
     if(targetBatch) {
+        // चेक करें कि जितनी क्वांटिटी आगे भेज रहे हैं, उतनी बैच में बची है या नहीं
+        let currentIssued = targetBatch.issuedQty || 0;
+        if(qty > currentIssued) {
+            return alert(`⚠️ एरर: आप इश्यू की गई कुल मात्रा (${currentIssued}) से ज्यादा आगे नहीं भेज सकते!`);
+        }
+
+        // जिस स्टेज से आगे भेज रहे हैं, वहाँ से issuedQty कम हो जाएगी ताकि 5 में से 1 माइनस होकर 4 बचे
+        targetBatch.issuedQty -= qty;
+
+        // अगले स्टेज के स्टॉक में जोड़ें
         if(deskType === 'cutting') {
             targetJob.availableCuttingCrates = (targetJob.availableCuttingCrates || 0) + qty;
         } else if (deskType === 'forming') {
             targetJob.availableFormingCrates = (targetJob.availableFormingCrates || 0) + qty;
+        } else if (deskType === 'qc') {
+            targetJob.availableQcCrates = (targetJob.availableQcCrates || 0) + qty; // QC OK होकर सीधा फिनिश स्टॉक में जुड़ेगा
         }
-        
-        targetBatch.producedQty = (targetBatch.producedQty || 0) + qty;
 
         logs.push({
-            jobId: targetJob.id, product: targetJob.product, stage: deskType.toUpperCase(), machine: targetBatch.machine,
-            shift: targetBatch.shift, action: `⚡ Partial Forward: ${qty} Crates नेक्स्ट स्टेज में भेजे गए।`,
+            jobId: targetJob.id, product: targetJob.product, stage: `${deskType.toUpperCase()} Forward`, machine: targetBatch.machine,
+            shift: targetBatch.shift, action: `⚡ Partial Forward: ${qty} Crates आगे पास किए गए (शेष इश्यू: ${targetBatch.issuedQty})`,
             worker: targetBatch.worker, user: currentUser.username, rawDate: new Date().toISOString().split('T')[0], timestamp: new Date().toLocaleString()
         });
 
         saveData();
-        alert(`✅ सफलतापूर्वक ${qty} क्रेट्स नेक्स्ट प्रोसेस के लिए भेज दिए गए हैं!`);
+        
+        // ड्रॉप डाउन रिफ्रेश करें
+        if(deskType === 'cutting') updateCuttingRunningDropdown();
+        if(deskType === 'forming') updateFormingRunningDropdown();
+        if(deskType === 'qc') updateQcRunningDropdown();
+
+        alert(`✅ सफलतापूर्वक ${qty} क्रेट्स आगे पास कर दिए गए हैं! अब इस बैच में ${targetBatch.issuedQty} क्रेट्स बाकी हैं।`);
     }
 }
 

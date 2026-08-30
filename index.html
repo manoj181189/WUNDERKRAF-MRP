@@ -4487,13 +4487,13 @@ function forwardPartialStageOutput(deskType) {
     }
 }
 
-// 2. Quick Un-issue (इश्यू किए गए क्रेट्स को वापस पीछे के स्टेज में भेजने के लिए)
+// Quick Un-issue (इश्यू किए गए क्रेट्स या रोल्स को वापस सही पिछले स्टेज के स्टॉक में जोड़ने वाला सही फंक्शन)
 function quickReturnUnprocessedCrates(deskType) {
     let selectId = deskType === 'cutting' ? 'cuttingRunningJobsSelect' : deskType === 'forming' ? 'formingRunningJobsSelect' : 'qcRunningJobsSelect';
     let batchId = document.getElementById(selectId).value;
     if(!batchId) return alert('कृपया पहले अन-इश्यू (Un-issue) करने के लिए एक्टिव बैच सेलेक्ट करें!');
 
-    let qtyStr = prompt(`आप कितनी क्वांटिटी वापस पिछले स्टेज में रिटर्न करना चाहते हैं?`);
+    let qtyStr = prompt(`आप कितनी क्वांटिटी (रोल्स या क्रेट्स) वापस पिछले स्टेज में रिटर्न करना चाहते हैं?`);
     let qty = parseInt(qtyStr);
     if(isNaN(qty) || qty <= 0) return alert('अमान्य संख्या! कृपया सही क्वांटिटी डालें।');
 
@@ -4506,31 +4506,38 @@ function quickReturnUnprocessedCrates(deskType) {
     });
 
     if(targetBatch) {
-        if(qty > (targetBatch.issuedQty || 0)) return alert(`आप इश्यू की गई क्वांटिटी (${targetBatch.issuedQty}) से ज्यादा वापस नहीं कर सकते!`);
+        let currentIssued = targetBatch.issuedQty || 0;
+        if(qty > currentIssued) {
+            return alert(`⚠️ एरर: आप इश्यू की गई कुल मात्रा (${currentIssued}) से ज्यादा वापस नहीं कर सकते!`);
+        }
 
+        // 1. बैच की इश्यू की गई मात्रा से माइनस करें
         targetBatch.issuedQty -= qty;
 
+        // 2. सही पिछले स्टेज के स्टॉक में वापस जोड़ें (प्लस करें)
         if(deskType === 'cutting') {
-            targetJob.availableRolls = (targetJob.availableRolls || 0) + qty;
+            targetJob.availableRolls = (targetJob.availableRolls || 0) + qty; // कटिंग से किया था, तो रोल्स वापस बढ़ेंगे
         } else if(deskType === 'forming') {
-            targetJob.availableCuttingCrates = (targetJob.availableCuttingCrates || 0) + qty;
+            targetJob.availableCuttingCrates = (targetJob.availableCuttingCrates || 0) + qty; // फॉर्मिंग से किया था, तो कट क्रेट्स वापस बढ़ेंगे
         } else if(deskType === 'qc') {
-            targetJob.availableFormingCrates = (targetJob.availableFormingCrates || 0) + qty;
+            targetJob.availableFormingCrates = (targetJob.availableFormingCrates || 0) + qty; // QC से किया था, तो फॉर्मड क्रेट्स वापस बढ़ेंगे
         }
 
         logs.push({
-            jobId: targetJob.id, product: targetJob.product, stage: deskType.toUpperCase(), machine: targetBatch.machine,
-            shift: targetBatch.shift, action: `↩️ Quick Un-issue: ${qty} यूनिट्स वापस पिछले स्टेज के स्टॉक में भेज दिए गए।`,
+            jobId: targetJob.id, product: targetJob.product, stage: `${deskType.toUpperCase()} Un-issue`, machine: targetBatch.machine,
+            shift: targetBatch.shift, action: `↩️ Quick Un-issue: ${qty} यूनिट्स वापस पिछले स्टेज के स्टॉक में जोड़े गए।`,
             worker: targetBatch.worker, user: currentUser.username, rawDate: new Date().toISOString().split('T')[0], timestamp: new Date().toLocaleString()
         });
 
         saveData();
         
+        // ड्रॉपडाउन और स्टॉक मैट्रिक्स को रिफ्रेश करें
         if(deskType === 'cutting') { updateCuttingPendingDropdown(); updateCuttingRunningDropdown(); }
         if(deskType === 'forming') { updateFormingPendingDropdown(); updateFormingRunningDropdown(); }
         if(deskType === 'qc') { updateQcPendingDropdown(); updateQcRunningDropdown(); }
+        renderUI();
         
-        alert(`✅ सफलतापूर्वक ${qty} यूनिट्स वापस स्टॉक में आ गए हैं!`);
+        alert(`✅ सफलतापूर्वक ${qty} यूनिट्स वापस पिछले स्टेज के स्टॉक में जमा हो गए हैं!`);
     }
 }
         // मशीन होल्ड करके रनिंग स्टॉक/बैच को तुरंत दूसरी मशीन पर शिफ्ट (Re-route) करने के लिए (Fixed)

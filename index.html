@@ -2856,46 +2856,48 @@
             renderUI();
         }
 
-        function completeFormingJob() {
-            const batchId = document.getElementById('formingRunningJobsSelect').value;
-            const outInput = parseInt(document.getElementById('formingOutputCount').value) || 0;
-            const scrapPcs = parseInt(document.getElementById('formingScrapPcsInput').value) || 0;
+       function completeFormingJob() {
+    const batchId = document.getElementById('formingRunningJobsSelect').value;
+    const outInput = parseInt(document.getElementById('formingOutputCount').value) || 0; // अब 0 या खाली होने पर भी ले लेगा
+    const scrapPcs = parseInt(document.getElementById('formingScrapPcsInput').value) || 0;
 
-            if(!batchId) return alert('Please select running forming batch!');
-            if(outInput <= 0) return alert('Please enter passed formed crates count (minimum 0)!');
+    if(!batchId) return alert('कृपया रनिंग फॉर्मिंग बैच सेलेक्ट करें!');
 
-            let targetJob = null, targetBatch = null;
-            jobs.forEach(j => {
-                if(j.runningBatches) {
-                    let b = j.runningBatches.find(b => b.batchId === batchId && (b.status === 'Running' || b.status === 'Held'));
-                    if(b) { targetJob = j; targetBatch = b; }
-                }
-            });
-
-            if(targetBatch) {
-                const stopTime = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-                targetBatch.status = 'Completed';
-                targetBatch.endTime = stopTime;
-                targetBatch.producedQty = outInput;
-                targetBatch.scrapPcs = scrapPcs;
-
-                targetJob.availableFormingCrates += outInput;
-
-                logs.push({
-                    jobId: targetJob.id, product: targetJob.product, stage: 'Forming', machine: targetBatch.machine,
-                    shift: targetBatch.shift, action: `⏹️ Completed Forming (${outInput} Crates, Scrap: ${scrapPcs} Pieces)`,
-                    worker: targetBatch.worker, user: currentUser.username, startTime: targetBatch.startTime, endTime: stopTime,
-                    rawDate: new Date().toISOString().split('T')[0], timestamp: new Date().toLocaleString()
-                });
-
-                document.getElementById('formingOutputCount').value = '';
-                document.getElementById('formingScrapPcsInput').value = '0';
-                saveData();
-                updateFormingPendingDropdown();
-                updateFormingRunningDropdown();
-                alert(`✅ Forming Finished on ${targetBatch.machine}! Credited ${outInput} Formed Crates.`);
-            }
+    let targetJob = null, targetBatch = null;
+    jobs.forEach(j => {
+        if(j.runningBatches) {
+            let b = j.runningBatches.find(b => b.batchId === batchId && (b.status === 'Running' || b.status === 'Held'));
+            if(b) { targetJob = j; targetBatch = b; }
         }
+    });
+
+    if(targetBatch) {
+        const stopTime = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        targetBatch.status = 'Completed';
+        targetBatch.endTime = stopTime;
+        targetBatch.producedQty = outInput; // 0 भी रहेगा तो एक्सेप्ट हो जाएगा
+        targetBatch.scrapPcs = scrapPcs;
+
+        if(outInput > 0) {
+            targetJob.availableFormingCrates += outInput;
+        }
+
+        logs.push({
+            jobId: targetJob.id, product: targetJob.product, stage: 'Forming', machine: targetBatch.machine,
+            shift: targetBatch.shift, action: `⏹️ Finished Forming Batch ${targetBatch.batchId} (${outInput} Crates, Scrap: ${scrapPcs} Pcs)`,
+            worker: targetBatch.worker, user: currentUser.username, startTime: targetBatch.startTime, endTime: stopTime,
+            rawDate: new Date().toISOString().split('T')[0], timestamp: new Date().toLocaleString()
+        });
+
+        document.getElementById('formingOutputCount').value = '';
+        document.getElementById('formingScrapPcsInput').value = '0';
+        saveData();
+        updateFormingPendingDropdown();
+        updateFormingRunningDropdown();
+        renderUI();
+        alert(`✅ पुराना बैच सफलतापूर्वक Finish कर दिया गया है!`);
+    }
+}
 
         function updateFormingRunningDropdown() {
             const machine = document.getElementById('formingMachineSelect') ? document.getElementById('formingMachineSelect').value : 'Forming-1';

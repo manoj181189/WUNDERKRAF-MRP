@@ -3014,45 +3014,47 @@
         }
 
         function completeQcJob() {
-            const batchId = document.getElementById('qcRunningJobsSelect').value;
-            const outInput = parseInt(document.getElementById('qcOutputCount').value) || 0;
-            const scrapKg = parseInt(document.getElementById('qcScrapKgInput').value) || 0;
+    const batchId = document.getElementById('qcRunningJobsSelect').value;
+    const outInput = parseInt(document.getElementById('qcOutputCount').value) || 0;
+    const scrapKg = parseInt(document.getElementById('qcScrapKgInput').value) || 0;
 
-            if(!batchId) return alert('Please select active inspection batch!');
-            if(outInput <= 0) return alert('Please enter approved QC crates count (minimum 0)!');
+    if(!batchId) return alert('कृपया एक्टिव इंस्पेक्शन बैच सेलेक्ट करें!');
 
-            let targetJob = null, targetBatch = null;
-            jobs.forEach(j => {
-                if(j.runningBatches) {
-                    let b = j.runningBatches.find(b => b.batchId === batchId && (b.status === 'Running' || b.status === 'Held'));
-                    if(b) { targetJob = j; targetBatch = b; }
-                }
-            });
-
-            if(targetBatch) {
-                const stopTime = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-                targetBatch.status = 'Completed';
-                targetBatch.endTime = stopTime;
-                targetBatch.producedQty = outInput;
-                targetBatch.scrapKg = scrapKg;
-
-                targetJob.availableQcCrates += outInput;
-
-                logs.push({
-                    jobId: targetJob.id, product: targetJob.product, stage: 'QC', machine: 'QC-Desk',
-                    shift: targetBatch.shift, action: `⏹️ Approved QC Inspection (${outInput} Crates, Scrap: ${scrapKg} KG)`,
-                    worker: targetBatch.worker, user: currentUser.username, startTime: targetBatch.startTime, endTime: stopTime,
-                    rawDate: new Date().toISOString().split('T')[0], timestamp: new Date().toLocaleString()
-                });
-
-                document.getElementById('qcOutputCount').value = '';
-                document.getElementById('qcScrapKgInput').value = '0';
-                saveData();
-                updateQcPendingDropdown();
-                updateQcRunningDropdown();
-                alert(`✅ QC Approved! Credited ${outInput} Approved Crates to Finished Warehouse Stock.`);
-            }
+    let targetJob = null, targetBatch = null;
+    jobs.forEach(j => {
+        if(j.runningBatches) {
+            let b = j.runningBatches.find(b => b.batchId === batchId && (b.status === 'Running' || b.status === 'Held'));
+            if(b) { targetJob = j; targetBatch = b; }
         }
+    });
+
+    if(targetBatch) {
+        const stopTime = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        targetBatch.status = 'Completed';
+        targetBatch.endTime = stopTime;
+        targetBatch.producedQty = outInput;
+        targetBatch.scrapKg = scrapKg;
+
+        if(outInput > 0) {
+            targetJob.availableQcCrates += outInput;
+        }
+
+        logs.push({
+            jobId: targetJob.id, product: targetJob.product, stage: 'QC', machine: 'QC-Desk',
+            shift: targetBatch.shift, action: `⏹️ Completed QC Inspection (${outInput} Crates, Scrap: ${scrapKg} KG)`,
+            worker: targetBatch.worker, user: currentUser.username, startTime: targetBatch.startTime, endTime: stopTime,
+            rawDate: new Date().toISOString().split('T')[0], timestamp: new Date().toLocaleString()
+        });
+
+        document.getElementById('qcOutputCount').value = '';
+        document.getElementById('qcScrapKgInput').value = '0';
+        saveData();
+        updateQcPendingDropdown();
+        updateQcRunningDropdown();
+        renderUI();
+        alert(`✅ QC बैच सफलतापूर्वक Finish कर दिया गया है!`);
+    }
+}
 
         function updateQcRunningDropdown() {
             const rSelect = document.getElementById('qcRunningJobsSelect');

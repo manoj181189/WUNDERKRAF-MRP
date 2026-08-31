@@ -3308,116 +3308,130 @@
             }
         }
 
-        function startPackingJob() {
-            const packId = document.getElementById('pendingPackOrderSelect').value;
-            const targetMachine = document.getElementById('packMachineSelect').value;
-            const shift = document.getElementById('packShiftSelect').value;
-            const worker = (document.getElementById('packWorkerNameInput').value || '').trim().toUpperCase();
+        // ==========================================
+// PACKING DESK: START, HOLD, RESUME & FINISH FUNCTIONS (UPGRADED FOR MANUAL LANES)
+// ==========================================
 
-            if(!worker) return alert('⚠️ MANDATORY FIELD MISSING!\nPlease enter Packing Operator Name before starting run.');
-            if(!packId) return alert('Please select a Packing Job!');
+function startPackingJob() {
+    const packId = document.getElementById('pendingPackOrderSelect').value;
+    const targetMachine = document.getElementById('packMachineSelect').value;
+    const shift = document.getElementById('packShiftSelect').value;
+    const worker = (document.getElementById('packWorkerNameInput').value || '').trim().toUpperCase();
 
-            let activeOnSelectedPackMachine = packJobs.find(p => p.machine === targetMachine && p.status === 'Running');
-            if(activeOnSelectedPackMachine && activeOnSelectedPackMachine.id !== packId) {
-                return alert(`⚠️ PACKING MACHINE BUSY!\nMachine [${targetMachine}] is currently running Order [${activeOnSelectedPackMachine.id}] for ${activeOnSelectedPackMachine.customer}.\nYou must FINISH or HOLD the active run before starting a new job on ${targetMachine}.`);
-            }
+    if(!worker) return alert('⚠️ MANDATORY FIELD MISSING!\nPlease enter Packing Operator Name before starting run.');
+    if(!packId) return alert('Please select a Packing Job!');
 
-            const nowTime = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-            if(packId !== 'REGULAR_STOCK') {
-                let pj = packJobs.find(p => p.id === packId);
-                if(pj) {
-                    pj.status = 'Running';
-                    pj.machine = targetMachine;
-                    pj.startTime = nowTime;
-                    pj.worker = worker;
-                }
-            }
-            saveData();
-            loadPackJobDetails();
-            alert(`✅ Packing Run Started on ${targetMachine}!`);
+    // चेक करें कि क्या इस चुनी हुई मशीन या मैनुअल लेन पर पहले से कोई ऑर्डर चल रहा है
+    let activeOnSelectedMachine = packJobs.find(p => p.machine === targetMachine && (p.status === 'Running' || p.status === 'Held'));
+    if(activeOnSelectedMachine && activeOnSelectedMachine.id !== packId) {
+        return alert(`⚠️ WORKSTATION BUSY!\nWorkstation [${targetMachine}] is currently running Order [${activeOnSelectedMachine.id}] for ${activeOnSelectedMachine.customer}.\nYou must FINISH or HOLD the active run before starting a new job on ${targetMachine}.`);
+    }
+
+    const nowTime = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    if(packId !== 'REGULAR_STOCK') {
+        let pj = packJobs.find(p => p.id === packId);
+        if(pj) {
+            pj.status = 'Running';
+            pj.machine = targetMachine;
+            pj.startTime = nowTime;
+            pj.worker = worker;
+            pj.holdReason = ""; // होल्ड रीज़न साफ़ करें
         }
+    }
+    saveData();
+    loadPackJobDetails();
+    renderPackingDeskLiveCards();
+    alert(`✅ Packing Run Started on ${targetMachine}!`);
+}
 
-        function resumePackingJob() {
-            const packId = document.getElementById('pendingPackOrderSelect').value;
-            const targetMachine = document.getElementById('packMachineSelect').value;
-            if(!packId) return alert('Please select Packing Order to resume!');
+function resumePackingJob() {
+    const packId = document.getElementById('pendingPackOrderSelect').value;
+    const targetMachine = document.getElementById('packMachineSelect').value;
+    if(!packId) return alert('Please select Packing Order to resume!');
 
-            let pj = packJobs.find(p => p.id === packId);
-            if(pj) {
-                if(pj.status === 'Running') return alert('This order is ALREADY RUNNING.');
-                const nowTime = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-                pj.status = 'Running';
-                pj.machine = targetMachine;
+    let pj = packJobs.find(p => p.id === packId);
+    if(pj) {
+        if(pj.status === 'Running') return alert('This order is ALREADY RUNNING.');
+        const nowTime = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        pj.status = 'Running';
+        pj.machine = targetMachine;
+        pj.holdReason = ""; // <--- रिज्यूम होते ही होल्ड टैग तुरंत हट जाएगा
 
-                logs.push({
-                    jobId: pj.id, product: pj.kitType, stage: 'Packing', machine: targetMachine,
-                    shift: document.getElementById('packShiftSelect').value, action: `▶️ Packing Run Resumed on ${targetMachine} | Worker: ${pj.worker}`,
-                    worker: pj.worker, user: currentUser.username, startTime: nowTime, endTime: '',
-                    rawDate: new Date().toISOString().split('T')[0], timestamp: new Date().toLocaleString()
-                });
+        logs.push({
+            jobId: pj.id, product: pj.kitType, stage: 'Packing', machine: targetMachine,
+            shift: document.getElementById('packShiftSelect').value, action: `▶️ Packing Run Resumed on ${targetMachine} | Worker: ${pj.worker}`,
+            worker: pj.worker, user: currentUser.username, startTime: nowTime, endTime: '',
+            rawDate: new Date().toISOString().split('T')[0], timestamp: new Date().toLocaleString()
+        });
 
-                saveData();
-                loadPackJobDetails();
-                alert(`▶️ Order [${pj.id}] Resumed to RUNNING on ${targetMachine}!`);
-            }
+        saveData();
+        loadPackJobDetails();
+        renderPackingDeskLiveCards();
+        alert(`▶️ Order [${pj.id}] Resumed to RUNNING on ${targetMachine}!`);
+    }
+}
+
+function completePackingJob() {
+    const packId = document.getElementById('pendingPackOrderSelect').value;
+    const targetMachine = document.getElementById('packMachineSelect').value;
+    const boxesDone = parseInt(document.getElementById('packedBoxesOutput').value) || 0;
+    const worker = (document.getElementById('packWorkerNameInput').value || '').trim().toUpperCase() || (currentUser ? currentUser.username : '');
+
+    let pj = packJobs.find(p => p.id === packId);
+    if(!pj) return alert('कृपया पैकिंग आर्डर सेलेक्ट करें!');
+
+    const stopTime = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+
+    let componentLots = {};
+    document.querySelectorAll('.pack-job-select').forEach(sel => {
+        let pName = sel.getAttribute('data-product');
+        let jId = sel.value;
+        if(pName && jId) {
+            let inp = document.querySelector(`.pack-crate-input[data-product="${pName}"]`);
+            let q = inp ? inp.value : '1';
+            componentLots[pName] = `${jId} (${q} Crates)`;
         }
+    });
 
-        function completePackingJob() {
-            const packId = document.getElementById('pendingPackOrderSelect').value;
-            const targetMachine = document.getElementById('packMachineSelect').value;
-            const boxesDone = parseInt(document.getElementById('packedBoxesOutput').value) || 0;
-            const worker = (document.getElementById('packWorkerNameInput').value || '').trim().toUpperCase() || (currentUser ? currentUser.username : '');
-            if(boxesDone <= 0) return alert('Please enter packed boxes output produced!');
+    if(boxesDone > 0) {
+        pj.packedBoxes = (pj.packedBoxes || 0) + boxesDone;
+        if(!pj.historyRuns) pj.historyRuns = [];
+        if(!pj.tracedLots) pj.tracedLots = {};
+        Object.assign(pj.tracedLots, componentLots);
 
-            let pj = packJobs.find(p => p.id === packId);
-            const stopTime = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        pj.historyRuns.push({
+            machine: targetMachine, boxes: boxesDone, pcs: boxesDone * pj.pcsPerBox,
+            date: new Date().toISOString().split('T')[0], time: stopTime, worker: worker,
+            usedLots: componentLots
+        });
 
-            // Capture component traceability lots
-            let componentLots = {};
-            document.querySelectorAll('.pack-job-select').forEach(sel => {
-                let pName = sel.getAttribute('data-product');
-                let jId = sel.value;
-                if(pName && jId) {
-                    let inp = document.querySelector(`.pack-crate-input[data-product="${pName}"]`);
-                    let q = inp ? inp.value : '1';
-                    componentLots[pName] = `${jId} (${q} Crates)`;
-                }
-            });
+        let balance = (pj.orderQty || 0) - ((pj.packedBoxes || 0) * (pj.pcsPerBox || 0));
+        if(balance <= 0) pj.status = '100% Packed & Completed';
+        else pj.status = 'Partially Packed';
+    } else {
+        // यदि 0 या खाली है, तो सिर्फ मशीन/लेन को फ्री करने के लिए स्टेटस अपडेट करें
+        pj.status = 'Idle / Paused';
+    }
 
-            if(pj) {
-                pj.packedBoxes = (pj.packedBoxes || 0) + boxesDone;
-                if(!pj.historyRuns) pj.historyRuns = [];
-                if(!pj.tracedLots) pj.tracedLots = {};
-                Object.assign(pj.tracedLots, componentLots);
+    let lotSummaryStr = Object.keys(componentLots).map(k => `${k}: ${componentLots[k]}`).join(' | ');
 
-                let lotSummaryStr = Object.keys(componentLots).map(k => `${k}: ${componentLots[k]}`).join(' | ');
+    logs.push({
+        jobId: pj.id, product: pj.kitType, stage: 'Packing', machine: targetMachine,
+        shift: document.getElementById('packShiftSelect') ? document.getElementById('packShiftSelect').value : 'DAY',
+        action: `⏹ Finished Packing Run on ${targetMachine} (${boxesDone} Boxes) | Worker: ${worker}${lotSummaryStr ? ' | Lots: [' + lotSummaryStr + ']' : ''}`,
+        worker: worker, user: currentUser.username, startTime: pj.startTime || stopTime, endTime: stopTime,
+        rawDate: new Date().toISOString().split('T')[0], timestamp: new Date().toLocaleString()
+    });
 
-                pj.historyRuns.push({
-                    machine: targetMachine, boxes: boxesDone, pcs: boxesDone * pj.pcsPerBox,
-                    date: new Date().toISOString().split('T')[0], time: stopTime, worker: worker,
-                    usedLots: componentLots
-                });
-
-                let balance = (pj.orderQty || 0) - ((pj.packedBoxes || 0) * (pj.pcsPerBox || 0));
-                if(balance <= 0) pj.status = '100% Packed & Completed';
-                else pj.status = 'Partially Packed';
-
-                logs.push({
-                    jobId: pj.id, product: pj.kitType, stage: 'Packing', machine: targetMachine,
-                    shift: document.getElementById('packShiftSelect') ? document.getElementById('packShiftSelect').value : 'DAY',
-                    action: `⏹ Packed ${boxesDone} Boxes | Worker: ${worker}${lotSummaryStr ? ' | Lots Used: [' + lotSummaryStr + ']' : ''}`,
-                    worker: worker, user: currentUser.username, startTime: pj.startTime, endTime: stopTime,
-                    rawDate: new Date().toISOString().split('T')[0], timestamp: new Date().toLocaleString()
-                });
-            }
-
-            document.getElementById('packedBoxesOutput').value = '';
-            saveData();
-            updateDispatchCustomerDropdown();
-            loadPackJobDetails();
-            populateUniversalSearchSuggestions();
-            alert(`✅ ${boxesDone} Packed Boxes saved on ${targetMachine}!`);
-        }
+    pj.machine = ""; // मशीन/लेन को फ्री कर दिया गया
+    document.getElementById('packedBoxesOutput').value = '';
+    saveData();
+    updateDispatchCustomerDropdown();
+    loadPackJobDetails();
+    renderPackingDeskLiveCards();
+    populateUniversalSearchSuggestions();
+    alert(`✅ Packing Run on ${targetMachine} Finished Successfully!`);
+}
 
         // Admin Overrides & Corrections
         function loadAdminPackOrderList() {
@@ -3724,7 +3738,7 @@
             document.getElementById('holdBreakdownModal').style.display = 'block';
         }
         function closeHoldModal() { document.getElementById('holdBreakdownModal').style.display = 'none'; }
-
+        
         function confirmExecuteHold(sendWhatsApp) {
             const reason = document.getElementById('holdReasonSelect').value;
             const remarks = document.getElementById('holdRemarksInput').value.trim();
@@ -3741,10 +3755,13 @@
                         if(b) { targetJob = j; targetBatch = b; }
                     }
                 });
-            } else if(machine.startsWith('Packing-')) {
+            if(machine.startsWith('Packing-') || machine.startsWith('Manual-')) {
                 const packId = document.getElementById('pendingPackOrderSelect').value;
-                let pj = packJobs.find(p => p.id === packId && p.status === 'Running');
-                if(pj) { pj.status = 'Held'; }
+                let pj = packJobs.find(p => p.id === packId && (p.status === 'Running' || p.machine === machine));
+                if(pj) { 
+                    pj.status = 'Held'; 
+                    pj.holdReason = fullReason;
+                }
             } else {
                 jobs.forEach(j => {
                     if(j.runningBatches) {

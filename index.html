@@ -672,7 +672,9 @@
                     </select>
 
                     <button onclick="createSlittingJob()" style="background:#2b6cb0; padding:12px;">▶ Start New Slitting Job</button>
-
+                    <button onclick="createSlittingJob()" style="background:#2b6cb0; padding:12px;">▶ Start New Slitting Job</button>
+                    <!-- यह नया बटन यहाँ जोड़ दें -->
+                    <button onclick="openAddBatchToExistingJobModal()" style="background:#319795; font-size:13px; padding:10px; margin-top:6px;">➕ Add New Reel/Batch to Existing Job ID</button>
                     <hr style="margin: 14px 0; border: none; border-top: 1px solid #e2e8f0;">
 
                     <label>Active Running / Paused Slitting Job:</label>
@@ -4720,6 +4722,60 @@ function cancelActiveStageRun(deskType) {
     renderUI();
 
     alert(`✅ गलत एंट्री सफलतापूर्वक रद्द (Cancel) कर दी गई है और सारा मटेरियल वापस अपनी जगह पर सुरक्षित पहुँच गया है!`);
+}
+        // किसी भी पुराने/मौजूदा जॉब में नया रील या बैच जोड़ने (Re-open / Add Batch) का फंक्शन
+function addBatchToExistingJobPrompt() {
+    let existingJobId = prompt("कृपया वह पुराना Job ID दर्ज करें जिसमें नया रील/बैच जोड़ना है (जैसे SPN-001):");
+    if(!existingJobId) return;
+    existingJobId = existingJobId.trim().toUpperCase();
+
+    let targetJob = jobs.find(j => j.id === existingJobId);
+    if(!targetJob) {
+        return alert(`⚠️ एरर: [${existingJobId}] नाम का कोई जॉब डेटाबेस में नहीं मिला! कृपया सही Job ID डालें।`);
+    }
+
+    let worker = prompt(`ऑपरेटर का नाम दर्ज करें (${targetJob.product} - ${targetJob.paperBrand || 'ITC'}):`, "RAMESH_SLIT");
+    if(!worker) return;
+    worker = worker.trim().toUpperCase();
+
+    let shift = document.getElementById('slitShiftSelect') ? document.getElementById('slitShiftSelect').value : 'DAY';
+    let batchId = 'B-' + Math.floor(1000 + Math.random()*9000);
+    let nowTime = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+
+    if(!targetJob.runningBatches) targetJob.runningBatches = [];
+    
+    // उसी पुराने जॉब के अंदर एक नया रनिंग बैच जोड़ दिया जाएगा
+    targetJob.runningBatches.push({
+        batchId: batchId,
+        stage: 'Slitting',
+        machine: 'Slitting-1',
+        shift: shift,
+        startTime: nowTime,
+        endTime: '',
+        status: 'Running',
+        issuedQty: 1,
+        producedQty: 0,
+        outputWeightKg: 0,
+        worker: worker,
+        user: currentUser.username
+    });
+
+    logs.push({
+        jobId: targetJob.id, product: targetJob.product, stage: 'Slitting Re-open', machine: 'Slitting-1', shift: shift,
+        action: `➕ Added New Batch/Reel to Existing Job ${targetJob.id} | Worker: ${worker}`,
+        worker: worker, user: currentUser.username, startTime: nowTime, endTime: '', rawDate: new Date().toISOString().split('T')[0], timestamp: new Date().toLocaleString()
+    });
+
+    saveData();
+    updateRunningSlitDropdown();
+    renderUI();
+
+    alert(`✅ सफलतापूर्वक पुराने जॉब [${targetJob.id}] के अंदर नया बैच (${batchId}) चालू कर दिया गया है! अब आप इसका आउटपुट दर्ज कर सकते हैं।`);
+}
+
+// ऊपर वाले प्रॉम्ट को ट्रिगर करने के लिए हेलर फंक्शन
+function openAddBatchToExistingJobModal() {
+    addBatchToExistingJobPrompt();
 }
     </script>
 </body>

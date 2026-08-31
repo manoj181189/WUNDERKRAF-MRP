@@ -695,6 +695,7 @@
                         <button class="btn-hold" onclick="openHoldModal('Slitting-1')">⏸️ Hold</button>
                         <button class="btn-resume" onclick="resumeSlittingJob()">▶️ Resume</button>
                         <button class="btn-done" onclick="completeSlittingJob()">⏹ Finish</button>
+                        <button onclick="cancelActiveStageRun('slitting')" style="background:#c53030; font-size:13px; padding:10px;">❌ Cancel & Revert Run</button>
                     </div>
                 </div>
 
@@ -755,6 +756,7 @@
                         <button class="btn-hold" onclick="openHoldModal(document.getElementById('cuttingMachineSelect').value)">⏸️ Hold / Shift</button>
                         <button class="btn-resume" onclick="resumeStageJob('cutting')">▶️ Resume</button>
                         <button class="btn-done" onclick="completeCuttingJob()">⏹️ Finish Run</button>
+                        <button onclick="cancelActiveStageRun('cutting')" style="background:#c53030; font-size:13px; padding:10px;">❌ Cancel & Revert Run</button>
                     </div>
                 </div>
 
@@ -820,6 +822,7 @@
                         <button class="btn-hold" onclick="openHoldModal(document.getElementById('formingMachineSelect').value)">⏸️ Hold / Shift</button>
                         <button class="btn-resume" onclick="resumeStageJob('forming')">▶️ Resume</button>
                         <button class="btn-done" onclick="completeFormingJob()">⏹️ Finish Run</button>
+                        <button onclick="cancelActiveStageRun('forming')" style="background:#c53030; font-size:13px; padding:10px;">❌ Cancel & Revert Run</button>
                     </div>
                 </div>
 
@@ -879,6 +882,7 @@
                         <button class="btn-hold" onclick="openHoldModal('QC-Desk')">⏸️ Hold</button>
                         <button class="btn-resume" onclick="resumeStageJob('qc')">▶️ Resume</button>
                         <button class="btn-done" onclick="completeQcJob()">⏹️ Pass Crates</button>
+                        <button onclick="cancelActiveStageRun('qc')" style="background:#c53030; font-size:13px; padding:10px;">❌ Cancel & Revert Run</button>
                     </div>
                 </div>
 
@@ -951,6 +955,7 @@
                         <button class="btn-hold" onclick="openHoldModal(document.getElementById('packMachineSelect').value)">⏸️ Hold</button>
                         <button class="btn-resume" onclick="resumePackingJob()">▶️ Resume</button>
                         <button class="btn-done" onclick="completePackingJob()">⏹️ Finish</button>
+                        
                     </div>
                 </div>
 
@@ -4649,6 +4654,72 @@ function confirmExecuteHoldAndReroute() {
     renderUI();
 
     alert(`✅ सफलतापूर्वक मशीन [${sourceMachine}] को होल्ड कर दिया गया है और उसका रनिंग स्टॉक [${targetMachine}] पर ट्रांसफर हो गया है!`);
+}
+        // गलती से चालू हुए रन या बैच को रद्द (Cancel) करके पूरा मटेरियल वापस उनकी जगह भेजने का फंक्शन
+function cancelActiveStageRun(deskType) {
+    let selectId = deskType === 'slitting' ? 'runningSlitJobsSelect' : 
+                   deskType === 'cutting' ? 'cuttingRunningJobsSelect' : 
+                   deskType === 'forming' ? 'formingRunningJobsSelect' : 'qcRunningJobsSelect';
+                   
+    let batchId = document.getElementById(selectId) ? document.getElementById(selectId).value : '';
+    if(!batchId) return alert('कृपया रद्द (Cancel) करने के लिए एक्टिव बैच या रन सेलेक्ट करें!');
+
+    let targetJob = null, targetBatchIndex = -1, targetBatch = null;
+    
+    if(deskType === 'slitting') {
+        jobs.forEach(j => {
+            if(j.runningBatches) {
+                let idx = j.runningBatches.findIndex(x => x.batchId === batchId && x.machine === 'Slitting-1');
+                if(idx !== -1) { targetJob = j; targetBatchIndex = idx; targetBatch = j.runningBatches[idx]; }
+            }
+        });
+    } else {
+        jobs.forEach(j => {
+            if(j.runningBatches) {
+                let idx = j.runningBatches.findIndex(x => x.batchId === batchId);
+                if(idx !== -1) { targetJob = j; targetBatchIndex = idx; targetBatch = j.runningBatches[idx]; }
+            }
+        });
+    }
+
+    if(!targetBatch) return alert('बैच डेटा नहीं मिला!');
+
+    let confirmMsg = `⚠️ चेतावनी: क्या आप वाकई इस रन (Batch ID: ${targetBatch.batchId}, Job: ${targetJob.id}) को 100% रद्द करना चाहते हैं?\n\nइश्यू किया गया सारा मटेरियल वापस अपनी जगह पर लौट जाएगा और यह एंट्री डिलीट हो जाएगी!`;
+    if(!confirm(confirmMsg)) return;
+
+    let issuedQty = targetBatch.issuedQty || 0;
+
+    // मटेरियल को उसकी सही पिछली जगह पर वापस रीवरोट (Revert) करना
+    if(deskType === 'cutting') {
+        targetJob.availableRolls = (targetJob.availableRolls || 0) + issuedQty; // रोल्स वापस कटिंग स्टॉक में
+    } else if(deskType === 'forming') {
+        targetJob.availableCuttingCrates = (targetJob.availableCuttingCrates || 0) + issuedQty; // कट क्रेट्स वापस फॉर्मिंग स्टॉक में
+    } else if(deskType === 'qc') {
+        targetJob.availableFormingCrates = (targetJob.availableFormingCrates || 0) + issuedQty; // फॉर्मड क्रेट्स वापस QC स्टॉक में
+    } else if(deskType === 'slitting') {
+        // स्लीटिंग के लिए अगर रोल्स बने थे और डिलीट करना है
+        targetJob.availableRolls = Math.max(0, (targetJob.availableRolls || 0) - (targetBatch.producedQty || 0));
+    }
+
+    // रनिंग बैचेस की लिस्ट से इस गलत एंट्री को पूरी तरह डिलीट/उड़ा देना
+    targetJob.runningBatches.splice(targetBatchIndex, 1);
+
+    logs.push({
+        jobId: targetJob.id, product: targetJob.product, stage: `${deskType.toUpperCase()} Cancelled`, machine: targetBatch.machine || 'DESK',
+        shift: targetBatch.shift || 'DAY', action: `❌ Run Cancelled & Reverted: Batch ${targetBatch.batchId} deleted, ${issuedQty} units returned to stock.`,
+        worker: targetBatch.worker || 'ADMIN', user: currentUser.username, rawDate: new Date().toISOString().split('T')[0], timestamp: new Date().toLocaleString()
+    });
+
+    saveData();
+    
+    // सभी ड्रॉपडाउन और डैशबोर्ड रिफ्रेश करें
+    if(deskType === 'slitting') updateRunningSlitDropdown();
+    if(deskType === 'cutting') { updateCuttingPendingDropdown(); updateCuttingRunningDropdown(); }
+    if(deskType === 'forming') { updateFormingPendingDropdown(); updateFormingRunningDropdown(); }
+    if(deskType === 'qc') { updateQcPendingDropdown(); updateQcRunningDropdown(); }
+    renderUI();
+
+    alert(`✅ गलत एंट्री सफलतापूर्वक रद्द (Cancel) कर दी गई है और सारा मटेरियल वापस अपनी जगह पर सुरक्षित पहुँच गया है!`);
 }
     </script>
 </body>

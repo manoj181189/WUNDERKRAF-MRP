@@ -3740,64 +3740,64 @@ function completePackingJob() {
         function closeHoldModal() { document.getElementById('holdBreakdownModal').style.display = 'none'; }
         
         function confirmExecuteHold(sendWhatsApp) {
-            const reason = document.getElementById('holdReasonSelect').value;
-            const remarks = document.getElementById('holdRemarksInput').value.trim();
-            const machine = currentTargetHoldMachine;
-            const nowTime = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-            let fullReason = reason + (remarks ? ` (${remarks})` : '');
-            let targetJob = null, targetBatch = null;
+    const reason = document.getElementById('holdReasonSelect').value;
+    const remarks = document.getElementById('holdRemarksInput').value.trim();
+    const machine = currentTargetHoldMachine;
+    const nowTime = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    let fullReason = reason + (remarks ? ` (${remarks})` : '');
+    let targetJob = null, targetBatch = null;
 
-            if(machine === 'Slitting-1') {
-                const batchId = document.getElementById('runningSlitJobsSelect').value;
-                jobs.forEach(j => {
-                    if(j.runningBatches) {
-                        let b = j.runningBatches.find(x => x.batchId === batchId && x.status === 'Running');
-                        if(b) { targetJob = j; targetBatch = b; }
-                    }
-                });
-            if(machine.startsWith('Packing-') || machine.startsWith('Manual-')) {
-                const packId = document.getElementById('pendingPackOrderSelect').value;
-                let pj = packJobs.find(p => p.id === packId && (p.status === 'Running' || p.machine === machine));
-                if(pj) { 
-                    pj.status = 'Held'; 
-                    pj.holdReason = fullReason;
-                }
-            } else {
-                jobs.forEach(j => {
-                    if(j.runningBatches) {
-                        let b = j.runningBatches.find(x => x.machine === machine && x.status === 'Running');
-                        if(b) { targetJob = j; targetBatch = b; }
-                    }
-                });
+    if(machine === 'Slitting-1') {
+        const batchId = document.getElementById('runningSlitJobsSelect').value;
+        jobs.forEach(j => {
+            if(j.runningBatches) {
+                let b = j.runningBatches.find(x => x.batchId === batchId && x.status === 'Running');
+                if(b) { targetJob = j; targetBatch = b; }
             }
-
-            if(targetBatch) {
-                targetBatch.status = 'Held';
-                targetBatch.endTime = nowTime;
-                targetBatch.holdReason = fullReason;
-                logs.push({
-                    jobId: targetJob.id, product: targetJob.product, stage: targetBatch.stage, machine: machine,
-                    shift: targetBatch.shift, action: `⏸️ Machine HELD: ${fullReason}`,
-                    worker: targetBatch.worker, user: currentUser.username, startTime: targetBatch.startTime, endTime: nowTime,
-                    rawDate: new Date().toISOString().split('T')[0], timestamp: new Date().toLocaleString()
-                });
-            }
-
-            saveData();
-            closeHoldModal();
-            updateRunningSlitDropdown();
-            updateCuttingRunningDropdown();
-            updateFormingRunningDropdown();
-            updateQcRunningDropdown();
-            loadPackJobDetails();
-
-            if(sendWhatsApp) {
-                let text = `🚨 *MACHINE BREAKDOWN / PAUSE ALERT*\n⚙️ *Machine:* ${machine}\n⚠️ *Reason:* ${fullReason}\n👤 *Reported by:* ${currentUser.username.toUpperCase()}`;
-                executeWhatsAppApiCall(whatsappConfig.phone, whatsappConfig.apiKey, text, false);
-            } else {
-                alert(`⏸️ Machine [${machine}] has been placed on HOLD.`);
-            }
+        });
+    } else if(machine.startsWith('Packing-') || machine.startsWith('Manual-')) {
+        const packId = document.getElementById('pendingPackOrderSelect').value;
+        let pj = packJobs.find(p => p.id === packId && (p.status === 'Running' || p.machine === machine));
+        if(pj) { 
+            pj.status = 'Held'; 
+            pj.holdReason = fullReason; 
         }
+    } else {
+        jobs.forEach(j => {
+            if(j.runningBatches) {
+                let b = j.runningBatches.find(x => x.machine === machine && x.status === 'Running');
+                if(b) { targetJob = j; targetBatch = b; }
+            }
+        });
+    }
+
+    if(targetBatch) {
+        targetBatch.status = 'Held';
+        targetBatch.endTime = nowTime;
+        targetBatch.holdReason = fullReason;
+        logs.push({
+            jobId: targetJob.id, product: targetJob.product, stage: targetBatch.stage, machine: machine,
+            shift: targetBatch.shift, action: `⏸️ Machine HELD: ${fullReason}`,
+            worker: targetBatch.worker, user: currentUser.username, startTime: targetBatch.startTime, endTime: nowTime,
+            rawDate: new Date().toISOString().split('T')[0], timestamp: new Date().toLocaleString()
+        });
+    }
+
+    saveData();
+    closeHoldModal();
+    updateRunningSlitDropdown();
+    updateCuttingRunningDropdown();
+    updateFormingRunningDropdown();
+    updateQcRunningDropdown();
+    loadPackJobDetails();
+
+    if(sendWhatsApp) {
+        let text = `🚨 *MACHINE BREAKDOWN / PAUSE ALERT*\n⚙️ *Machine:* ${machine}\n⚠️ *Reason:* ${fullReason}\n👤 *Reported by:* ${currentUser.username.toUpperCase()}`;
+        executeWhatsAppApiCall(whatsappConfig.phone, whatsappConfig.apiKey, text, false);
+    } else {
+        alert(`⏸️ Machine [${machine}] has been placed on HOLD.`);
+    }
+}
 
         // Order Sorting & Filtered CSV Export
         function toggleOrderSorting() {

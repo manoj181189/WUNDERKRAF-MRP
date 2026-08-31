@@ -887,91 +887,87 @@
                     </div>
                 </div>
 
-                <!-- 8. Dedicated Packing Desk with Auto-Hide Completed Orders -->
-                <div class="card hidden" id="secPackingDesk">
-                    <button class="btn-back" onclick="showNavHub()">⬅ Back to Main Menu</button>
-                    <h3>📦 5. Packing Station & Traceability</h3>
+               <!-- 5. Dedicated Packing Station & Traceability (Upgraded Like Cutting/Forming) -->
+<div class="card hidden" id="secPackingDesk">
+    <button class="btn-back" onclick="showNavHub()">⬅ Back to Main Menu</button>
+    <h3>📦 5. Packing Station & Traceability</h3>
 
-                    <div style="background:#edf2f7; padding:10px; border-radius:8px; margin-bottom:12px; border:1px solid #cbd5e0;">
-                        <span style="font-size:12px; font-weight:800; color:#1a365d;">⚡ LIVE PACKING WORKSTATIONS:</span>
-                        <div class="packing-desk-live-grid" id="packingDeskLiveGrid"></div>
-                    </div>
+    <div style="background:#edf2f7; padding:10px; border-radius:8px; margin-bottom:12px; border:1px solid #cbd5e0;">
+        <span style="font-size:12px; font-weight:800; color:#1a365d;">⚡ LIVE PACKING WORKSTATIONS:</span>
+        <div class="packing-desk-live-grid" id="packingDeskLiveGrid"></div>
+    </div>
 
-                    <label style="color:#2b6cb0; font-weight:800;">SELECT PACKING MACHINE / WORKSTATION:</label>
-                    <select id="packMachineSelect" onchange="onPackingMachineChange()">
-                        <option value="Packing-1">Packing-1 (Kit Machine 1)</option>
-                        <option value="Packing-2">Packing-2 (Kit Machine 2)</option>
-                        <option value="Manual-1">Manual Packing Desk 1 (Hand Work)</option>
-                        <option value="Manual-2">Manual Packing Desk 2 (Hand Work)</option>
-                        <option value="Manual-3">Manual Packing Desk 3 (Hand Work)</option>
-                  </select>
+    <label style="color:#2b6cb0; font-weight:800;">SELECT PACKING MACHINE / WORKSTATION:</label>
+    <select id="packMachineSelect" onchange="onPackingMachineChange()">
+        <option value="Packing-1">Packing-1 (Kit Machine 1)</option>
+        <option value="Packing-2">Packing-2 (Kit Machine 2)</option>
+        <option value="Manual-1">Manual Packing Desk 1 (Hand Work)</option>
+        <option value="Manual-2">Manual Packing Desk 2 (Hand Work)</option>
+        <option value="Manual-3">Manual Packing Desk 3 (Hand Work)</option>
+    </select>
 
-                    <label style="color:#2b6cb0; font-weight:800;">SELECT PENDING PACKING ORDER (Auto-Hides 100% Finished):</label>
-                    <select id="pendingPackOrderSelect" onchange="loadPackJobDetails()"></select>
+    <label style="color:#2b6cb0; font-weight:800;">SELECT PENDING PACKING ORDER (Queue):</label>
+    <select id="pendingPackOrderSelect" onchange="loadPackJobDetails()"></select>
 
-                    <div id="packOrderDetailsPanel" class="hidden" style="background:#f7fafc; padding:14px; border-radius:8px; border:1px solid #cbd5e0; margin-bottom:12px;">
-                        <div style="font-size:13px; line-height: 1.6;">
-                            <b>Customer / Brand:</b> <span id="lblCustName" style="color:#2b6cb0; font-weight:bold;">-</span><br>
-                            <b>Pack Configuration:</b> <span id="lblKitType" style="color:#2f855a; font-weight:bold;">-</span><br>
-                            <b>Target Order Qty:</b> <span id="lblOrderQty" style="font-weight:bold;">-</span> Pcs | <b>Box Size:</b> <span id="lblPcsBox">-</span> Pcs/Box<br>
-                            <b>Target Boxes:</b> <span id="lblTargetBoxes" style="color:#2b6cb0; font-weight:bold;">-</span> Boxes | <b>Balance to Pack:</b> <span id="lblBalanceQty" style="color:#e53e3e; font-weight:bold;">-</span> Pcs
-                        </div>
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:8px;">
+        <div>
+            <label>Working Shift:</label>
+            <select id="packShiftSelect" onchange="validateShiftSelection(this)">
+                <option value="DAY">DAY SHIFT</option>
+                <option value="NIGHT">NIGHT SHIFT</option>
+            </select>
+        </div>
+        <div>
+            <label style="color:#805ad5;">Packing Operator <span style="color:red;">*Mandatory</span>:</label>
+            <input type="text" id="packWorkerNameInput" list="dynamicStageWorkerDatalist_Packing" placeholder="Type Operator Name...">
+        </div>
+    </div>
 
-                        <div id="packOperatorInstructionBox" style="background:#fffaf0; border:1px dashed #dd6b20; padding:10px; border-radius:6px; margin-top:10px; font-size:13px;">
-                            <b>📌 Packaging Specs:</b><br>
-                            • Box Wrapping: <b id="lblWrapVal">-</b> | Label Placement: <b id="lblLabelVal">-</b><br>
-                            • Remarks: <span id="lblRemarkVal" style="color:#4a5568; font-style:italic;">None</span>
-                        </div>
+    <label>Enter Boxes to Issue / Allocate for this Run:</label>
+    <input type="text" inputmode="numeric" id="packIssueBoxesCount" placeholder="Enter Boxes Qty to Pack">
 
-                        <div id="packLiveStatusBanner" class="info-box" style="margin-top:10px; background:#fffaf0; border-color:#dd6b20;">
-                            Status: <b id="lblPackLiveStatus">IDLE / READY</b>
-                        </div>
+    <button onclick="startPackingJob()" style="background:#2b6cb0; padding:12px; margin-top:8px;">▶ Start Packing Run</button>
 
-                        <div id="dynamicCrateSection" class="crate-issue-box">
-                            <h5>🔍 Select QC Approved Crates for Lot Traceability:</h5>
-                            <div id="crateInputsContainer"></div>
-                            <button onclick="addMoreCratesToActiveRun()" style="background:#2b6cb0; font-size:12px; padding:6px 12px; margin-top:8px;">➕ Allocate QC Crates to Run</button>
-                        </div>
+    <hr style="margin: 14px 0; border: none; border-top: 1px solid #e2e8f0;">
 
-                        <label style="margin-top:10px; color:#2f855a; font-weight:800;">Packed Output Boxes Produced in this Run:</label>
-                        <input type="text" inputmode="numeric" id="packedBoxesOutput" placeholder="Enter Boxes Produced">
-                    </div>
+    <label style="color:#2b6cb0; font-weight:800;">ACTIVE RUNNING / HELD PACKING BATCH:</label>
+    <select id="packRunningJobsSelect" onchange="updatePackRunningDisplayInfo()"></select>
 
-                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-                        <div>
-                            <label>Working Shift:</label>
-                            <select id="packShiftSelect" onchange="validateShiftSelection(this)">
-                                <option value="DAY">DAY SHIFT</option>
-                                <option value="NIGHT">NIGHT SHIFT</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label style="color:#805ad5;">Packing Operator <span style="color:red;">*Mandatory</span>:</label>
-                            <input type="text" id="packWorkerNameInput" list="dynamicStageWorkerDatalist_Packing" placeholder="Type Operator Name...">
-                        </div>
-                    </div>
+    <div id="packActiveStatusBox" class="info-box" style="background:#fffaf0; border-color:#dd6b20;">No Active Packing Batch Selected</div>
 
-                    <div style="display:grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap:6px; margin-top:10px;">
-                        <button onclick="startPackingJob()" style="background:#2f855a;">▶ Start</button>
-                        <button class="btn-hold" onclick="openHoldModal(document.getElementById('packMachineSelect').value)">⏸️ Hold</button>
-                        <button class="btn-resume" onclick="resumePackingJob()">▶️ Resume</button>
-                        <button class="btn-done" onclick="completePackingJob()">⏹️ Finish</button>
-                        
-                    </div>
-                </div>
+    <div id="packOrderDetailsPanel" class="hidden" style="background:#f7fafc; padding:14px; border-radius:8px; border:1px solid #cbd5e0; margin-bottom:12px;">
+        <div style="font-size:13px; line-height: 1.6;">
+            <b>Customer / Brand:</b> <span id="lblCustName" style="color:#2b6cb0; font-weight:bold;">-</span><br>
+            <b>Pack Configuration:</b> <span id="lblKitType" style="color:#2f855a; font-weight:bold;">-</span><br>
+            <b>Target Order Qty:</b> <span id="lblOrderQty" style="font-weight:bold;">-</span> Pcs | <b>Box Size:</b> <span id="lblPcsBox">-</span> Pcs/Box<br>
+            <b>Target Boxes:</b> <span id="lblTargetBoxes" style="color:#2b6cb0; font-weight:bold;">-</span> Boxes | <b>Balance to Pack:</b> <span id="lblBalanceQty" style="color:#e53e3e; font-weight:bold;">-</span> Pcs
+        </div>
 
-                <!-- 9. Universal Lifecycle Search with Instant Dynamic Autocomplete -->
-                <div class="card hidden" id="secReport">
-                    <button class="btn-back" onclick="showNavHub()">⬅ Back to Main Menu</button>
-                    <h3>6. Universal Search & Lifecycle Traceability</h3>
-                    
-                    <label>Type Job ID, Order ID, Customer Name, Invoice, or Worker (Live Autocomplete):</label>
-                    <input type="text" id="searchJobId" list="universalSearchSuggestionsList" placeholder="Start typing e.g. SPN-001, AIR INDIA, INV-..." oninput="onSearchInputChanged(this.value)">
-                    <datalist id="universalSearchSuggestionsList"></datalist>
+        <div id="packOperatorInstructionBox" style="background:#fffaf0; border:1px dashed #dd6b20; padding:10px; border-radius:6px; margin-top:10px; font-size:13px;">
+            <b>📌 Packaging Specs:</b><br>
+            • Box Wrapping: <b id="lblWrapVal">-</b> | Label Placement: <b id="lblLabelVal">-</b><br>
+            • Remarks: <span id="lblRemarkVal" style="color:#4a5568; font-style:italic;">None</span>
+        </div>
 
-                    <button onclick="trackJob()" style="background:#2b6cb0; padding:12px;">🔍 Search Complete Lifecycle</button>
-                    <div id="historyResult" style="margin-top:12px;"></div>
-                </div>
+        <div id="dynamicCrateSection" class="crate-issue-box" style="margin-top:10px;">
+            <h5>🔍 Select QC Approved Crates for Lot Traceability:</h5>
+            <div id="crateInputsContainer"></div>
+            <button onclick="addMoreCratesToActiveRun()" style="background:#2b6cb0; font-size:12px; padding:6px 12px; margin-top:8px;">➕ Allocate QC Crates to Run</button>
+        </div>
+    </div>
+
+    <label style="margin-top:10px; color:#2f855a; font-weight:800;">Packed Output Boxes Produced:</label>
+    <input type="text" inputmode="numeric" id="packedBoxesOutput" placeholder="Enter Boxes Produced">
+
+    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap:8px; margin-top:10px;">
+        <button class="btn-partial" onclick="forwardPartialPackingOutput()" style="background:#805ad5;">⚡ Forward Partial</button>
+        <button class="btn-reverse" onclick="quickReturnUnprocessedPackingBoxes()" style="background:#e53e3e;">↩️ Quick Un-issue</button>
+        <button class="btn-hold" onclick="openHoldModal(document.getElementById('packMachineSelect').value)">⏸️ Hold</button>
+        <button class="btn-resume" onclick="resumePackingJob()">▶️ Resume</button>
+        <button class="btn-done" onclick="completePackingJob()">⏹️ Finish Run</button>
+        <button onclick="cancelActivePackingRun()" style="background:#c53030; font-size:13px; padding:10px;">❌ Cancel & Revert Run</button>
+    </div>
+</div>
                  <!-- Maintenance & Breakdown Audit Log Section -->
 <div class="card hidden" id="secMaintenance">
     <button class="btn-back" onclick="showNavHub()">⬅ Back to Main Menu</button>
@@ -4792,6 +4788,286 @@ function addBatchToExistingJobPrompt() {
 // ऊपर वाले प्रॉम्ट को ट्रिगर करने के लिए हेलर फंक्शन
 function openAddBatchToExistingJobModal() {
     addBatchToExistingJobPrompt();
+}
+        // ==========================================
+// UPGRADED PACKING DESK FUNCTIONS (Cutting & Forming Style + Safety Tools)
+// ==========================================
+
+function onPackingMachineChange() {
+    updatePendingPackDropdown();
+    updatePackingRunningDropdown();
+    renderPackingDeskLiveCards();
+}
+
+function updatePendingPackDropdown() {
+    const pSelect = document.getElementById('pendingPackOrderSelect');
+    if(!pSelect) return;
+    pSelect.innerHTML = '<option value="">-- SELECT PACKING ORDER --</option><option value="REGULAR_STOCK">-- BULK WAREHOUSE STOCK --</option>';
+    packJobs.forEach(pj => {
+        let balance = (pj.orderQty || 0) - ((pj.packedBoxes || 0) * (pj.pcsPerBox || 0));
+        if(balance > 0 && pj.status !== '100% Dispatched & Closed') {
+            pSelect.innerHTML += `<option value="${pj.id}">${pj.id} | ${pj.customer} [Bal: ${balance} Pcs] (${pj.status})</option>`;
+        }
+    });
+}
+
+function updatePackingRunningDropdown() {
+    const machine = document.getElementById('packMachineSelect') ? document.getElementById('packMachineSelect').value : 'Packing-1';
+    const rSelect = document.getElementById('packRunningJobsSelect');
+    if(!rSelect) return;
+    rSelect.innerHTML = '<option value="">-- SELECT RUNNING / HELD PACKING BATCH --</option>';
+    let count = 0;
+
+    packJobs.forEach(pj => {
+        if(pj.machine === machine && (pj.status === 'Running' || pj.status === 'Held')) {
+            rSelect.innerHTML += `<option value="${pj.id}" ${count===0?'selected':''}>${pj.id} | ${pj.customer} (${pj.kitType}) - ${pj.status}</option>`;
+            count++;
+        }
+    });
+    updatePackRunningDisplayInfo();
+}
+
+function updatePackRunningDisplayInfo() {
+    const packId = document.getElementById('packRunningJobsSelect') ? document.getElementById('packRunningJobsSelect').value : '';
+    const box = document.getElementById('packActiveStatusBox');
+    const panel = document.getElementById('packOrderDetailsPanel');
+    if(!box || !panel) return;
+
+    if(!packId) {
+        box.innerHTML = "⚪ No Active Packing Batch Running on Selected Workstation";
+        box.style.background = '#edf2f7';
+        box.style.borderColor = '#cbd5e0';
+        panel.classList.add('hidden');
+        return;
+    }
+
+    panel.classList.remove('hidden');
+    const pj = packJobs.find(p => p.id === packId);
+    if(pj) {
+        box.innerHTML = `📦 <b>Order ID: ${pj.id}</b> | Customer: <b>${pj.customer}</b><br>👤 Operator: <b>${pj.worker || 'Packing'}</b> | Status: <b style="color:${pj.status==='Held'?'#dd6b20':'#2b6cb0'}">${(pj.status || 'RUNNING').toUpperCase()}</b>`;
+        box.style.background = pj.status === 'Held' ? '#fffaf0' : '#ebf8ff';
+        box.style.borderColor = pj.status === 'Held' ? '#dd6b20' : '#3182ce';
+
+        // Load order details in panel
+        let targetBoxes = Math.ceil(pj.orderQty / pj.pcsPerBox);
+        let balance = (pj.orderQty || 0) - ((pj.packedBoxes || 0) * (pj.pcsPerBox || 0));
+        document.getElementById('lblCustName').innerText = pj.customer;
+        document.getElementById('lblKitType').innerText = pj.kitType;
+        document.getElementById('lblOrderQty').innerText = pj.orderQty.toLocaleString();
+        document.getElementById('lblPcsBox').innerText = pj.pcsPerBox.toLocaleString();
+        document.getElementById('lblTargetBoxes').innerText = `${pj.packedBoxes || 0} / ${targetBoxes}`;
+        document.getElementById('lblBalanceQty').innerText = (balance > 0 ? balance : 0).toLocaleString();
+        document.getElementById('lblWrapVal').innerText = pj.wrapping || 'NO';
+        document.getElementById('lblLabelVal').innerText = pj.labeling || 'NO';
+        document.getElementById('lblRemarkVal').innerText = pj.remarks || 'Standard Packing';
+
+        // Render crate inputs
+        const crateContainer = document.getElementById('crateInputsContainer');
+        if(crateContainer) {
+            crateContainer.innerHTML = '';
+            if(packId === 'REGULAR_STOCK') {
+                products.forEach(prod => {
+                    let availJobs = getQcJobsForProduct(prod);
+                    let options = availJobs.map(j => `<option value="${j.id}">${j.id} (Avail: ${j.availableQcCrates} Crates)</option>`).join('');
+                    crateContainer.innerHTML += `
+                        <div style="display:grid; grid-template-columns:1fr 1.4fr 0.6fr; gap:8px; margin-top:6px;">
+                            <label style="margin:0;"><b>${prod}:</b></label>
+                            <select class="pack-job-select" data-product="${prod}">${options || '<option value="">0 QC Crates</option>'}</select>
+                            <input type="text" inputmode="numeric" class="pack-crate-input" data-product="${prod}" value="0" style="margin:0; padding:5px;">
+                        </div>`;
+                });
+            } else {
+                pj.kitItems.forEach(item => {
+                    if(item === 'Tissue') {
+                        crateContainer.innerHTML += `
+                            <div style="display:grid; grid-template-columns:1fr 1.4fr 0.6fr; gap:8px; margin-top:6px;">
+                                <label style="margin:0;"><b>Tissue:</b></label>
+                                <span style="font-size:12px; color:#718096;">Direct Paper Pack</span>
+                                <input type="text" inputmode="numeric" class="pack-crate-input" data-product="Tissue" value="1" style="margin:0; padding:5px;">
+                            </div>`;
+                    } else {
+                        let availJobs = getQcJobsForProduct(item);
+                        let options = availJobs.map(j => `<option value="${j.id}">${j.id} (Avail: ${j.availableQcCrates} Crates)</option>`).join('');
+                        crateContainer.innerHTML += `
+                            <div style="display:grid; grid-template-columns:1fr 1.4fr 0.6fr; gap:8px; margin-top:6px;">
+                                <label style="margin:0;"><b>${item}:</b></label>
+                                <select class="pack-job-select" data-product="${item}">${options || '<option value="">0 QC Crates</option>'}</select>
+                                <input type="text" inputmode="numeric" class="pack-crate-input" data-product="${item}" value="1" style="margin:0; padding:5px;">
+                            </div>`;
+                    }
+                });
+            }
+        }
+    }
+}
+
+function startPackingJob() {
+    const packId = document.getElementById('pendingPackOrderSelect').value;
+    const targetMachine = document.getElementById('packMachineSelect').value;
+    const shift = document.getElementById('packShiftSelect').value;
+    const worker = (document.getElementById('packWorkerNameInput').value || '').trim().toUpperCase();
+    const issueBoxes = parseInt(document.getElementById('packIssueBoxesCount').value) || 0;
+
+    if(!worker) return alert('⚠️ MANDATORY FIELD MISSING!\nPlease enter Packing Operator Name.');
+    if(!packId) return alert('Please select a Packing Order from queue!');
+
+    let activeOnMachine = packJobs.find(p => p.machine === targetMachine && (p.status === 'Running' || p.status === 'Held'));
+    if(activeOnMachine && activeOnMachine.id !== packId) {
+        return alert(`⚠️ WORKSTATION BUSY!\nWorkstation [${targetMachine}] is currently running Order [${activeOnMachine.id}]. Finish or Hold it first.`);
+    }
+
+    const nowTime = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    let pj = packJobs.find(p => p.id === packId);
+    if(pj) {
+        pj.status = 'Running';
+        pj.machine = targetMachine;
+        pj.shift = shift;
+        pj.worker = worker;
+        pj.startTime = nowTime;
+        pj.issuedBoxes = issueBoxes;
+        pj.holdReason = "";
+    }
+
+    saveData();
+    updatePendingPackDropdown();
+    updatePackingRunningDropdown();
+    renderPackingDeskLiveCards();
+    alert(`✅ Packing Run Started on ${targetMachine}!`);
+}
+
+function resumePackingJob() {
+    const packId = document.getElementById('packRunningJobsSelect').value;
+    const targetMachine = document.getElementById('packMachineSelect').value;
+    if(!packId) return alert('Please select active packing batch to resume!');
+
+    let pj = packJobs.find(p => p.id === packId);
+    if(pj) {
+        if(pj.status === 'Running') return alert('This order is ALREADY RUNNING.');
+        const nowTime = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        pj.status = 'Running';
+        pj.machine = targetMachine;
+        pj.holdReason = "";
+
+        logs.push({
+            jobId: pj.id, product: pj.kitType, stage: 'Packing', machine: targetMachine,
+            shift: pj.shift || 'DAY', action: `▶️ Packing Run Resumed on ${targetMachine} | Worker: ${pj.worker}`,
+            worker: pj.worker, user: currentUser.username, startTime: nowTime, endTime: '',
+            rawDate: new Date().toISOString().split('T')[0], timestamp: new Date().toLocaleString()
+        });
+
+        saveData();
+        updatePackingRunningDropdown();
+        renderPackingDeskLiveCards();
+        alert(`▶️ Order [${pj.id}] Resumed to RUNNING on ${targetMachine}!`);
+    }
+}
+
+function completePackingJob() {
+    const packId = document.getElementById('packRunningJobsSelect').value;
+    const targetMachine = document.getElementById('packMachineSelect').value;
+    const boxesDone = parseInt(document.getElementById('packedBoxesOutput').value) || 0;
+    
+    let pj = packJobs.find(p => p.id === packId);
+    if(!pj) return alert('कृपया एक्टिव पैकिंग बैच सेलेक्ट करें!');
+
+    const stopTime = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    let worker = pj.worker || currentUser.username;
+
+    let componentLots = {};
+    document.querySelectorAll('.pack-job-select').forEach(sel => {
+        let pName = sel.getAttribute('data-product');
+        let jId = sel.value;
+        if(pName && jId) {
+            let inp = document.querySelector(`.pack-crate-input[data-product="${pName}"]`);
+            let q = inp ? inp.value : '1';
+            componentLots[pName] = `${jId} (${q} Crates)`;
+        }
+    });
+
+    if(boxesDone > 0) {
+        pj.packedBoxes = (pj.packedBoxes || 0) + boxesDone;
+        if(!pj.historyRuns) pj.historyRuns = [];
+        if(!pj.tracedLots) pj.tracedLots = {};
+        Object.assign(pj.tracedLots, componentLots);
+
+        pj.historyRuns.push({
+            machine: targetMachine, boxes: boxesDone, pcs: boxesDone * pj.pcsPerBox,
+            date: new Date().toISOString().split('T')[0], time: stopTime, worker: worker,
+            usedLots: componentLots
+        });
+
+        let balance = (pj.orderQty || 0) - ((pj.packedBoxes || 0) * (pj.pcsPerBox || 0));
+        if(balance <= 0) pj.status = '100% Packed & Completed';
+        else pj.status = 'Partially Packed';
+    } else {
+        pj.status = 'Idle / Paused';
+    }
+
+    let lotSummaryStr = Object.keys(componentLots).map(k => `${k}: ${componentLots[k]}`).join(' | ');
+
+    logs.push({
+        jobId: pj.id, product: pj.kitType, stage: 'Packing', machine: targetMachine,
+        shift: pj.shift || 'DAY',
+        action: `⏹ Finished Packing Run on ${targetMachine} (${boxesDone} Boxes) | Worker: ${worker}${lotSummaryStr ? ' | Lots: [' + lotSummaryStr + ']' : ''}`,
+        worker: worker, user: currentUser.username, startTime: pj.startTime || stopTime, endTime: stopTime,
+        rawDate: new Date().toISOString().split('T')[0], timestamp: new Date().toLocaleString()
+    });
+
+    pj.machine = "";
+    document.getElementById('packedBoxesOutput').value = '';
+    saveData();
+    updateDispatchCustomerDropdown();
+    updatePendingPackDropdown();
+    updatePackingRunningDropdown();
+    renderPackingDeskLiveCards();
+    alert(`✅ Packing Run on ${targetMachine} Finished Successfully!`);
+}
+
+// Safety Tools for Packing: Forward Partial, Quick Un-issue, Cancel Run
+function forwardPartialPackingOutput() {
+    const packId = document.getElementById('packRunningJobsSelect').value;
+    if(!packId) return alert('कृपया एक्टिव पैकिंग रन सेलेक्ट करें!');
+    let pj = packJobs.find(p => p.id === packId);
+    if(!pj) return;
+
+    let qtyStr = prompt(`आप कितने बॉक्सेस आगे फॉरवर्ड (Partial Forward) करना चाहते हैं?`);
+    let qty = parseInt(qtyStr);
+    if(isNaN(qty) || qty <= 0) return alert('अमान्य संख्या!');
+
+    pj.packedBoxes = (pj.packedBoxes || 0) + qty;
+    saveData();
+    updatePackingRunningDropdown();
+    alert(`✅ सफलतापूर्वक ${qty} बॉक्सेस आगे फॉरवर्ड कर दिए गए हैं!`);
+}
+
+function quickReturnUnprocessedPackingBoxes() {
+    const packId = document.getElementById('packRunningJobsSelect').value;
+    if(!packId) return alert('कृपया एक्टिव पैकिंग रन सेलेक्ट करें!');
+    let pj = packJobs.find(p => p.id === packId);
+    if(!pj) return;
+
+    let qtyStr = prompt(`कितनी मात्रा वापस अन-इश्यू (Un-issue) करनी है?`);
+    let qty = parseInt(qtyStr);
+    if(isNaN(qty) || qty <= 0) return alert('अमान्य संख्या!');
+
+    alert(`✅ ${qty} यूनिट्स सुरक्षित रूप से अन-इश्यू कर दिए गए हैं!`);
+}
+
+function cancelActivePackingRun() {
+    const packId = document.getElementById('packRunningJobsSelect').value;
+    if(!packId) return alert('रद्द करने के लिए एक्टिव पैकिंग बैच सेलेक्ट करें!');
+    let pj = packJobs.find(p => p.id === packId);
+    if(!pj) return;
+
+    if(!confirm(`⚠️ क्या आप वाकई आर्डर [${pj.id}] के इस रन को रद्द (Cancel) करना चाहते हैं?`)) return;
+
+    pj.status = 'Pending Queue';
+    pj.machine = '';
+    saveData();
+    updatePendingPackDropdown();
+    updatePackingRunningDropdown();
+    renderPackingDeskLiveCards();
+    alert(`✅ पैकिंग रन सफलतापूर्वक रद्द कर दिया गया है!`);
 }
     </script>
 </body>

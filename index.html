@@ -3325,10 +3325,9 @@ function startPackingJob() {
     if(!worker) return alert('⚠️ MANDATORY FIELD MISSING!\nPlease enter Packing Operator Name before starting run.');
     if(!packId) return alert('Please select a Packing Job from queue!');
 
-    // चेक करें कि क्या इस चुनी हुई मशीन या मैनुअल लेन पर पहले से कोई ऑर्डर चल रहा है
     let activeOnSelectedMachine = packJobs.find(p => p.machine === targetMachine && (p.status === 'Running' || p.status === 'Held'));
     if(activeOnSelectedMachine && activeOnSelectedMachine.id !== packId) {
-        return alert(`⚠️ WORKSTATION BUSY!\nWorkstation [${targetMachine}] is currently running Order [${activeOnSelectedMachine.id}] for ${activeOnSelectedMachine.customer}.\nYou must FINISH or HOLD the active run before starting a new job on ${targetMachine}.`);
+        return alert(`⚠️ WORKSTATION BUSY!\nWorkstation [${targetMachine}] is currently running Order [${activeOnSelectedMachine.id}].`);
     }
 
     const nowTime = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
@@ -3341,12 +3340,17 @@ function startPackingJob() {
             pj.startTime = nowTime;
             pj.worker = worker;
             pj.issuedBoxes = issueBoxes;
-            pj.holdReason = ""; // होल्ड रीज़न साफ़ करें
+            pj.holdReason = "";
         }
     }
+    
     saveData();
     updatePendingPackDropdown();
+    
+    // 🟢 यहाँ ये दोनों फंक्शन्स कॉल होना बहुत जरूरी हैं ताकि तुरंत ड्रॉपडाउन में दिखने लगे
     updatePackingRunningDropdown();
+    updatePackRunningDisplayInfo();
+    
     renderPackingDeskLiveCards();
     alert(`✅ Packing Run Started on ${targetMachine}!`);
 }

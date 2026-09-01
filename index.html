@@ -3194,83 +3194,78 @@
         }
 
         function loadPackJobDetails() {
-            const packId = document.getElementById('pendingPackOrderSelect') ? document.getElementById('pendingPackOrderSelect').value : '';
-            const curMachine = document.getElementById('packMachineSelect') ? document.getElementById('packMachineSelect').value : 'Packing-1';
-            const panel = document.getElementById('packOrderDetailsPanel');
-            const crateContainer = document.getElementById('crateInputsContainer');
-            if(!panel || !crateContainer) return;
-            crateContainer.innerHTML = '';
-            if(!packId) { panel.classList.add('hidden'); renderPackingDeskLiveCards(); return; }
-            panel.classList.remove('hidden');
+    const packId = document.getElementById('pendingPackOrderSelect') ? document.getElementById('pendingPackOrderSelect').value : '';
+    const crateContainer = document.getElementById('crateInputsContainer');
+    const panel = document.getElementById('packOrderDetailsPanel');
+    if(!crateContainer || !panel) return;
+    
+    crateContainer.innerHTML = '';
+    if(!packId) {
+        panel.classList.add('hidden');
+        return;
+    }
+    panel.classList.remove('hidden');
 
-            if(packId === 'REGULAR_STOCK') {
-                document.getElementById('lblCustName').innerText = 'Internal Bulk Stock';
-                document.getElementById('lblKitType').innerText = 'Bulk Single Items';
-                document.getElementById('lblOrderQty').innerText = 'Open';
-                document.getElementById('lblPcsBox').innerText = '1000';
-                document.getElementById('lblTargetBoxes').innerText = '-';
-                document.getElementById('lblBalanceQty').innerText = '-';
-                document.getElementById('lblWrapVal').innerText = 'NO';
-                document.getElementById('lblLabelVal').innerText = 'NO';
-                document.getElementById('lblRemarkVal').innerText = 'General Warehouse Packing';
-                document.getElementById('lblPackLiveStatus').innerText = 'READY ON ' + curMachine;
+    if(packId === 'REGULAR_STOCK') {
+        document.getElementById('lblCustName').innerText = 'Internal Bulk Stock';
+        document.getElementById('lblKitType').innerText = 'Bulk Single Items';
+        document.getElementById('lblOrderQty').innerText = 'Open';
+        document.getElementById('lblPcsBox').innerText = '1000';
+        document.getElementById('lblTargetBoxes').innerText = '-';
+        document.getElementById('lblBalanceQty').innerText = '-';
+        document.getElementById('lblWrapVal').innerText = 'NO';
+        document.getElementById('lblLabelVal').innerText = 'NO';
+        document.getElementById('lblRemarkVal').innerText = 'General Warehouse Bulk Packing';
 
-                products.forEach(prod => {
-                    let availJobs = getQcJobsForProduct(prod);
-                    let options = availJobs.map(j => `<option value="${j.id}">${j.id} (Avail: ${j.availableQcCrates} Crates)</option>`).join('');
+        products.forEach(prod => {
+            let availJobs = getQcJobsForProduct(prod);
+            let options = availJobs.map(j => `<option value="${j.id}">${j.id} (Avail: ${j.availableQcCrates} Crates)</option>`).join('');
+            crateContainer.innerHTML += `
+                <div style="display:grid; grid-template-columns:1fr 1.4fr 0.6fr; gap:8px; margin-top:6px;">
+                    <label style="margin:0;"><b>${prod}:</b></label>
+                    <select class="pack-job-select" data-product="${prod}">${options || '<option value="">0 QC Crates (No Stock)</option>'}</select>
+                    <input type="text" inputmode="numeric" class="pack-crate-input" data-product="${prod}" value="0" style="margin:0; padding:5px;">
+                </div>`;
+        });
+    } else {
+        const pj = packJobs.find(p => p.id === packId);
+        if(pj) {
+            let targetBoxes = Math.ceil(pj.orderQty / pj.pcsPerBox);
+            let balance = (pj.orderQty || 0) - ((pj.packedBoxes || 0) * (pj.pcsPerBox || 0));
+            document.getElementById('lblCustName').innerText = pj.customer;
+            document.getElementById('lblKitType').innerText = pj.kitType;
+            document.getElementById('lblOrderQty').innerText = pj.orderQty.toLocaleString();
+            document.getElementById('lblPcsBox').innerText = pj.pcsPerBox.toLocaleString();
+            document.getElementById('lblTargetBoxes').innerText = `${pj.packedBoxes || 0} / ${targetBoxes}`;
+            document.getElementById('lblBalanceQty').innerText = (balance > 0 ? balance : 0).toLocaleString();
+            document.getElementById('lblWrapVal').innerText = pj.wrapping || 'NO';
+            document.getElementById('lblLabelVal').innerText = pj.labeling || 'NO';
+            document.getElementById('lblRemarkVal').innerText = pj.remarks || 'Standard Packing';
+
+            pj.kitItems.forEach(item => {
+                if(item === 'Tissue') {
                     crateContainer.innerHTML += `
                         <div style="display:grid; grid-template-columns:1fr 1.4fr 0.6fr; gap:8px; margin-top:6px;">
-                            <label style="margin:0;"><b>${prod}:</b></label>
-                            <select class="pack-job-select" data-product="${prod}">${options || '<option value="">0 QC Crates (No Stock)</option>'}</select>
-                            <input type="text" inputmode="numeric" class="pack-crate-input" data-product="${prod}" value="0" style="margin:0; padding:5px;">
+                            <label style="margin:0;"><b>Tissue:</b></label>
+                            <span style="font-size:12px; color:#718096;">Direct Roll/Paper Pack</span>
+                            <input type="text" inputmode="numeric" class="pack-crate-input" data-product="Tissue" value="1" style="margin:0; padding:5px;">
                         </div>`;
-                });
-            } else {
-                const pj = packJobs.find(p => p.id === packId);
-                if(pj) {
-                    let targetBoxes = Math.ceil(pj.orderQty / pj.pcsPerBox);
-                    let balance = (pj.orderQty || 0) - ((pj.packedBoxes || 0) * (pj.pcsPerBox || 0));
-                    document.getElementById('lblCustName').innerText = pj.customer;
-                    document.getElementById('lblKitType').innerText = pj.kitType;
-                    document.getElementById('lblOrderQty').innerText = pj.orderQty.toLocaleString();
-                    document.getElementById('lblPcsBox').innerText = pj.pcsPerBox.toLocaleString();
-                    document.getElementById('lblTargetBoxes').innerText = `${pj.packedBoxes || 0} / ${targetBoxes}`;
-                    document.getElementById('lblBalanceQty').innerText = (balance > 0 ? balance : 0).toLocaleString();
-                    document.getElementById('lblWrapVal').innerText = pj.wrapping || 'NO';
-                    document.getElementById('lblLabelVal').innerText = pj.labeling || 'NO';
-                    document.getElementById('lblRemarkVal').innerText = pj.remarks || 'Standard Packing';
+                } else {
+                    let availJobs = getQcJobsForProduct(item);
+                    let options = availJobs.map(j => `<option value="${j.id}">${j.id} (Avail: ${j.availableQcCrates} Crates)</option>`).join('');
+                    let totalAvail = availJobs.reduce((sum, j) => sum + (j.availableQcCrates || 0), 0);
                     
-                    let liveBanner = document.getElementById('lblPackLiveStatus');
-                    let assignedMachine = pj.machine || curMachine;
-                    liveBanner.innerText = pj.status ? `${pj.status.toUpperCase()} on [${assignedMachine}]` : 'PENDING';
-                    if(pj.worker) liveBanner.innerText += ` | Worker: ${pj.worker} (Started: ${pj.startTime || '-'})`;
-
-                    pj.kitItems.forEach(item => {
-                        if(item === 'Tissue') {
-                            crateContainer.innerHTML += `
-                                <div style="display:grid; grid-template-columns:1fr 1.4fr 0.6fr; gap:8px; margin-top:6px;">
-                                    <label style="margin:0;"><b>Tissue:</b></label>
-                                    <span style="font-size:12px; color:#718096;">Direct Roll/Paper Pack</span>
-                                    <input type="text" inputmode="numeric" class="pack-crate-input" data-product="Tissue" value="1" style="margin:0; padding:5px;">
-                                </div>`;
-                        } else {
-                            let availJobs = getQcJobsForProduct(item);
-                            let options = availJobs.map(j => `<option value="${j.id}">${j.id} (Avail: ${j.availableQcCrates} Crates)</option>`).join('');
-                            let totalAvail = availJobs.reduce((sum, j) => sum + (j.availableQcCrates || 0), 0);
-                            let defVal = totalAvail > 0 ? 1 : 0;
-
-                            crateContainer.innerHTML += `
-                                <div style="display:grid; grid-template-columns:1fr 1.4fr 0.6fr; gap:8px; margin-top:6px;">
-                                    <label style="margin:0;"><b>${item}:</b> <span style="font-size:11px; color:${totalAvail>0?'#2f855a':'#e53e3e'}; font-weight:normal;">[Stock: ${totalAvail}]</span></label>
-                                    <select class="pack-job-select" data-product="${item}">${options || '<option value="">0 QC Crates (Out of Stock)</option>'}</select>
-                                    <input type="text" inputmode="numeric" class="pack-crate-input" data-product="${item}" value="${defVal}" style="margin:0; padding:5px;">
-                                </div>`;
-                        }
-                    });
+                    crateContainer.innerHTML += `
+                        <div style="display:grid; grid-template-columns:1fr 1.4fr 0.6fr; gap:8px; margin-top:6px;">
+                            <label style="margin:0;"><b>${item}:</b> <span style="font-size:11px; color:${totalAvail>0?'#2f855a':'#e53e3e'};">[Stock: ${totalAvail}]</span></label>
+                            <select class="pack-job-select" data-product="${item}">${options || '<option value="">0 QC Crates (Out of Stock)</option>'}</select>
+                            <input type="text" inputmode="numeric" class="pack-crate-input" data-product="${item}" value="${totalAvail > 0 ? 1 : 0}" style="margin:0; padding:5px;">
+                        </div>`;
                 }
-            }
-            renderPackingDeskLiveCards();
+            });
         }
+    }
+}
 
         function addMoreCratesToActiveRun() {
             const packId = document.getElementById('pendingPackOrderSelect').value;

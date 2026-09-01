@@ -948,6 +948,18 @@
     <select id="packRunningJobsSelect" onchange="updatePackRunningDisplayInfo()"></select>
 
     <div id="packActiveStatusBox" class="info-box" style="background:#fffaf0; border-color:#dd6b20;">No Active Packing Batch Selected</div>
+    <div id="packIssuedLotsPanel" class="hidden" style="background:#f7fafc; border:1px solid #cbd5e0; padding:12px; border-radius:6px; margin-top:10px;">
+        <b style="font-size:12px; color:#2b6cb0;">📦 Active Issued Crates & Product-wise Return (Un-issue):</b>
+        <div id="packIssuedLotsBreakdown" style="font-size:12px; margin:6px 0; line-height:1.5;">-</div>
+        
+        <div style="display:grid; grid-template-columns: 1fr 1fr auto; gap:6px; margin-top:8px; align-items:center;">
+            <select id="packUnissueProductSelect" style="margin:0; padding:6px; font-size:12px;">
+                <option value="">-- Select Product to Un-issue --</option>
+            </select>
+            <input type="text" inputmode="numeric" id="packUnissueQtyInput" placeholder="Return Qty (Crates)" style="margin:0; padding:6px; font-size:12px;">
+            <button onclick="executePackingProductUnissue()" style="background:#e53e3e; padding:6px 12px; margin:0; font-size:12px;">↩️ Un-issue</button>
+        </div>
+    </div>
 
     <label style="margin-top:10px; color:#2f855a; font-weight:800;">Packed Output Boxes Produced in this Run:</label>
     <input type="text" inputmode="numeric" id="packedBoxesOutput" placeholder="Enter Boxes Produced">
@@ -3330,15 +3342,21 @@
     updatePackRunningDisplayInfo();
 }
 
+// 1. अपडेटेड डिस्प्ले फंक्शन (जिसमें लाइव इश्यू किए गए क्रेट्स दिखेंगे)
 function updatePackRunningDisplayInfo() {
     const packId = document.getElementById('packRunningJobsSelect') ? document.getElementById('packRunningJobsSelect').value : '';
     const box = document.getElementById('packActiveStatusBox');
+    const lotsPanel = document.getElementById('packIssuedLotsPanel');
+    const breakdownDiv = document.getElementById('packIssuedLotsBreakdown');
+    const unissueSelect = document.getElementById('packUnissueProductSelect');
+    
     if(!box) return;
 
     if(!packId) {
         box.innerHTML = "⚪ No Active Packing Batch Selected on this Workstation";
         box.style.background = '#edf2f7';
         box.style.borderColor = '#cbd5e0';
+        if(lotsPanel) lotsPanel.classList.add('hidden');
         return;
     }
 
@@ -3347,9 +3365,79 @@ function updatePackRunningDisplayInfo() {
         box.innerHTML = `📦 <b>Order ID: ${pj.id}</b> | Customer: <b>${pj.customer}</b> (${pj.kitType})<br>👤 Operator: <b>${pj.worker || 'Packing'}</b> | Started: <b>${pj.startTime || '-'}</b> | Status: <b style="color:${pj.status==='Held'?'#dd6b20':'#2b6cb0'}">${(pj.status || 'RUNNING').toUpperCase()}</b>`;
         box.style.background = pj.status === 'Held' ? '#fffaf0' : '#ebf8ff';
         box.style.borderColor = pj.status === 'Held' ? '#dd6b20' : '#3182ce';
+
+        if(lotsPanel && breakdownDiv && unissueSelect) {
+            lotsPanel.classList.remove('hidden');
+            unissueSelect.innerHTML = '<option value="">-- Select Product --</option>';
+            
+            let issuedMap = pj.issuedCrates || {};
+            let keys = Object.keys(issuedMap);
+            
+            if(keys.length === 0) {
+                breakdownDiv.innerHTML = '<span style="color:#718096;">No specific crates issued (Regular or direct stock).</span>';
+            } else {
+                let text = '';
+                keys.forEach(pName => {
+                    let qty = issuedMap[pName] || 0;
+                    if(qty > 0) {
+                        text += `• <b>${pName}:</b> <span style="color:#2f855a; font-weight:bold;">${qty} Crates</span><br>`;
+                        unissueSelect.innerHTML += `<option value="${pName}">${pName} (Issued: ${qty})</option>`;
+                    }
+                });
+                breakdownDiv.innerHTML = text || '<span style="color:#718096;">All issued crates processed or returned.</span>';
+            }
+        }
     } else {
         box.innerHTML = "⚠️ Selected batch data not found.";
+        if(lotsPanel) lotsPanel.classList.add('hidden');
     }
+}
+
+// 2. नया फंक्शन: प्रोडक्ट-वाइज क्रेट्स को वापस स्टॉक में अन-इश्यू (Return) करने के लिए
+function executePackingProductUnissue() {
+    const packId = document.getElementById('packRunningJobsSelect') ? document.getElementById('packRunningJobsSelect').value : '';
+    const prodName = document.getElementById('packUnissueProductSelect').value;
+    const returnQty = parseInt(document.getElementById('packUnissueQtyInput').value) || 0;
+
+    if(!packId) return alert('Please select active packing batch!');
+    if(!prodName) return alert('Please select a product to un-issue!');
+    if(returnQty <= 0) return alert('Enter valid quantity of crates to return!');
+
+    let pj = packJobs.find(p => p.id === packId);
+    if(!pj || !pj.issuedCrates || !pj.issuedCrates[prodName]) {
+        return alert('Issued record not found for this product in current batch!');
+    }
+
+    let currentIssued = pj.issuedCrates[prodName];
+    if(returnQty > currentIssued) {
+        return alert(`Cannot return ${returnQty} crates! Only ${currentIssued} crates are currently issued for ${prodName}.`);
+    }
+
+    // 1. पैकिंग बैच से क्रेट्स कम करें
+    pj.issuedCrates[prodName] -= returnQty;
+
+    // 2. संबंधित QC जॉब/स्टॉक में क्रेट्स वापस जोड़ें (Find latest matching QC job or return to general QC pool)
+    let targetQcJob = jobs.find(j => j.product === prodName);
+    if(targetQcJob) {
+        targetQcJob.availableQcCrates = (targetQcJob.availableQcCrates || 0) + returnQty;
+    } else {
+        // अगर जॉब नहीं मिला तो किसी भी उस प्रोडक्ट के जॉब में जोड़ दें या नया बना लें
+        let anyJob = jobs.find(j => j.product === prodName);
+        if(anyJob) anyJob.availableQcCrates = (anyJob.availableQcCrates || 0) + returnQty;
+    }
+
+    logs.push({
+        jobId: pj.id, product: pj.kitType, stage: 'Packing Un-issue', machine: pj.machine || 'Packing',
+        shift: pj.shift || 'DAY', action: `↩️ Packing Un-issue: Returned ${returnQty} crates of [${prodName}] back to QC stock.`,
+        worker: pj.worker || 'Operator', user: currentUser.username, rawDate: new Date().toISOString().split('T')[0], timestamp: new Date().toLocaleString()
+    });
+
+    saveData();
+    updatePackRunningDisplayInfo();
+    document.getElementById('packUnissueQtyInput').value = '';
+    renderUI();
+
+    alert(`✅ Successfully returned ${returnQty} crates of [${prodName}] back to QC Approved Stock!`);
 }
 
 function startPackingJob() {

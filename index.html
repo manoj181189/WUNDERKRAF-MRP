@@ -3310,7 +3310,7 @@
         }
 
         // ==========================================
-// PACKING DESK: START, HOLD, RESUME & FINISH FUNCTIONS (UPGRADED FOR MANUAL LANES)
+// PACKING DESK: START, HOLD, RESUME & FINISH FUNCTIONS (MACHINE-WISE UPGRADED)
 // ==========================================
 
 function startPackingJob() {
@@ -3318,9 +3318,10 @@ function startPackingJob() {
     const targetMachine = document.getElementById('packMachineSelect').value;
     const shift = document.getElementById('packShiftSelect').value;
     const worker = (document.getElementById('packWorkerNameInput').value || '').trim().toUpperCase();
+    const issueBoxes = parseInt(document.getElementById('packIssueBoxesCount').value) || 0;
 
     if(!worker) return alert('⚠️ MANDATORY FIELD MISSING!\nPlease enter Packing Operator Name before starting run.');
-    if(!packId) return alert('Please select a Packing Job!');
+    if(!packId) return alert('Please select a Packing Job from queue!');
 
     // चेक करें कि क्या इस चुनी हुई मशीन या मैनुअल लेन पर पहले से कोई ऑर्डर चल रहा है
     let activeOnSelectedMachine = packJobs.find(p => p.machine === targetMachine && (p.status === 'Running' || p.status === 'Held'));
@@ -3334,21 +3335,24 @@ function startPackingJob() {
         if(pj) {
             pj.status = 'Running';
             pj.machine = targetMachine;
+            pj.shift = shift;
             pj.startTime = nowTime;
             pj.worker = worker;
-            pj.holdReason = ""; // होल्ड रीज़न साफ़ करें
+            pj.issuedBoxes = issueBoxes;
+            pj.holdReason = ""; // होल्ड रीज़न साफ़ करें
         }
     }
     saveData();
-    loadPackJobDetails();
+    updatePendingPackDropdown();
+    updatePackingRunningDropdown();
     renderPackingDeskLiveCards();
     alert(`✅ Packing Run Started on ${targetMachine}!`);
 }
 
 function resumePackingJob() {
-    const packId = document.getElementById('pendingPackOrderSelect').value;
+    const packId = document.getElementById('packRunningJobsSelect').value;
     const targetMachine = document.getElementById('packMachineSelect').value;
-    if(!packId) return alert('Please select Packing Order to resume!');
+    if(!packId) return alert('Please select active packing batch to resume!');
 
     let pj = packJobs.find(p => p.id === packId);
     if(pj) {
@@ -3366,20 +3370,20 @@ function resumePackingJob() {
         });
 
         saveData();
-        loadPackJobDetails();
+        updatePackingRunningDropdown();
         renderPackingDeskLiveCards();
         alert(`▶️ Order [${pj.id}] Resumed to RUNNING on ${targetMachine}!`);
     }
 }
 
 function completePackingJob() {
-    const packId = document.getElementById('pendingPackOrderSelect').value;
+    const packId = document.getElementById('packRunningJobsSelect').value;
     const targetMachine = document.getElementById('packMachineSelect').value;
     const boxesDone = parseInt(document.getElementById('packedBoxesOutput').value) || 0;
     const worker = (document.getElementById('packWorkerNameInput').value || '').trim().toUpperCase() || (currentUser ? currentUser.username : '');
 
     let pj = packJobs.find(p => p.id === packId);
-    if(!pj) return alert('कृपया पैकिंग आर्डर सेलेक्ट करें!');
+    if(!pj) return alert('कृपया एक्टिव पैकिंग बैच सेलेक्ट करें!');
 
     const stopTime = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
 
@@ -3410,7 +3414,6 @@ function completePackingJob() {
         if(balance <= 0) pj.status = '100% Packed & Completed';
         else pj.status = 'Partially Packed';
     } else {
-        // यदि 0 या खाली है, तो सिर्फ मशीन/लेन को फ्री करने के लिए स्टेटस अपडेट करें
         pj.status = 'Idle / Paused';
     }
 
@@ -3428,117 +3431,121 @@ function completePackingJob() {
     document.getElementById('packedBoxesOutput').value = '';
     saveData();
     updateDispatchCustomerDropdown();
-    loadPackJobDetails();
+    updatePendingPackDropdown();
+    updatePackingRunningDropdown();
     renderPackingDeskLiveCards();
-    populateUniversalSearchSuggestions();
+    if(typeof populateUniversalSearchSuggestions === 'function') populateUniversalSearchSuggestions();
     alert(`✅ Packing Run on ${targetMachine} Finished Successfully!`);
 }
 
-        // Admin Overrides & Corrections
-        function loadAdminPackOrderList() {
-            const select = document.getElementById('adminPackOrderSelect');
-            if(!select) return;
-            select.innerHTML = '<option value="">-- SELECT ORDER TO EDIT --</option>';
-            packJobs.forEach(p => select.innerHTML += `<option value="${p.id}">${p.id} - ${p.customer} (${p.kitType})</option>`);
-        }
+// ==========================================
+// ADMIN OVERRIDES & CORRECTIONS (AS PREserved)
+// ==========================================
 
-        function toggleAdminEditPackType() {
-            const type = document.getElementById('editPackTypeSelect').value;
-            if(type === 'INDIVIDUAL') {
-                document.getElementById('adminEditKitSec').classList.add('hidden');
-                document.getElementById('adminEditSingleSec').classList.remove('hidden');
+function loadAdminPackOrderList() {
+    const select = document.getElementById('adminPackOrderSelect');
+    if(!select) return;
+    select.innerHTML = '<option value="">-- SELECT ORDER TO EDIT --</option>';
+    packJobs.forEach(p => select.innerHTML += `<option value="${p.id}">${p.id} - ${p.customer} (${p.kitType})</option>`);
+}
+
+function toggleAdminEditPackType() {
+    const type = document.getElementById('editPackTypeSelect').value;
+    if(type === 'INDIVIDUAL') {
+        document.getElementById('adminEditKitSec').classList.add('hidden');
+        document.getElementById('adminEditSingleSec').classList.remove('hidden');
+    } else {
+        document.getElementById('adminEditKitSec').classList.remove('hidden');
+        document.getElementById('adminEditSingleSec').classList.add('hidden');
+    }
+}
+
+function loadPackOrderForAdminEdit() {
+    const id = document.getElementById('adminPackOrderSelect').value;
+    const panel = document.getElementById('adminOrderEditPanel');
+    if(!id) { panel.classList.add('hidden'); return; }
+    const pj = packJobs.find(p => p.id === id);
+    if(pj) {
+        panel.classList.remove('hidden');
+        document.getElementById('editOrderQtyInput').value = pj.orderQty;
+        document.getElementById('editBoxSizeInput').value = pj.pcsPerBox;
+        document.getElementById('editPackTypeSelect').value = pj.packType || 'KIT';
+        toggleAdminEditPackType();
+        if(pj.packType === 'INDIVIDUAL') {
+            document.getElementById('adminEditSingleItemSelect').value = pj.kitItems[0] || 'Spoon';
+        } else {
+            document.querySelectorAll('.admin-edit-kit-item').forEach(cb => { cb.checked = pj.kitItems.includes(cb.value); });
+        }
+    }
+}
+
+function saveAdminOrderCorrection() {
+    const id = document.getElementById('adminPackOrderSelect').value;
+    const newQty = parseInt(document.getElementById('editOrderQtyInput').value) || 0;
+    const newBox = parseInt(document.getElementById('editBoxSizeInput').value) || 0;
+    const packType = document.getElementById('editPackTypeSelect').value;
+    const pj = packJobs.find(p => p.id === id);
+    if(!pj || newQty <= 0 || newBox <= 0) return alert('Enter valid quantity & box size!');
+
+    pj.orderQty = newQty;
+    pj.pcsPerBox = newBox;
+    pj.packType = packType;
+    if(packType === 'INDIVIDUAL') {
+        let single = document.getElementById('adminEditSingleItemSelect').value;
+        pj.kitItems = [single];
+        pj.kitType = `Individual ${single} Box`;
+    } else {
+        pj.kitItems = Array.from(document.querySelectorAll('.admin-edit-kit-item:checked')).map(cb => cb.value);
+        pj.kitType = `${pj.kitItems.length}-in-1 Kit (${pj.kitItems.join(', ')})`;
+    }
+
+    saveData();
+    loadAdminPackOrderList();
+    alert(`✅ Customer Order [${id}] Updated Successfully!`);
+}
+
+function loadAdminBatchJobList() {
+    const select = document.getElementById('adminBatchJobSelect');
+    if(!select) return;
+    select.innerHTML = '<option value="">-- SELECT JOB FOR BATCH FIX --</option>';
+    jobs.forEach(j => select.innerHTML += `<option value="${j.id}">${j.id} - ${j.product}</option>`);
+}
+
+function loadBatchesForSelectedJob() {
+    const jobId = document.getElementById('adminBatchJobSelect').value;
+    const panel = document.getElementById('adminBatchEditPanel');
+    const batchSelect = document.getElementById('adminBatchSelect');
+    batchSelect.innerHTML = '<option value="">-- SELECT BATCH --</option>';
+    if(!jobId) { panel.classList.add('hidden'); return; }
+    const job = jobs.find(j => j.id === jobId);
+    if(job && job.runningBatches && job.runningBatches.length > 0) {
+        panel.classList.remove('hidden');
+        job.runningBatches.forEach(b => {
+            batchSelect.innerHTML += `<option value="${b.batchId}">[${b.stage}] Batch ${b.batchId} (${b.producedQty || 0} Units)</option>`;
+        });
+        loadBatchQtyForEdit();
+    } else { panel.classList.add('hidden'); }
+}
+
+function loadBatchQtyForEdit() {
+    const jobId = document.getElementById('adminBatchJobSelect').value;
+    const batchId = document.getElementById('adminBatchSelect').value;
+    const job = jobs.find(j => j.id === jobId);
+    const weightSec = document.getElementById('adminSlitWeightEditSec');
+
+    if(job && job.runningBatches) {
+        const b = job.runningBatches.find(x => x.batchId === batchId);
+        if(b) {
+            document.getElementById('editBatchOutputQtyInput').value = b.producedQty || 0;
+            if(b.stage === 'Slitting') {
+                weightSec.classList.remove('hidden');
+                document.getElementById('editBatchOutputWeightInput').value = b.outputWeightKg || 0;
             } else {
-                document.getElementById('adminEditKitSec').classList.remove('hidden');
-                document.getElementById('adminEditSingleSec').classList.add('hidden');
+                weightSec.classList.add('hidden');
             }
         }
-
-        function loadPackOrderForAdminEdit() {
-            const id = document.getElementById('adminPackOrderSelect').value;
-            const panel = document.getElementById('adminOrderEditPanel');
-            if(!id) { panel.classList.add('hidden'); return; }
-            const pj = packJobs.find(p => p.id === id);
-            if(pj) {
-                panel.classList.remove('hidden');
-                document.getElementById('editOrderQtyInput').value = pj.orderQty;
-                document.getElementById('editBoxSizeInput').value = pj.pcsPerBox;
-                document.getElementById('editPackTypeSelect').value = pj.packType || 'KIT';
-                toggleAdminEditPackType();
-                if(pj.packType === 'INDIVIDUAL') {
-                    document.getElementById('adminEditSingleItemSelect').value = pj.kitItems[0] || 'Spoon';
-                } else {
-                    document.querySelectorAll('.admin-edit-kit-item').forEach(cb => { cb.checked = pj.kitItems.includes(cb.value); });
-                }
-            }
-        }
-
-        function saveAdminOrderCorrection() {
-            const id = document.getElementById('adminPackOrderSelect').value;
-            const newQty = parseInt(document.getElementById('editOrderQtyInput').value) || 0;
-            const newBox = parseInt(document.getElementById('editBoxSizeInput').value) || 0;
-            const packType = document.getElementById('editPackTypeSelect').value;
-            const pj = packJobs.find(p => p.id === id);
-            if(!pj || newQty <= 0 || newBox <= 0) return alert('Enter valid quantity & box size!');
-
-            pj.orderQty = newQty;
-            pj.pcsPerBox = newBox;
-            pj.packType = packType;
-            if(packType === 'INDIVIDUAL') {
-                let single = document.getElementById('adminEditSingleItemSelect').value;
-                pj.kitItems = [single];
-                pj.kitType = `Individual ${single} Box`;
-            } else {
-                pj.kitItems = Array.from(document.querySelectorAll('.admin-edit-kit-item:checked')).map(cb => cb.value);
-                pj.kitType = `${pj.kitItems.length}-in-1 Kit (${pj.kitItems.join(', ')})`;
-            }
-
-            saveData();
-            loadAdminPackOrderList();
-            alert(`✅ Customer Order [${id}] Updated Successfully!`);
-        }
-
-        function loadAdminBatchJobList() {
-            const select = document.getElementById('adminBatchJobSelect');
-            if(!select) return;
-            select.innerHTML = '<option value="">-- SELECT JOB FOR BATCH FIX --</option>';
-            jobs.forEach(j => select.innerHTML += `<option value="${j.id}">${j.id} - ${j.product}</option>`);
-        }
-
-        function loadBatchesForSelectedJob() {
-            const jobId = document.getElementById('adminBatchJobSelect').value;
-            const panel = document.getElementById('adminBatchEditPanel');
-            const batchSelect = document.getElementById('adminBatchSelect');
-            batchSelect.innerHTML = '<option value="">-- SELECT BATCH --</option>';
-            if(!jobId) { panel.classList.add('hidden'); return; }
-            const job = jobs.find(j => j.id === jobId);
-            if(job && job.runningBatches && job.runningBatches.length > 0) {
-                panel.classList.remove('hidden');
-                job.runningBatches.forEach(b => {
-                    batchSelect.innerHTML += `<option value="${b.batchId}">[${b.stage}] Batch ${b.batchId} (${b.producedQty || 0} Units)</option>`;
-                });
-                loadBatchQtyForEdit();
-            } else { panel.classList.add('hidden'); }
-        }
-
-        function loadBatchQtyForEdit() {
-            const jobId = document.getElementById('adminBatchJobSelect').value;
-            const batchId = document.getElementById('adminBatchSelect').value;
-            const job = jobs.find(j => j.id === jobId);
-            const weightSec = document.getElementById('adminSlitWeightEditSec');
-
-            if(job && job.runningBatches) {
-                const b = job.runningBatches.find(x => x.batchId === batchId);
-                if(b) {
-                    document.getElementById('editBatchOutputQtyInput').value = b.producedQty || 0;
-                    if(b.stage === 'Slitting') {
-                        weightSec.classList.remove('hidden');
-                        document.getElementById('editBatchOutputWeightInput').value = b.outputWeightKg || 0;
-                    } else {
-                        weightSec.classList.add('hidden');
-                    }
-                }
-            }
-        }
+    }
+}
 
         function saveAdminBatchQtyCorrection() {
             const jobId = document.getElementById('adminBatchJobSelect').value;

@@ -3378,9 +3378,35 @@ function startPackingJob() {
         return;
     }
 
+    // 🟢 नया वैलिडेटर: चेक करें कि क्या कम से कम एक QC क्रेट या स्टॉक इश्यू किया गया है या नहीं
+    let totalCratesIssued = 0;
+    let componentLots = {};
+    let stockError = false;
+
+    document.querySelectorAll('.pack-crate-input').forEach(inp => {
+        let pName = inp.getAttribute('data-product');
+        let q = parseInt(inp.value) || 0;
+        if(q > 0) {
+            totalCratesIssued += q;
+            let jobSelect = document.querySelector(`.pack-job-select[data-product="${pName}"]`);
+            let jId = jobSelect ? jobSelect.value : '';
+            if(pName !== 'Tissue' && !jId) {
+                stockError = true;
+            }
+        }
+    });
+
+    if(packId !== 'REGULAR_STOCK' && totalCratesIssued <= 0) {
+        return alert('🛑 CRATES ISSUE MANDATORY!\nआप बिना QC Approved क्रेट्स इश्यू किए पैकिंग रन चालू नहीं कर सकते!\nकृपया पहले क्रेट्स की मात्रा दर्ज करें और "Allocate QC Crates to Run" पर क्लिक करें।');
+    }
+
+    if(stockError) {
+        return alert('⚠️ STOCK LOT ERROR!\nकृपया सुनिश्चित करें कि प्रत्येक आइटम के लिए सही QC जॉब/लॉट (Job ID) सेलेक्ट किया गया है।');
+    }
+
     let activeOnSelectedMachine = packJobs.find(p => p.machine === targetMachine && (p.status === 'Running' || p.status === 'Held'));
     if(activeOnSelectedMachine && activeOnSelectedMachine.id !== packId) {
-        alert(`⚠️ WORKSTATION BUSY!\nWorkstation [${targetMachine}] is currently running Order [${activeOnSelectedMachine.id}] for ${activeOnSelectedMachine.customer}.\nYou must FINISH or HOLD the active run before starting a new job on ${targetMachine}.`);
+        alert(`⚠️ WORKSTATION BUSY!\nWorkstation [${targetMachine}] is currently running Order [${activeOnSelectedMachine.id}].`);
         return;
     }
 
@@ -4297,89 +4323,91 @@ function loadBatchQtyForEdit() {
 
             renderOrdersTable();
 
-            // Real-Time Live Workstations Dashboard Cards
-            const dash = document.getElementById('machineDashboard');
-            if(dash) {
-                dash.innerHTML = '';
-                let allMachines = [...machines['Slitting'], ...machines['Cutting'], ...machines['Forming'], ...machines['QC'], ...machines['Packing']];
-                
-                allMachines.forEach(m => {
-                    let isRunning = false, isHeld = false;
-                    let activeInfoList = [];
+            // Real-Time Live Workstations Dashboard Cards (Updated for Packing & Manual Lanes)
+const dash = document.getElementById('machineDashboard');
+if(dash) {
+    dash.innerHTML = '';
+    let allMachines = [...machines['Slitting'], ...machines['Cutting'], ...machines['Forming'], ...machines['QC'], ...machines['Packing']];
+    
+    allMachines.forEach(m => {
+        let isRunning = false, isHeld = false;
+        let activeInfoList = [];
 
-                    if(m.startsWith('Packing-')) {
-                        let activePacks = packJobs.filter(p => p.machine === m && (p.status === 'Running' || p.status === 'Held'));
-                        if(activePacks.length > 0) {
-                            activePacks.forEach(activePack => {
-                                if(activePack.status === 'Running') isRunning = true;
-                                if(activePack.status === 'Held') isHeld = true;
-                                activeInfoList.push({
-                                    jobId: activePack.id, product: activePack.kitType,
-                                    worker: activePack.worker || 'Packing Team', startTime: activePack.startTime || '-'
-                                });
-                            });
-                        }
-                    } else if(m === 'QC-Desk') {
-                        jobs.forEach(j => {
-                            if(j.runningBatches) {
-                                j.runningBatches.forEach(b => {
-                                    if(b.machine === 'QC-Desk' && (b.status === 'Running' || b.status === 'Held')) {
-                                        if(b.status === 'Running') isRunning = true;
-                                        if(b.status === 'Held') isHeld = true;
-                                        activeInfoList.push({
-                                            jobId: j.id, product: j.product,
-                                            worker: b.worker || 'Inspector', startTime: b.startTime || '-'
-                                        });
-                                    }
-                                });
-                            }
-                        });
-                    } else {
-                        jobs.forEach(j => {
-                            if(j.runningBatches) {
-                                j.runningBatches.forEach(b => {
-                                    if(b.machine === m && (b.status === 'Running' || b.status === 'Held')) {
-                                        if(b.status === 'Running') isRunning = true;
-                                        if(b.status === 'Held') isHeld = true;
-                                        activeInfoList.push({
-                                            jobId: j.id, product: j.product,
-                                            worker: b.worker || 'Operator', startTime: b.startTime || '-',
-                                            holdReason: b.holdReason || ''
-                                        });
-                                    }
-                                });
-                            }
-                        });
-                    }
-
-                    let statusClass = isHeld ? 'held' : isRunning ? 'running-active' : 'idle';
-                    let statusTag = isHeld ? '<span class="live-tag live-tag-held">⏸️ ON HOLD</span>' : isRunning ? `<span class="live-tag live-tag-running">▶ RUNNING ${activeInfoList.length>1?'('+activeInfoList.length+')':''}</span>` : '<span class="live-tag live-tag-idle">⚪ IDLE</span>';
-                    
-                    let detailHtml = '';
-                    if(activeInfoList.length > 0) {
-                        detailHtml = `<div style="font-size:12px; margin-top:6px; color:#2d3748; line-height:1.4; border-top:1px solid #e2e8f0; padding-top:6px;">`;
-                        activeInfoList.forEach((info, idx) => {
-                            detailHtml += `<div><b>${idx+1}.</b> <span style="color:#2b6cb0; font-weight:800;">${info.jobId}</span> (${info.product}) | Op: <b>${info.worker}</b> (${info.startTime})</div>`;
-                            if(info.holdReason) {
-                                detailHtml += `<div style="color:#c05621; font-size:11px; font-weight:bold; margin-top:3px; background:#feebc8; padding:3px 6px; border-radius:4px; border-left:3px solid #dd6b20;">⏸️ Reason: ${info.holdReason}</div>`;
-                            }
-                        });
-                        detailHtml += `</div>`;
-                    } else {
-                        detailHtml = `<div style="font-size:11px; color:#a0aec0; margin-top:6px;">Ready for next batch</div>`;
-                    }
-
-                    dash.innerHTML += `
-                        <div class="machine-card ${statusClass}" onclick="openStationAnalytics('${m}')">
-                            <div style="display:flex; justify-content:space-between; align-items:center;">
-                                <h4 style="margin:0; font-size:14px; color:#1a365d;">${m}</h4>
-                                ${statusTag}
-                            </div>
-                            ${detailHtml}
-                        </div>`;
+        // 🟢 यहाँ पैकिंग और मैनुअल लेन्स (जैसे Manual-1, Packing-1 आदि) के लिए packJobs चेक किया जा रहा है
+        if(m.startsWith('Packing-') || m.startsWith('Manual-')) {
+            let activePacks = packJobs.filter(p => p.machine === m && (p.status === 'Running' || p.status === 'Held'));
+            if(activePacks.length > 0) {
+                activePacks.forEach(activePack => {
+                    if(activePack.status === 'Running') isRunning = true;
+                    if(activePack.status === 'Held') isHeld = true;
+                    activeInfoList.push({
+                        jobId: activePack.id, product: activePack.kitType,
+                        worker: activePack.worker || 'Packing Team', startTime: activePack.startTime || '-',
+                        holdReason: activePack.holdReason || ''
+                    });
                 });
             }
+        } else if(m === 'QC-Desk') {
+            jobs.forEach(j => {
+                if(j.runningBatches) {
+                    j.runningBatches.forEach(b => {
+                        if(b.machine === 'QC-Desk' && (b.status === 'Running' || b.status === 'Held')) {
+                            if(b.status === 'Running') isRunning = true;
+                            if(b.status === 'Held') isHeld = true;
+                            activeInfoList.push({
+                                jobId: j.id, product: j.product,
+                                worker: b.worker || 'Inspector', startTime: b.startTime || '-'
+                            });
+                        }
+                    });
+                }
+            });
+        } else {
+            jobs.forEach(j => {
+                if(j.runningBatches) {
+                    j.runningBatches.forEach(b => {
+                        if(b.machine === m && (b.status === 'Running' || b.status === 'Held')) {
+                            if(b.status === 'Running') isRunning = true;
+                            if(b.status === 'Held') isHeld = true;
+                            activeInfoList.pipe ? '' : null;
+                            activeInfoList.push({
+                                jobId: j.id, product: j.product,
+                                worker: b.worker || 'Operator', startTime: b.startTime || '-',
+                                holdReason: b.holdReason || ''
+                            });
+                        }
+                    });
+                }
+            });
+        }
 
+        let statusClass = isHeld ? 'held' : isRunning ? 'running-active' : 'idle';
+        let statusTag = isHeld ? '<span class="live-tag live-tag-held">⏸️ ON HOLD</span>' : isRunning ? `<span class="live-tag live-tag-running">▶ RUNNING</span>` : '<span class="live-tag live-tag-idle">⚪ IDLE</span>';
+        
+        let detailHtml = '';
+        if(activeInfoList.length > 0) {
+            detailHtml = `<div style="font-size:12px; margin-top:6px; color:#2d3748; line-height:1.4; border-top:1px solid #e2e8f0; padding-top:6px;">`;
+            activeInfoList.forEach((info, idx) => {
+                detailHtml += `<div><b>${idx+1}.</b> <span style="color:#2b6cb0; font-weight:800;">${info.jobId}</span> (${info.product}) | Op: <b>${info.worker}</b> (${info.startTime})</div>`;
+                if(info.holdReason) {
+                    detailHtml += `<div style="color:#c05621; font-size:11px; font-weight:bold; margin-top:3px; background:#feebc8; padding:3px 6px; border-radius:4px; border-left:3px solid #dd6b20;">⏸️ Reason: ${info.holdReason}</div>`;
+                }
+            });
+            detailHtml += `</div>`;
+        } else {
+            detailHtml = `<div style="font-size:11px; color:#a0aec0; margin-top:6px;">Ready for next batch</div>`;
+        }
+
+        dash.innerHTML += `
+            <div class="machine-card ${statusClass}" onclick="openStationAnalytics('${m}')">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <h4 style="margin:0; font-size:14px; color:#1a365d;">${m}</h4>
+                    ${statusTag}
+                </div>
+                ${detailHtml}
+            </div>`;
+    });
+}
             renderDashboardAnalytics();
             renderPackingDeskLiveCards();
             applyBrandLogo();

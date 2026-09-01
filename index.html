@@ -887,7 +887,7 @@
                     </div>
                 </div>
 
-                <!-- 8. Dedicated Packing Desk with Machine-Wise Active Run & Safety Tools -->
+               <!-- 8. Dedicated Packing Desk (Updated UI Flow: Details Open Before Start) -->
 <div class="card hidden" id="secPackingDesk">
     <button class="btn-back" onclick="showNavHub()">⬅ Back to Main Menu</button>
     <h3>📦 5. Packing Station & Traceability</h3>
@@ -909,33 +909,8 @@
     <label style="color:#2b6cb0; font-weight:800;">SELECT PENDING PACKING ORDER (Queue):</label>
     <select id="pendingPackOrderSelect" onchange="loadPackJobDetails()"></select>
 
-    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:8px;">
-        <div>
-            <label>Working Shift:</label>
-            <select id="packShiftSelect" onchange="validateShiftSelection(this)">
-                <option value="DAY">DAY SHIFT</option>
-                <option value="NIGHT">NIGHT SHIFT</option>
-            </select>
-        </div>
-        <div>
-            <label style="color:#805ad5;">Packing Operator <span style="color:red;">*Mandatory</span>:</label>
-            <input type="text" id="packWorkerNameInput" list="dynamicStageWorkerDatalist_Packing" placeholder="Type Operator Name...">
-        </div>
-    </div>
-
-    <label>Enter Target Boxes to Issue for this Run:</label>
-    <input type="text" inputmode="numeric" id="packIssueBoxesCount" placeholder="Enter Boxes Qty">
-
-    <button onclick="startPackingJob()" style="background:#2b6cb0; padding:12px; margin-top:8px;">▶ Start Packing Run</button>
-
-    <hr style="margin: 14px 0; border: none; border-top: 1px solid #e2e8f0;">
-
-    <label style="color:#2b6cb0; font-weight:800;">ACTIVE RUNNING / HELD PACKING BATCH:</label>
-    <select id="packRunningJobsSelect" onchange="updatePackRunningDisplayInfo()"></select>
-
-    <div id="packActiveStatusBox" class="info-box" style="background:#fffaf0; border-color:#dd6b20;">No Active Packing Batch Selected</div>
-
-    <div id="packOrderDetailsPanel" class="hidden" style="background:#f7fafc; padding:14px; border-radius:8px; border:1px solid #cbd5e0; margin-bottom:12px;">
+    <!-- 🟢 आर्डर सेलेक्ट करते ही सारी डिटेल्स और QC क्रेट्स एलोकेशन अब 'स्टार्ट' से ठीक पहले यहाँ खुलेगा -->
+    <div id="packOrderDetailsPanel" class="hidden" style="background:#f7fafc; padding:14px; border-radius:8px; border:1px solid #cbd5e0; margin-top:10px; margin-bottom:12px;">
         <div style="font-size:13px; line-height: 1.6;">
             <b>Customer / Brand:</b> <span id="lblCustName" style="color:#2b6cb0; font-weight:bold;">-</span><br>
             <b>Pack Configuration:</b> <span id="lblKitType" style="color:#2f855a; font-weight:bold;">-</span><br>
@@ -955,6 +930,29 @@
             <button onclick="addMoreCratesToActiveRun()" style="background:#2b6cb0; font-size:12px; padding:6px 12px; margin-top:8px;">➕ Allocate QC Crates to Run</button>
         </div>
     </div>
+
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:8px;">
+        <div>
+            <label>Working Shift:</label>
+            <select id="packShiftSelect" onchange="validateShiftSelection(this)">
+                <option value="DAY">DAY SHIFT</option>
+                <option value="NIGHT">NIGHT SHIFT</option>
+            </select>
+        </div>
+        <div>
+            <label style="color:#805ad5;">Packing Operator <span style="color:red;">*Mandatory</span>:</label>
+            <input type="text" id="packWorkerNameInput" list="dynamicStageWorkerDatalist_Packing" placeholder="Type Operator Name...">
+        </div>
+    </div>
+
+    <button onclick="startPackingJob()" style="background:#2b6cb0; padding:12px; margin-top:12px;">▶ Start Packing Run</button>
+
+    <hr style="margin: 14px 0; border: none; border-top: 1px solid #e2e8f0;">
+
+    <label style="color:#2b6cb0; font-weight:800;">ACTIVE RUNNING / HELD PACKING BATCH:</label>
+    <select id="packRunningJobsSelect" onchange="updatePackRunningDisplayInfo()"></select>
+
+    <div id="packActiveStatusBox" class="info-box" style="background:#fffaf0; border-color:#dd6b20;">No Active Packing Batch Selected</div>
 
     <label style="margin-top:10px; color:#2f855a; font-weight:800;">Packed Output Boxes Produced in this Run:</label>
     <input type="text" inputmode="numeric" id="packedBoxesOutput" placeholder="Enter Boxes Produced">

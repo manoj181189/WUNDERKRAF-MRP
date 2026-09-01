@@ -3173,7 +3173,6 @@
     if(typeof loadPackJobDetails === 'function') loadPackJobDetails();
     if(typeof renderPackingDeskLiveCards === 'function') renderPackingDeskLiveCards();
     updatePackingRunningDropdown();
-    updatePackRunningDisplayInfo();
 }
 
         function updatePendingPackDropdown() {
@@ -3306,22 +3305,23 @@
             }
         }
 
-        // ==========================================
+// ==========================================
 // PACKING DESK MODULE: MASTER SYNCHRONIZED
 // ==========================================
 
-function updatePackingRunningDropdown() {
+     function updatePackingRunningDropdown() {
     const machineSelect = document.getElementById('packMachineSelect');
     const rSelect = document.getElementById('packRunningJobsSelect');
     if(!machineSelect || !rSelect) return;
 
-    const currentMachine = machineSelect.value;
+    const currentMachine = machineSelect.value; // e.g. "Packing-1"
     rSelect.innerHTML = '<option value="">-- SELECT RUNNING / HELD PACKING BATCH --</option>';
     
     let count = 0;
     if(typeof packJobs !== 'undefined' && Array.isArray(packJobs)) {
         packJobs.forEach(pj => {
-            if(pj.machine === currentMachine && (pj.status === 'Running' || pj.status === 'Held')) {
+            // फॉर्मिंग की तरह बिल्कुल सटीक मशीन मैचिंग
+            if(pj.machine && currentMachine && pj.machine.toUpperCase().trim() === currentMachine.toUpperCase().trim() && (pj.status === 'Running' || pj.status === 'Held')) {
                 rSelect.innerHTML += `<option value="${pj.id}" ${count===0?'selected':''}>${pj.id} | ${pj.customer} (${pj.kitType}) - [${pj.status}]</option>`;
                 count++;
             }

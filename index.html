@@ -3174,12 +3174,12 @@
 
         // Packing Station Module
         function onPackingMachineChange() {
-            updatePendingPackDropdown();
-            loadPackJobDetails();
-            renderPackingDeskLiveCards();
-            updatePackingRunningDropdown(); // 🟢 यह लाइन जोड़ दें
-            updatePackRunningDisplayInfo(); // 🟢 यह लाइन भी जोड़ दें
-        }
+    if(typeof updatePendingPackDropdown === 'function') updatePendingPackDropdown();
+    if(typeof loadPackJobDetails === 'function') loadPackJobDetails();
+    if(typeof renderPackingDeskLiveCards === 'function') renderPackingDeskLiveCards();
+    updatePackingRunningDropdown();
+    updatePackRunningDisplayInfo();
+}
 
         function updatePendingPackDropdown() {
             const pSelect = document.getElementById('pendingPackOrderSelect');
@@ -3312,26 +3312,88 @@
         }
 
         // ==========================================
-// PACKING DESK: START, HOLD, RESUME & FINISH FUNCTIONS (MACHINE-WISE UPGRADED)
+// PACKING DESK MODULE: MASTER SYNCHRONIZED
 // ==========================================
 
-function startPackingJob() {
-    const packId = document.getElementById('pendingPackOrderSelect').value;
-    const targetMachine = document.getElementById('packMachineSelect').value;
-    const shift = document.getElementById('packShiftSelect').value;
-    const worker = (document.getElementById('packWorkerNameInput').value || '').trim().toUpperCase();
-    const issueBoxes = parseInt(document.getElementById('packIssueBoxesCount').value) || 0;
+function updatePackingRunningDropdown() {
+    const machineSelect = document.getElementById('packMachineSelect');
+    const rSelect = document.getElementById('packRunningJobsSelect');
+    if(!machineSelect || !rSelect) return;
 
-    if(!worker) return alert('⚠️ MANDATORY FIELD MISSING!\nPlease enter Packing Operator Name before starting run.');
-    if(!packId) return alert('Please select a Packing Job from queue!');
+    const currentMachine = machineSelect.value;
+    rSelect.innerHTML = '<option value="">-- SELECT RUNNING / HELD PACKING BATCH --</option>';
+    
+    let count = 0;
+    if(typeof packJobs !== 'undefined' && Array.isArray(packJobs)) {
+        packJobs.forEach(pj => {
+            if(pj.machine === currentMachine && (pj.status === 'Running' || pj.status === 'Held')) {
+                rSelect.innerHTML += `<option value="${pj.id}" ${count===0?'selected':''}>${pj.id} | ${pj.customer} (${pj.kitType}) - [${pj.status}]</option>`;
+                count++;
+            }
+        });
+    }
+    updatePackRunningDisplayInfo();
+}
+
+function updatePackRunningDisplayInfo() {
+    const packId = document.getElementById('packRunningJobsSelect') ? document.getElementById('packRunningJobsSelect').value : '';
+    const box = document.getElementById('packActiveStatusBox');
+    if(!box) return;
+
+    if(!packId) {
+        box.innerHTML = "⚪ No Active Packing Batch Selected on this Workstation";
+        box.style.background = '#edf2f7';
+        box.style.borderColor = '#cbd5e0';
+        return;
+    }
+
+    const pj = packJobs.find(p => p.id === packId);
+    if(pj) {
+        box.innerHTML = `📦 <b>Order ID: ${pj.id}</b> | Customer: <b>${pj.customer}</b> (${pj.kitType})<br>👤 Operator: <b>${pj.worker || 'Packing'}</b> | Started: <b>${pj.startTime || '-'}</b> | Status: <b style="color:${pj.status==='Held'?'#dd6b20':'#2b6cb0'}">${(pj.status || 'RUNNING').toUpperCase()}</b>`;
+        box.style.background = pj.status === 'Held' ? '#fffaf0' : '#ebf8ff';
+        box.style.borderColor = pj.status === 'Held' ? '#dd6b20' : '#3182ce';
+    } else {
+        box.innerHTML = "⚠️ Selected batch data not found.";
+    }
+}
+
+function startPackingJob() {
+    const pendingSelect = document.getElementById('pendingPackOrderSelect');
+    const machineSelect = document.getElementById('packMachineSelect');
+    const shiftSelect = document.getElementById('packShiftSelect');
+    const workerInput = document.getElementById('packWorkerNameInput');
+
+    if(!pendingSelect || !machineSelect) {
+        alert('❌ Critical Error: Packing form elements missing in HTML.');
+        return;
+    }
+
+    const packId = pendingSelect.value;
+    const targetMachine = machineSelect.value;
+    const shift = shiftSelect ? shiftSelect.value : 'DAY';
+    const worker = workerInput ? (workerInput.value || '').trim().toUpperCase() : '';
+
+    if(!worker) {
+        alert('⚠️ MANDATORY FIELD MISSING!\nPlease enter Packing Operator Name before starting run.');
+        if(workerInput) workerInput.focus();
+        return;
+    }
+    if(!packId) {
+        alert('⚠️ Please select a Packing Job from the pending queue first!');
+        return;
+    }
 
     let activeOnSelectedMachine = packJobs.find(p => p.machine === targetMachine && (p.status === 'Running' || p.status === 'Held'));
     if(activeOnSelectedMachine && activeOnSelectedMachine.id !== packId) {
-        return alert(`⚠️ WORKSTATION BUSY!\nWorkstation [${targetMachine}] is currently running Order [${activeOnSelectedMachine.id}].`);
+        alert(`⚠️ WORKSTATION BUSY!\nWorkstation [${targetMachine}] is currently running Order [${activeOnSelectedMachine.id}] for ${activeOnSelectedMachine.customer}.\nYou must FINISH or HOLD the active run before starting a new job on ${targetMachine}.`);
+        return;
     }
 
     const nowTime = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-    if(packId !== 'REGULAR_STOCK') {
+    
+    if(packId === 'REGULAR_STOCK') {
+        alert('ℹ️ Regular stock bulk packing mode initiated.');
+    } else {
         let pj = packJobs.find(p => p.id === packId);
         if(pj) {
             pj.status = 'Running';
@@ -3339,20 +3401,20 @@ function startPackingJob() {
             pj.shift = shift;
             pj.startTime = nowTime;
             pj.worker = worker;
-            pj.issuedBoxes = issueBoxes;
             pj.holdReason = "";
+        } else {
+            alert('❌ Error: Selected pack job not found in system memory.');
+            return;
         }
     }
+
+    if(typeof saveData === 'function') saveData();
+    if(typeof updatePendingPackDropdown === 'function') updatePendingPackDropdown();
     
-    saveData();
-    updatePendingPackDropdown();
-    
-    // 🟢 यहाँ ये दोनों फंक्शन्स कॉल होना बहुत जरूरी हैं ताकि तुरंत ड्रॉपडाउन में दिखने लगे
     updatePackingRunningDropdown();
-    updatePackRunningDisplayInfo();
+    if(typeof renderPackingDeskLiveCards === 'function') renderPackingDeskLiveCards();
     
-    renderPackingDeskLiveCards();
-    alert(`✅ Packing Run Started on ${targetMachine}!`);
+    alert(`✅ Packing Run Successfully Started on ${targetMachine}!`);
 }
 
 function resumePackingJob() {
@@ -3366,7 +3428,7 @@ function resumePackingJob() {
         const nowTime = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
         pj.status = 'Running';
         pj.machine = targetMachine;
-        pj.holdReason = ""; // <--- रिज्यूम होते ही होल्ड टैग तुरंत हट जाएगा
+        pj.holdReason = "";
 
         logs.push({
             jobId: pj.id, product: pj.kitType, stage: 'Packing', machine: targetMachine,
@@ -3377,7 +3439,7 @@ function resumePackingJob() {
 
         saveData();
         updatePackingRunningDropdown();
-        renderPackingDeskLiveCards();
+        if(typeof renderPackingDeskLiveCards === 'function') renderPackingDeskLiveCards();
         alert(`▶️ Order [${pj.id}] Resumed to RUNNING on ${targetMachine}!`);
     }
 }
@@ -3433,15 +3495,22 @@ function completePackingJob() {
         rawDate: new Date().toISOString().split('T')[0], timestamp: new Date().toLocaleString()
     });
 
-    pj.machine = ""; // मशीन/लेन को फ्री कर दिया गया
+    pj.machine = ""; 
     document.getElementById('packedBoxesOutput').value = '';
     saveData();
-    updateDispatchCustomerDropdown();
-    updatePendingPackDropdown();
+    if(typeof updateDispatchCustomerDropdown === 'function') updateDispatchCustomerDropdown();
+    if(typeof updatePendingPackDropdown === 'function') updatePendingPackDropdown();
     updatePackingRunningDropdown();
-    renderPackingDeskLiveCards();
+    if(typeof renderPackingDeskLiveCards === 'function') renderPackingDeskLiveCards();
     if(typeof populateUniversalSearchSuggestions === 'function') populateUniversalSearchSuggestions();
     alert(`✅ Packing Run on ${targetMachine} Finished Successfully!`);
+}
+
+function onPackingMachineChange() {
+    if(typeof updatePendingPackDropdown === 'function') updatePendingPackDropdown();
+    if(typeof loadPackJobDetails === 'function') loadPackJobDetails();
+    if(typeof renderPackingDeskLiveCards === 'function') renderPackingDeskLiveCards();
+    updatePackingRunningDropdown();
 }
 
 // ==========================================

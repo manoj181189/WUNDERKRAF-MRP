@@ -887,79 +887,87 @@
                     </div>
                 </div>
 
-                <!-- 8. Dedicated Packing Desk with Auto-Hide Completed Orders -->
-                <div class="card hidden" id="secPackingDesk">
-                    <button class="btn-back" onclick="showNavHub()">⬅ Back to Main Menu</button>
-                    <h3>📦 5. Packing Station & Traceability</h3>
+                <!-- 8. Dedicated Packing Desk with Machine-Wise Active Run & Safety Tools -->
+<div class="card hidden" id="secPackingDesk">
+    <button class="btn-back" onclick="showNavHub()">⬅ Back to Main Menu</button>
+    <h3>📦 5. Packing Station & Traceability</h3>
 
-                    <div style="background:#edf2f7; padding:10px; border-radius:8px; margin-bottom:12px; border:1px solid #cbd5e0;">
-                        <span style="font-size:12px; font-weight:800; color:#1a365d;">⚡ LIVE PACKING WORKSTATIONS:</span>
-                        <div class="packing-desk-live-grid" id="packingDeskLiveGrid"></div>
-                    </div>
+    <div style="background:#edf2f7; padding:10px; border-radius:8px; margin-bottom:12px; border:1px solid #cbd5e0;">
+        <span style="font-size:12px; font-weight:800; color:#1a365d;">⚡ LIVE PACKING WORKSTATIONS:</span>
+        <div class="packing-desk-live-grid" id="packingDeskLiveGrid"></div>
+    </div>
 
-                    <label style="color:#2b6cb0; font-weight:800;">SELECT PACKING MACHINE / WORKSTATION:</label>
-                    <select id="packMachineSelect" onchange="onPackingMachineChange()">
-                        <option value="Packing-1">Packing-1 (Kit Machine 1)</option>
-                        <option value="Packing-2">Packing-2 (Kit Machine 2)</option>
-                        <option value="Manual-1">Manual Packing Desk 1 (Hand Work)</option>
-                        <option value="Manual-2">Manual Packing Desk 2 (Hand Work)</option>
-                        <option value="Manual-3">Manual Packing Desk 3 (Hand Work)</option>
-                  </select>
+    <label style="color:#2b6cb0; font-weight:800;">SELECT PACKING MACHINE / WORKSTATION:</label>
+    <select id="packMachineSelect" onchange="onPackingMachineChange()">
+        <option value="Packing-1">Packing-1 (Kit Machine 1)</option>
+        <option value="Packing-2">Packing-2 (Kit Machine 2)</option>
+        <option value="Manual-1">Manual Packing Desk 1 (Hand Work)</option>
+        <option value="Manual-2">Manual Packing Desk 2 (Hand Work)</option>
+        <option value="Manual-3">Manual Packing Desk 3 (Hand Work)</option>
+    </select>
 
-                    <label style="color:#2b6cb0; font-weight:800;">SELECT PENDING PACKING ORDER (Auto-Hides 100% Finished):</label>
-                    <select id="pendingPackOrderSelect" onchange="loadPackJobDetails()"></select>
+    <label style="color:#2b6cb0; font-weight:800;">SELECT PENDING PACKING ORDER (Queue):</label>
+    <select id="pendingPackOrderSelect" onchange="loadPackJobDetails()"></select>
 
-                    <div id="packOrderDetailsPanel" class="hidden" style="background:#f7fafc; padding:14px; border-radius:8px; border:1px solid #cbd5e0; margin-bottom:12px;">
-                        <div style="font-size:13px; line-height: 1.6;">
-                            <b>Customer / Brand:</b> <span id="lblCustName" style="color:#2b6cb0; font-weight:bold;">-</span><br>
-                            <b>Pack Configuration:</b> <span id="lblKitType" style="color:#2f855a; font-weight:bold;">-</span><br>
-                            <b>Target Order Qty:</b> <span id="lblOrderQty" style="font-weight:bold;">-</span> Pcs | <b>Box Size:</b> <span id="lblPcsBox">-</span> Pcs/Box<br>
-                            <b>Target Boxes:</b> <span id="lblTargetBoxes" style="color:#2b6cb0; font-weight:bold;">-</span> Boxes | <b>Balance to Pack:</b> <span id="lblBalanceQty" style="color:#e53e3e; font-weight:bold;">-</span> Pcs
-                        </div>
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:8px;">
+        <div>
+            <label>Working Shift:</label>
+            <select id="packShiftSelect" onchange="validateShiftSelection(this)">
+                <option value="DAY">DAY SHIFT</option>
+                <option value="NIGHT">NIGHT SHIFT</option>
+            </select>
+        </div>
+        <div>
+            <label style="color:#805ad5;">Packing Operator <span style="color:red;">*Mandatory</span>:</label>
+            <input type="text" id="packWorkerNameInput" list="dynamicStageWorkerDatalist_Packing" placeholder="Type Operator Name...">
+        </div>
+    </div>
 
-                        <div id="packOperatorInstructionBox" style="background:#fffaf0; border:1px dashed #dd6b20; padding:10px; border-radius:6px; margin-top:10px; font-size:13px;">
-                            <b>📌 Packaging Specs:</b><br>
-                            • Box Wrapping: <b id="lblWrapVal">-</b> | Label Placement: <b id="lblLabelVal">-</b><br>
-                            • Remarks: <span id="lblRemarkVal" style="color:#4a5568; font-style:italic;">None</span>
-                        </div>
+    <label>Enter Target Boxes to Issue for this Run:</label>
+    <input type="text" inputmode="numeric" id="packIssueBoxesCount" placeholder="Enter Boxes Qty">
 
-                        <div id="packLiveStatusBanner" class="info-box" style="margin-top:10px; background:#fffaf0; border-color:#dd6b20;">
-                            Status: <b id="lblPackLiveStatus">IDLE / READY</b>
-                        </div>
+    <button onclick="startPackingJob()" style="background:#2b6cb0; padding:12px; margin-top:8px;">▶ Start Packing Run</button>
 
-                        <div id="dynamicCrateSection" class="crate-issue-box">
-                            <h5>🔍 Select QC Approved Crates for Lot Traceability:</h5>
-                            <div id="crateInputsContainer"></div>
-                            <button onclick="addMoreCratesToActiveRun()" style="background:#2b6cb0; font-size:12px; padding:6px 12px; margin-top:8px;">➕ Allocate QC Crates to Run</button>
-                        </div>
+    <hr style="margin: 14px 0; border: none; border-top: 1px solid #e2e8f0;">
 
-                        <label style="margin-top:10px; color:#2f855a; font-weight:800;">Packed Output Boxes Produced in this Run:</label>
-                        <input type="text" inputmode="numeric" id="packedBoxesOutput" placeholder="Enter Boxes Produced">
-                    </div>
+    <label style="color:#2b6cb0; font-weight:800;">ACTIVE RUNNING / HELD PACKING BATCH:</label>
+    <select id="packRunningJobsSelect" onchange="updatePackRunningDisplayInfo()"></select>
 
-                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-                        <div>
-                            <label>Working Shift:</label>
-                            <select id="packShiftSelect" onchange="validateShiftSelection(this)">
-                                <option value="DAY">DAY SHIFT</option>
-                                <option value="NIGHT">NIGHT SHIFT</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label style="color:#805ad5;">Packing Operator <span style="color:red;">*Mandatory</span>:</label>
-                            <input type="text" id="packWorkerNameInput" list="dynamicStageWorkerDatalist_Packing" placeholder="Type Operator Name...">
-                        </div>
-                    </div>
+    <div id="packActiveStatusBox" class="info-box" style="background:#fffaf0; border-color:#dd6b20;">No Active Packing Batch Selected</div>
 
-                    <div style="display:grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap:6px; margin-top:10px;">
-                        <button onclick="startPackingJob()" style="background:#2f855a;">▶ Start</button>
-                        <button class="btn-hold" onclick="openHoldModal(document.getElementById('packMachineSelect').value)">⏸️ Hold</button>
-                        <button class="btn-resume" onclick="resumePackingJob()">▶️ Resume</button>
-                        <button class="btn-done" onclick="completePackingJob()">⏹️ Finish</button>
-                        
-                    </div>
-                </div>
+    <div id="packOrderDetailsPanel" class="hidden" style="background:#f7fafc; padding:14px; border-radius:8px; border:1px solid #cbd5e0; margin-bottom:12px;">
+        <div style="font-size:13px; line-height: 1.6;">
+            <b>Customer / Brand:</b> <span id="lblCustName" style="color:#2b6cb0; font-weight:bold;">-</span><br>
+            <b>Pack Configuration:</b> <span id="lblKitType" style="color:#2f855a; font-weight:bold;">-</span><br>
+            <b>Target Order Qty:</b> <span id="lblOrderQty" style="font-weight:bold;">-</span> Pcs | <b>Box Size:</b> <span id="lblPcsBox">-</span> Pcs/Box<br>
+            <b>Target Boxes:</b> <span id="lblTargetBoxes" style="color:#2b6cb0; font-weight:bold;">-</span> Boxes | <b>Balance to Pack:</b> <span id="lblBalanceQty" style="color:#e53e3e; font-weight:bold;">-</span> Pcs
+        </div>
 
+        <div id="packOperatorInstructionBox" style="background:#fffaf0; border:1px dashed #dd6b20; padding:10px; border-radius:6px; margin-top:10px; font-size:13px;">
+            <b>📌 Packaging Specs:</b><br>
+            • Box Wrapping: <b id="lblWrapVal">-</b> | Label Placement: <b id="lblLabelVal">-</b><br>
+            • Remarks: <span id="lblRemarkVal" style="color:#4a5568; font-style:italic;">None</span>
+        </div>
+
+        <div id="dynamicCrateSection" class="crate-issue-box" style="margin-top:10px;">
+            <h5>🔍 Select QC Approved Crates for Lot Traceability:</h5>
+            <div id="crateInputsContainer"></div>
+            <button onclick="addMoreCratesToActiveRun()" style="background:#2b6cb0; font-size:12px; padding:6px 12px; margin-top:8px;">➕ Allocate QC Crates to Run</button>
+        </div>
+    </div>
+
+    <label style="margin-top:10px; color:#2f855a; font-weight:800;">Packed Output Boxes Produced in this Run:</label>
+    <input type="text" inputmode="numeric" id="packedBoxesOutput" placeholder="Enter Boxes Produced">
+
+    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap:8px; margin-top:10px;">
+        <button class="btn-partial" onclick="forwardPartialPackingOutput()" style="background:#805ad5;">⚡ Forward Partial</button>
+        <button class="btn-reverse" onclick="quickReturnUnprocessedPackingBoxes()" style="background:#e53e3e;">↩️ Quick Un-issue</button>
+        <button class="btn-hold" onclick="openHoldModal(document.getElementById('packMachineSelect').value)">⏸️ Hold</button>
+        <button class="btn-resume" onclick="resumePackingJob()">▶️ Resume</button>
+        <button class="btn-done" onclick="completePackingJob()">⏹️ Finish Run</button>
+        <button onclick="cancelActivePackingRun()" style="background:#c53030; font-size:13px; padding:10px;">❌ Cancel & Revert Run</button>
+    </div>
+</div>
                 <!-- 9. Universal Lifecycle Search with Instant Dynamic Autocomplete -->
                 <div class="card hidden" id="secReport">
                     <button class="btn-back" onclick="showNavHub()">⬅ Back to Main Menu</button>

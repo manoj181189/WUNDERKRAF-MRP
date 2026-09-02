@@ -3321,25 +3321,57 @@
 // PACKING DESK MODULE: MASTER SYNCHRONIZED
 // ==========================================
 
-     function updatePackingRunningDropdown() {
-    const machineSelect = document.getElementById('packMachineSelect');
-    const rSelect = document.getElementById('packRunningJobsSelect');
-    if(!machineSelect || !rSelect) return;
+    function addMoreCratesToActiveRun() {
+    const packId = document.getElementById('pendingPackOrderSelect').value;
+    if(!packId) return alert('Please select Packing Order first!');
+    let inputs = document.querySelectorAll('.pack-crate-input');
 
-    const currentMachine = machineSelect.value; // e.g. "Packing-1"
-    rSelect.innerHTML = '<option value="">-- SELECT RUNNING / HELD PACKING BATCH --</option>';
-    
-    let count = 0;
-    if(typeof packJobs !== 'undefined' && Array.isArray(packJobs)) {
-        packJobs.forEach(pj => {
-            // फॉर्मिंग की तरह बिल्कुल सटीक मशीन मैचिंग
-            if(pj.machine && currentMachine && pj.machine.toUpperCase().trim() === currentMachine.toUpperCase().trim() && (pj.status === 'Running' || pj.status === 'Held')) {
-                rSelect.innerHTML += `<option value="${pj.id}" ${count===0?'selected':''}>${pj.id} | ${pj.customer} (${pj.kitType}) - [${pj.status}]</option>`;
-                count++;
+    let anyAllocated = false;
+    let missingItems = [];
+
+    // 🟢 यदि रनिंग बैच चल रहा है, तो active packId को रनिंग वाले से ले लें
+    let activeRunningId = document.getElementById('packRunningJobsSelect') ? document.getElementById('packRunningJobsSelect').value : '';
+    let targetPackId = packId || activeRunningId;
+
+    if(!targetPackId) return alert('Please select or ensure an active packing job/batch is selected!');
+
+    inputs.forEach(inp => {
+        let pName = inp.getAttribute('data-product');
+        let reqQty = parseInt(inp.value) || 0;
+        if(pName !== 'Tissue' && reqQty > 0) {
+            let jobSelect = document.querySelector(`.pack-job-select[data-product="${pName}"]`);
+            let selectedJobId = jobSelect ? jobSelect.value : null;
+            if(selectedJobId) {
+                let j = jobs.find(x => x.id === selectedJobId);
+                if(j && (j.availableQcCrates || 0) >= reqQty) {
+                    j.availableQcCrates -= reqQty;
+                    let pj = packJobs.find(p => p.id === targetPackId);
+                    if(pj) {
+                        if(!pj.issuedCrates) pj.issuedCrates = {};
+                        // 🟢 यहाँ पुराना जितना था उसमें नया reqQty जुड़ जाएगा (Plus हो जाएगा)
+                        pj.issuedCrates[pName] = (pj.issuedCrates[pName] || 0) + reqQty;
+                        anyAllocated = true;
+                    }
+                } else {
+                    missingItems.push(`${pName} (Requested ${reqQty}, available: ${j ? j.availableQcCrates : 0})`);
+                }
+            } else {
+                missingItems.push(`${pName} (0 QC Crates in stock)`);
             }
-        });
+        }
+    });
+
+    if(missingItems.length > 0) {
+        alert(`⚠️ QC STOCK ERROR!\nCannot allocate crates for following items:\n• ${missingItems.join('\n• ')}`);
     }
-    updatePackRunningDisplayInfo();
+
+    if(anyAllocated) {
+        saveData();
+        loadPackJobDetails();
+        // 🟢 तुरंत नीचे का डिस्प्ले और काउंट अपडेट करें
+        updatePackRunningDisplayInfo();
+        alert('✅ QC Crates successfully added/top-up to active run!');
+    }
 }
 
 // 1. अपडेटेड डिस्प्ले फंक्शन (जिसमें लाइव इश्यू किए गए क्रेट्स दिखेंगे)

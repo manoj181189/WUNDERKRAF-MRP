@@ -140,6 +140,7 @@
         .packing-desk-live-card.running { border-top-color: #3182ce; background: #f0f7ff; }
         .packing-desk-live-card.held { border-top-color: #dd6b20; background: #fffaf0; }
 
+        /* --- Desktop Side-by-Side Layout Fix for Laptop/PC --- */
         @media (min-width: 1024px) {
             .layout-with-sidebar {
                 display: grid !important;
@@ -158,6 +159,7 @@
             }
         }
 
+        /* --- Wünderkraf ERP Final Bulletproof Mobile Fix --- */
         @media (max-width: 768px) {
             html, body {
                 width: 100% !important;
@@ -271,6 +273,7 @@
 
         <div class="layout" id="workspaceLayout">
             
+            <!-- Sidebar / Dynamic Desk Modules Container -->
             <div class="sidebar" id="sidebarContainer">
 
                 <!-- 1. Marketing Team Panel -->
@@ -378,6 +381,8 @@
                     <button class="btn-back" onclick="showNavHub()">⬅ Back to Main Menu</button>
                     <h3>🛠️ Admin - Corrections, Scrap Ledger & Series</h3>
                     
+                    <!-- Scrap Inventory Ledger & Sales Record -->
+                    <!-- 1. Direct Stage-to-Stage Stock Balancing & Rollback Manager -->
                     <div style="background:#edf2f7; border:1px solid #cbd5e0; padding:14px; border-radius:8px; margin-bottom:14px;">
                         <span style="font-size:13px; font-weight:800; color:#2b6cb0;">🔄 DIRECT STAGE-TO-STAGE STOCK BALANCING & ROLLBACK:</span>
                         <label>Select Job to Balance / Correct Stages:</label>
@@ -403,6 +408,7 @@
                                 </div>
                             </div>
 
+                            <!-- Quick Rollback Helper -->
                             <div style="background:#fffaf0; border:1px dashed #dd6b20; padding:10px; border-radius:6px; margin:10px 0;">
                                 <b style="color:#dd6b20; font-size:12px;">⚡ QUICK STAGE ROLLBACK SHORTCUT:</b>
                                 <div style="display:grid; grid-template-columns: 1.2fr 1fr 0.8fr; gap:6px; margin-top:6px; align-items:center;">
@@ -420,6 +426,7 @@
                         </div>
                     </div>
 
+                    <!-- 2. Time & Operator Entry Correction Manager -->
                     <div style="background:#fffaf0; border:1px solid #feebc8; padding:14px; border-radius:8px; margin-bottom:14px;">
                         <span style="font-size:13px; font-weight:800; color:#dd6b20;">⏱️ TIME, OPERATOR & AUDIT LOG ENTRY CORRECTION:</span>
                         <label>Select Job ID / Order:</label>
@@ -480,6 +487,7 @@
                         <button onclick="recordScrapSale()" style="background:#dd6b20; font-size:13px; padding:8px; margin-top:4px;">📉 Record Scrap Sale / Deduct</button>
                     </div>
 
+                    <!-- Product-Wise Sequential Series Counters -->
                     <div style="background:#f7fafc; border:1px solid #cbd5e0; padding:14px; border-radius:8px; margin-bottom:14px;">
                         <span style="font-size:13px; font-weight:800; color:#2b6cb0;">🔢 PRODUCT-WISE JOB SERIES MANAGER:</span>
                         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px; margin-top:8px;">
@@ -507,6 +515,7 @@
                         <button onclick="saveSeriesConfig()" style="background:#2b6cb0; font-size:13px; padding:8px; margin-top:6px;">💾 Update Product Series Counters</button>
                     </div>
 
+                    <!-- Emergency Stock Re-Allocation -->
                     <div style="background:#ebf8ff; border:1px solid #bee3f8; padding:14px; border-radius:8px; margin-bottom:14px;">
                         <span style="font-size:13px; font-weight:800; color:#2b6cb0;">🔄 EMERGENCY STOCK RE-ALLOCATION:</span>
                         <label>1. Source Order (Has Ready Stock in WH):</label>
@@ -521,6 +530,7 @@
                         <button onclick="adminExecuteStockReallocation()" style="background:#2b6cb0; margin-top:8px;">🔄 Execute Instant Box Transfer</button>
                     </div>
 
+                    <!-- Customer Order Specs Correction -->
                     <div style="background:#fffaf0; border:1px solid #feebc8; padding:14px; border-radius:8px; margin-bottom:14px;">
                         <span style="font-size:13px; font-weight:800; color:#dd6b20;">1. EDIT CUSTOMER ORDER & KIT CONFIG:</span>
                         <select id="adminPackOrderSelect" onchange="loadPackOrderForAdminEdit()" style="margin-top:6px;"></select>
@@ -563,6 +573,7 @@
                         </div>
                     </div>
 
+                    <!-- Production Batch Output Correction -->
                     <div style="background:#f0fff4; border:1px solid #c6f6d5; padding:14px; border-radius:8px; margin-bottom:14px;">
                         <span style="font-size:13px; font-weight:800; color:#22543d;">2. CORRECT PRODUCED BATCH OUTPUT & WEIGHT (KG):</span>
                         <select id="adminBatchJobSelect" onchange="loadBatchesForSelectedJob()" style="margin-top:6px;"></select>
@@ -583,6 +594,7 @@
                         </div>
                     </div>
 
+                    <!-- NEW: Admin Reverse / Un-issue Correction Box -->
                     <div style="background:#fff5f5; border:1px solid #feb2b2; padding:14px; border-radius:8px; margin-bottom:14px;">
                         <span style="font-size:13px; font-weight:800; color:#c53030;">⚠️ REVERSE / UN-ISSUE BATCH QUANTITY (Fix Mistaken Issue):</span>
                         <label>Select Job ID:</label>
@@ -599,6 +611,7 @@
                         <button onclick="executeAdminBatchReverse()" style="background:#e53e3e; margin-top:8px;">🔄 Reverse & Return Qty to Previous Stock</button>
                     </div>
 
+                    <!-- Job ID & Product Correction -->
                     <div style="background:#edf2f7; padding:14px; border-radius:8px;">
                         <span style="font-size:13px; font-weight:800; color:#2b6cb0;">3. CORRECT JOB ID / ITEM / PAPER BRAND:</span>
                         <select id="adminEditJobSelect" onchange="loadJobForEdit()" style="margin-top:6px;"></select>
@@ -632,7 +645,7 @@
                     </div>
                 </div>
 
-                <!-- 4. Slitting Desk -->
+                <!-- 4. Slitting Desk (Rolls Production) with Hold & Resume Lifecycle -->
                 <div class="card hidden" id="secSlitting">
                     <button class="btn-back" onclick="showNavHub()">⬅ Back to Main Menu</button>
                     <h3>1. Slitting Desk (Rolls Production)</h3>
@@ -659,6 +672,7 @@
                     </select>
 
                     <button onclick="createSlittingJob()" style="background:#2b6cb0; padding:12px;">▶ Start New Slitting Job</button>
+                    <!-- यह नया बटन यहाँ जोड़ दें -->
                     <button onclick="openAddBatchToExistingJobModal()" style="background:#319795; font-size:13px; padding:10px; margin-top:6px;">➕ Add New Reel/Batch to Existing Job ID</button>
                     <hr style="margin: 14px 0; border: none; border-top: 1px solid #e2e8f0;">
 
@@ -686,7 +700,7 @@
                     </div>
                 </div>
 
-                <!-- 5. Dedicated Cutting Desk -->
+                <!-- 5. Dedicated Cutting Desk with Hold & Resume Lifecycle -->
                 <div class="card hidden" id="secCutting">
                     <button class="btn-back" onclick="showNavHub()">⬅ Back to Main Menu</button>
                     <h3>✂️ 2. Cutting Desk (Rolls to Cut Pieces)</h3>
@@ -747,7 +761,7 @@
                     </div>
                 </div>
 
-                <!-- 6. Dedicated Forming Desk -->
+                <!-- 6. Dedicated Forming Desk with Same-Job Top-up & Scrap in Pieces -->
                 <div class="card hidden" id="secForming">
                     <button class="btn-back" onclick="showNavHub()">⬅ Back to Main Menu</button>
                     <h3>⚙️ 3. Forming Desk (Cut Pieces to Formed Products)</h3>
@@ -813,7 +827,7 @@
                     </div>
                 </div>
 
-                <!-- 7. Dedicated QC Inspection Desk -->
+                <!-- 7. Dedicated QC Inspection Desk with Hold & Resume Lifecycle -->
                 <div class="card hidden" id="secQC">
                     <button class="btn-back" onclick="showNavHub()">⬅ Back to Main Menu</button>
                     <h3>🔍 4. QC Desk (Inspection & Crate Approval)</h3>
@@ -873,93 +887,81 @@
                     </div>
                 </div>
 
-                <!-- 8. Dedicated Packing Desk -->
-                <div class="card hidden" id="secPackingDesk">
-                    <button class="btn-back" onclick="showNavHub()">⬅ Back to Main Menu</button>
-                    <h3>📦 5. Packing Station & Traceability</h3>
+               <!-- 8. Dedicated Packing Desk (Synchronized with Forming/Cutting Pattern) -->
+<div class="card hidden" id="secPackingDesk">
+    <button class="btn-back" onclick="showNavHub()">⬅ Back to Main Menu</button>
+    <h3>📦 5. Packing Station & Traceability</h3>
 
-                    <div style="background:#edf2f7; padding:10px; border-radius:8px; margin-bottom:12px; border:1px solid #cbd5e0;">
-                        <span style="font-size:12px; font-weight:800; color:#1a365d;">⚡ LIVE PACKING WORKSTATIONS:</span>
-                        <div class="packing-desk-live-grid" id="packingDeskLiveGrid"></div>
-                    </div>
+    <div style="background:#edf2f7; padding:10px; border-radius:8px; margin-bottom:12px; border:1px solid #cbd5e0;">
+        <span style="font-size:12px; font-weight:800; color:#1a365d;">⚡ LIVE PACKING WORKSTATIONS:</span>
+        <div class="packing-desk-live-grid" id="packingDeskLiveGrid"></div>
+    </div>
 
-                    <label style="color:#2b6cb0; font-weight:800;">1. SELECT PACKING MACHINE / WORKSTATION:</label>
-                    <select id="packMachineSelect" onchange="onPackingMachineChange()">
-                        <option value="Packing-1">Packing-1 (Kit Machine 1)</option>
-                        <option value="Packing-2">Packing-2 (Kit Machine 2)</option>
-                        <option value="Manual-1">Manual Packing Desk 1 (Hand Work)</option>
-                        <option value="Manual-2">Manual Packing Desk 2 (Hand Work)</option>
-                        <option value="Manual-3">Manual Packing Desk 3 (Hand Work)</option>
-                    </select>
+    <label style="color:#2b6cb0; font-weight:800;">1. SELECT PACKING MACHINE / WORKSTATION:</label>
+    <select id="packMachineSelect" onchange="onPackingMachineChange()">
+        <option value="Packing-1">Packing-1 (Kit Machine 1)</option>
+        <option value="Packing-2">Packing-2 (Kit Machine 2)</option>
+        <option value="Manual-1">Manual Packing Desk 1 (Hand Work)</option>
+        <option value="Manual-2">Manual Packing Desk 2 (Hand Work)</option>
+        <option value="Manual-3">Manual Packing Desk 3 (Hand Work)</option>
+    </select>
 
-                    <label style="color:#2b6cb0; font-weight:800;">2. Working Shift:</label>
-                    <select id="packShiftSelect" onchange="validateShiftSelection(this)">
-                        <option value="DAY">DAY SHIFT</option>
-                        <option value="NIGHT">NIGHT SHIFT</option>
-                    </select>
+    <label style="color:#2b6cb0; font-weight:800;">2. Working Shift:</label>
+    <select id="packShiftSelect" onchange="validateShiftSelection(this)">
+        <option value="DAY">DAY SHIFT</option>
+        <option value="NIGHT">NIGHT SHIFT</option>
+    </select>
 
-                    <label style="color:#805ad5;">Packing Operator <span style="color:red;">*Mandatory</span>:</label>
-                    <input type="text" id="packWorkerNameInput" list="dynamicStageWorkerDatalist_Packing" placeholder="Type Operator Name...">
+    <label style="color:#805ad5;">Packing Operator <span style="color:red;">*Mandatory</span>:</label>
+    <input type="text" id="packWorkerNameInput" list="dynamicStageWorkerDatalist_Packing" placeholder="Type Operator Name...">
 
-                    <label style="color:#2b6cb0; font-weight:800;">3. SELECT PENDING PACKING ORDER (Queue):</label>
-                    <select id="pendingPackOrderSelect" onchange="loadPackJobDetails()"></select>
+    <label style="color:#2b6cb0; font-weight:800;">3. SELECT PENDING PACKING ORDER (Queue):</label>
+    <select id="pendingPackOrderSelect" onchange="loadPackJobDetails()"></select>
 
-                    <div id="packOrderDetailsPanel" class="hidden" style="background:#f7fafc; padding:14px; border-radius:8px; border:1px solid #cbd5e0; margin-top:10px; margin-bottom:12px;">
-                        <div style="font-size:13px; line-height: 1.6;">
-                            <b>Customer / Brand:</b> <span id="lblCustName" style="color:#2b6cb0; font-weight:bold;">-</span><br>
-                            <b>Pack Configuration:</b> <span id="lblKitType" style="color:#2f855a; font-weight:bold;">-</span><br>
-                            <b>Target Order Qty:</b> <span id="lblOrderQty" style="font-weight:bold;">-</span> Pcs | <b>Box Size:</b> <span id="lblPcsBox">-</span> Pcs/Box<br>
-                            <b>Target Boxes:</b> <span id="lblTargetBoxes" style="color:#2b6cb0; font-weight:bold;">-</span> Boxes | <b>Balance to Pack:</b> <span id="lblBalanceQty" style="color:#e53e3e; font-weight:bold;">-</span> Pcs
-                        </div>
+    <!-- आर्डर सेलेक्ट करते ही सारी डिटेल्स यहाँ खुलेंगी -->
+    <div id="packOrderDetailsPanel" class="hidden" style="background:#f7fafc; padding:14px; border-radius:8px; border:1px solid #cbd5e0; margin-top:10px; margin-bottom:12px;">
+        <div style="font-size:13px; line-height: 1.6;">
+            <b>Customer / Brand:</b> <span id="lblCustName" style="color:#2b6cb0; font-weight:bold;">-</span><br>
+            <b>Pack Configuration:</b> <span id="lblKitType" style="color:#2f855a; font-weight:bold;">-</span><br>
+            <b>Target Order Qty:</b> <span id="lblOrderQty" style="font-weight:bold;">-</span> Pcs | <b>Box Size:</b> <span id="lblPcsBox">-</span> Pcs/Box<br>
+            <b>Target Boxes:</b> <span id="lblTargetBoxes" style="color:#2b6cb0; font-weight:bold;">-</span> Boxes | <b>Balance to Pack:</b> <span id="lblBalanceQty" style="color:#e53e3e; font-weight:bold;">-</span> Pcs
+        </div>
 
-                        <div id="packOperatorInstructionBox" style="background:#fffaf0; border:1px dashed #dd6b20; padding:10px; border-radius:6px; margin-top:10px; font-size:13px;">
-                            <b>📌 Packaging Specs:</b><br>
-                            • Box Wrapping: <b id="lblWrapVal">-</b> | Label Placement: <b id="lblLabelVal">-</b><br>
-                            • Remarks: <span id="lblRemarkVal" style="color:#4a5568; font-style:italic;">None</span>
-                        </div>
+        <div id="packOperatorInstructionBox" style="background:#fffaf0; border:1px dashed #dd6b20; padding:10px; border-radius:6px; margin-top:10px; font-size:13px;">
+            <b>📌 Packaging Specs:</b><br>
+            • Box Wrapping: <b id="lblWrapVal">-</b> | Label Placement: <b id="lblLabelVal">-</b><br>
+            • Remarks: <span id="lblRemarkVal" style="color:#4a5568; font-style:italic;">None</span>
+        </div>
 
-                        <div id="dynamicCrateSection" class="crate-issue-box" style="margin-top:10px;">
-                            <h5>🔍 Select QC Approved Crates for Lot Traceability:</h5>
-                            <div id="crateInputsContainer"></div>
-                            <button onclick="addMoreCratesToActiveRun()" style="background:#2b6cb0; font-size:12px; padding:6px 12px; margin-top:8px;">➕ Allocate QC Crates to Run</button>
-                        </div>
-                    </div>
+        <div id="dynamicCrateSection" class="crate-issue-box" style="margin-top:10px;">
+            <h5>🔍 Select QC Approved Crates for Lot Traceability:</h5>
+            <div id="crateInputsContainer"></div>
+            <button onclick="addMoreCratesToActiveRun()" style="background:#2b6cb0; font-size:12px; padding:6px 12px; margin-top:8px;">➕ Allocate QC Crates to Run</button>
+        </div>
+    </div>
 
-                    <button onclick="startPackingJob()" style="background:#2b6cb0; padding:12px; margin-top:12px;">▶ Start Packing Run</button>
+    <button onclick="startPackingJob()" style="background:#2b6cb0; padding:12px; margin-top:12px;">▶ Start Packing Run</button>
 
-                    <hr style="margin: 14px 0; border: none; border-top: 1px solid #e2e8f0;">
+    <hr style="margin: 14px 0; border: none; border-top: 1px solid #e2e8f0;">
 
-                    <label style="color:#2b6cb0; font-weight:800;">Active Running / Held Packing Batch:</label>
-                    <select id="packRunningJobsSelect" onchange="updatePackRunningDisplayInfo()"></select>
+    <label style="color:#2b6cb0; font-weight:800;">Active Running / Held Packing Batch:</label>
+    <select id="packRunningJobsSelect" onchange="updatePackRunningDisplayInfo()"></select>
 
-                    <div id="packActiveStatusBox" class="info-box" style="background:#fffaf0; border-color:#dd6b20;">No Active Packing Batch Selected</div>
-                    <div id="packIssuedLotsPanel" class="hidden" style="background:#f7fafc; border:1px solid #cbd5e0; padding:12px; border-radius:6px; margin-top:10px;">
-                        <b style="font-size:12px; color:#2b6cb0;">📦 Active Issued Crates & Product-wise Return (Un-issue):</b>
-                        <div id="packIssuedLotsBreakdown" style="font-size:12px; margin:6px 0; line-height:1.5;">-</div>
-                        
-                        <div style="display:grid; grid-template-columns: 1fr 1fr auto; gap:6px; margin-top:8px; align-items:center;">
-                            <select id="packUnissueProductSelect" style="margin:0; padding:6px; font-size:12px;">
-                                <option value="">-- Select Product to Un-issue --</option>
-                            </select>
-                            <input type="text" inputmode="numeric" id="packUnissueQtyInput" placeholder="Return Qty (Crates)" style="margin:0; padding:6px; font-size:12px;">
-                            <button onclick="executePackingProductUnissue()" style="background:#e53e3e; padding:6px 12px; margin:0; font-size:12px;">↩️ Un-issue</button>
-                        </div>
-                    </div>
+    <div id="packActiveStatusBox" class="info-box" style="background:#fffaf0; border-color:#dd6b20;">No Active Packing Batch Selected</div>
 
-                    <label style="margin-top:10px; color:#2f855a; font-weight:800;">Packed Output Boxes Produced in this Run:</label>
-                    <input type="text" inputmode="numeric" id="packedBoxesOutput" placeholder="Enter Boxes Produced">
+    <label style="margin-top:10px; color:#2f855a; font-weight:800;">Packed Output Boxes Produced in this Run:</label>
+    <input type="text" inputmode="numeric" id="packedBoxesOutput" placeholder="Enter Boxes Produced">
 
-                    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap:8px; margin-top:10px;">
-                        <button class="btn-partial" onclick="forwardPartialPackingOutput()" style="background:#805ad5;">⚡ Forward Partial</button>
-                        <button class="btn-reverse" onclick="quickReturnUnprocessedPackingBoxes()" style="background:#e53e3e;">↩️ Quick Un-issue</button>
-                        <button class="btn-hold" onclick="openHoldModal(document.getElementById('packMachineSelect').value)">⏸️ Hold / Shift</button>
-                        <button class="btn-resume" onclick="resumePackingJob()" style="background:#319795; color:white;">▶️ Resume</button>
-                        <button class="btn-done" onclick="completePackingJob()">⏹️ Finish Run</button>
-                        <button onclick="cancelActivePackingRun()" style="background:#c53030; font-size:13px; padding:10px;">❌ Cancel & Revert Run</button>
-                    </div>
-                </div>
-
-                <!-- 9. Universal Lifecycle Search -->
+    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap:8px; margin-top:10px;">
+        <button class="btn-partial" onclick="forwardPartialPackingOutput()" style="background:#805ad5;">⚡ Forward Partial</button>
+        <button class="btn-reverse" onclick="quickReturnUnprocessedPackingBoxes()" style="background:#e53e3e;">↩️ Quick Un-issue</button>
+        <button class="btn-hold" onclick="openHoldModal(document.getElementById('packMachineSelect').value)">⏸️ Hold / Shift</button>
+        <button class="btn-resume" onclick="resumePackingJob()" style="background:#319795; color:white;">▶️ Resume</button>
+        <button class="btn-done" onclick="completePackingJob()">⏹️ Finish Run</button>
+        <button onclick="cancelActivePackingRun()" style="background:#c53030; font-size:13px; padding:10px;">❌ Cancel & Revert Run</button>
+    </div>
+</div>
+                <!-- 9. Universal Lifecycle Search with Instant Dynamic Autocomplete -->
                 <div class="card hidden" id="secReport">
                     <button class="btn-back" onclick="showNavHub()">⬅ Back to Main Menu</button>
                     <h3>6. Universal Search & Lifecycle Traceability</h3>
@@ -971,38 +973,38 @@
                     <button onclick="trackJob()" style="background:#2b6cb0; padding:12px;">🔍 Search Complete Lifecycle</button>
                     <div id="historyResult" style="margin-top:12px;"></div>
                 </div>
+                 <!-- Maintenance & Breakdown Audit Log Section -->
+<div class="card hidden" id="secMaintenance">
+    <button class="btn-back" onclick="showNavHub()">⬅ Back to Main Menu</button>
+    <h3>🛠️ Maintenance, Breakdown & Hold Audit Log</h3>
+    <div style="background:#fffaf0; border:1px solid #feebc8; padding:12px; border-radius:8px; margin-bottom:12px;">
+        <span style="font-size:13px; font-weight:800; color:#dd6b20;">⚡ MACHINE DOWNTIME & HOLD HISTORY:</span>
+        <p style="font-size:12px; color:#4a5568; margin:4px 0 10px 0;">यहाँ मशीनों के होल्ड होने का समय, कारण और कुल डाउनटाइम (Duration) की पूरी रिपोर्ट देख सकते हैं।</p>
+    </div>
+    <div class="table-responsive">
+        <table class="summary-table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Machine Name</th>
+                    <th>Hold / Breakdown Reason</th>
+                    <th>Start Time</th>
+                    <th>End Time / Resume</th>
+                    <th>Total Downtime</th>
+                    <th>Reported By</th>
+                </tr>
+            </thead>
+            <tbody id="maintenanceAuditTableBody"></tbody>
+        </table>
+    </div>
+</div>             
 
-                <!-- Maintenance & Breakdown Audit Log Section -->
-                <div class="card hidden" id="secMaintenance">
-                    <button class="btn-back" onclick="showNavHub()">⬅ Back to Main Menu</button>
-                    <h3>🛠️ Maintenance, Breakdown & Hold Audit Log</h3>
-                    <div style="background:#fffaf0; border:1px solid #feebc8; padding:12px; border-radius:8px; margin-bottom:12px;">
-                        <span style="font-size:13px; font-weight:800; color:#dd6b20;">⚡ MACHINE DOWNTIME & HOLD HISTORY:</span>
-                        <p style="font-size:12px; color:#4a5568; margin:4px 0 10px 0;">यहाँ मशीनों के होल्ड होने का समय, कारण और कुल डाउनटाइम (Duration) की पूरी रिपोर्ट देख सकते हैं।</p>
-                    </div>
-                    <div class="table-responsive">
-                        <table class="summary-table">
-                            <thead>
-                                <tr>
-                                    <th>Date</th>
-                                    <th>Machine Name</th>
-                                    <th>Hold / Breakdown Reason</th>
-                                    <th>Start Time</th>
-                                    <th>End Time / Resume</th>
-                                    <th>Total Downtime</th>
-                                    <th>Reported By</th>
-                                </tr>
-                            </thead>
-                            <tbody id="maintenanceAuditTableBody"></tbody>
-                        </table>
-                    </div>
-                </div>             
-
-                <!-- 10. Admin Settings -->
+                <!-- 10. Admin Settings, User Permission Manager & Master Controls -->
                 <div class="card hidden" id="secAdminSettings">
                     <button class="btn-back" onclick="showNavHub()">⬅ Back to Main Menu</button>
                     <h3>📊 7. Master Settings, RBAC Permissions & Shift Timings</h3>
                     
+                    <!-- Admin User RBAC Permission Manager -->
                     <div style="background:#ebf8ff; border:1px solid #bee3f8; padding:14px; border-radius:8px; margin-bottom:14px;">
                         <span style="font-size:13px; font-weight:800; color:#2b6cb0;">👥 USER PERMISSION & ACCOUNT MANAGER (RBAC):</span>
                         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px; margin-top:6px;">
@@ -1100,6 +1102,7 @@
             <!-- RIGHT MAIN DASHBOARDS -->
             <div class="main-content" id="mainContentContainer">
 
+                <!-- 1. Pure Factory Analytics & Bar Charts -->
                 <div class="card hidden" id="dashSecStockMatrix">
                     <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; border-bottom: 2px solid #edf2f7; padding-bottom: 8px;">
                         <h3 style="margin:0; border:none; padding:0;">📊 Raw & Processed Stock Matrix (Click Any Number for Lot Breakdown)</h3>
@@ -1121,11 +1124,14 @@
                         </table>
                     </div>
                 </div>
+
+                <!-- 3. Customer Packing Orders & Finished Stock -->
                 
                 <div class="card hidden" id="dashSecWorkstations">
                     <h3>⚙️ Factory Workstations Status (Real-Time Running Details)</h3>
                     <div class="dash-grid" id="machineDashboard"></div>
                 </div>
+
             
                 <div class="card hidden" id="dashSecCustomerOrders">
                     <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
@@ -1136,6 +1142,7 @@
                         </div>
                     </div>
 
+                    <!-- Filter Controls for Orders -->
                     <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:8px; background:#f7fafc; padding:10px; border-radius:6px; border:1px solid #e2e8f0; margin-top:8px;">
                         <div>
                             <label style="margin:0; font-size:11px;">Filter by Customer Name:</label>
@@ -1169,6 +1176,8 @@
                         </table>
                     </div>
                 </div>
+
+                <!-- 4. Workstations Live Status Tracker -->
                 
                 <div class="card hidden" id="dashSecAnalytics">
                     <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
@@ -1187,7 +1196,7 @@
 
                     <div style="display:grid; grid-template-columns: 1fr; gap:14px; margin-top:16px;">
                         <div style="background:#f7fafc; padding:12px; border-radius:8px; border:1px solid #e2e8f0;">
-                            <h4 style="margin:0 0 8px 0; font-size:14px; color:#2b6cb0;">⚙️ Machine-Wise Monthly Output</h4>
+                            <h4 style="margin:0 0 8px 0; font-size:14px; color:#2b6cb0;">⚙️ Machine-Wise Monthly Output (Pure Operating Machines Only)</h4>
                             <div class="table-responsive">
                                 <table class="summary-table">
                                     <thead><tr><th>Machine Name</th><th>Runs</th><th>Total Produced</th><th>Logged Run Time</th></tr></thead>
@@ -1196,7 +1205,7 @@
                             </div>
                         </div>
                         <div style="background:#f7fafc; padding:12px; border-radius:8px; border:1px solid #e2e8f0;">
-                            <h4 style="margin:0 0 8px 0; font-size:14px; color:#2f855a;">🏆 Worker / Operator Performance Ranking</h4>
+                            <h4 style="margin:0 0 8px 0; font-size:14px; color:#2f855a;">🏆 Worker / Operator Performance Ranking (Real Operators Only)</h4>
                             <div class="table-responsive">
                                 <table class="summary-table">
                                     <thead><tr><th>Operator / Worker Name</th><th>Batches Worked</th><th>Total Output</th><th>Total Time Logged</th></tr></thead>
@@ -1206,8 +1215,10 @@
                         </div>
                     </div>
                 </div>
+                
+                <!-- 2. Live Inventory Stock Matrix -->
+                </div>
 
-            </div>
         </div>
     </div>
 
@@ -1315,8 +1326,9 @@
         </div>
     </div>
 
-    <!-- Core JavaScript Application Logic -->
+    <!-- Core JavaScript Application Logic with Firebase Realtime Sync -->
     <script>
+        // Initialize Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyANckx8R4G5Bj3i7ZMj6iYbmg1rhPUEQ4M",
             authDomain: "wunderkraf-erp.firebaseapp.com",
@@ -1347,8 +1359,8 @@
             'Cutting': ['Cutting-1', 'Cutting-2'],
             'Forming': ['Forming-1', 'Forming-2', 'Forming-3', 'Forming-4', 'Forming-5', 'Forming-6', 'Forming-7'],
             'QC': ['QC-Desk'],
-            'Packing': ['Packing-1', 'Packing-2', 'Manual-1', 'Manual-2', 'Manual-3']
-        };
+            'Packing': ['Packing-1', 'Packing-2', 'Manual-1', 'Manual-2', 'Manual-3'] // <-- ये नई मैनुअल लेन्स जोड़ दी गई हैं
+         };
 
         let products = ['Spoon', 'Fork', 'Knife', 'Dessert Spoon'];
         let deptWorkers = {
@@ -1376,18 +1388,10 @@
         let currentActiveModalMachine = "";
         let currentTargetHoldMachine = "";
 
+        // Core Data Arrays (Will Sync from Firebase)
         let jobs = [];
         let logs = [];
         let packJobs = [];
-
-        // Guaranteed Globally Unique Batch ID Generator (Completely Prevents Duplicate Cross-Stage Numbers)
-        function generateUniqueBatchId(stagePrefix, jobId) {
-            const cleanStage = (stagePrefix || 'B').toUpperCase().slice(0, 4);
-            const cleanJob = (jobId || 'GEN').replace(/[^a-zA-Z0-9]/g, '').slice(-6);
-            const timeHash = Date.now().toString(36).toUpperCase().slice(-4);
-            const randPart = Math.floor(1000 + Math.random() * 9000);
-            return `${cleanStage}-${cleanJob}-${timeHash}${randPart}`;
-        }
 
         // Real-Time Firebase Sync Listener
         function initFirebaseSync() {
@@ -1403,7 +1407,6 @@
                     if(data.whatsappConfig) whatsappConfig = data.whatsappConfig;
                     if(data.shiftConfig) shiftConfig = data.shiftConfig;
                 }
-                renderDepartmentDatalists();
                 if(currentUser) {
                     renderUI();
                     updateRunningSlitDropdown();
@@ -1790,6 +1793,7 @@
             return jobs.filter(j => j.product === prodName && (j.availableQcCrates || 0) > 0);
         }
 
+        // Backup & Reset Controls
         function syncToGoogleDrive() {
             const backupData = JSON.stringify({ jobs, logs, packJobs, users, deptWorkers, paperBrands, shiftConfig, whatsappConfig, seriesConfig, machines, scrapSales });
             const blob = new Blob([backupData], { type: 'application/json' });
@@ -1816,7 +1820,7 @@
             } else { alert('❌ Incorrect Password! Reset Aborted.'); }
         }
 
-        // Authentication
+        // Authentication & Privacy Autocomplete
         function renderUserLoginAutocomplete() {
             const dl = document.getElementById('userAutocompleteList');
             if(!dl) return;
@@ -1883,6 +1887,7 @@
             alert('✅ Your password has been updated successfully!');
         }
 
+        // Strict Role-Based Visibility Engine
         function showNavHub() {
             document.getElementById('navHubSection').classList.remove('hidden');
             document.getElementById('sidebarContainer').classList.add('hidden');
@@ -1929,25 +1934,20 @@
             if(secId === 'secForming' && !perms.includes('Admin') && !perms.includes('Forming')) return showNavHub();
             if(secId === 'secQC' && !perms.includes('Admin') && !perms.includes('QC')) return showNavHub();
             if(secId === 'secPackingDesk' && !perms.includes('Admin') && !perms.includes('Packing')) return showNavHub();
-            if(secId === 'secMaintenance') renderMaintenanceAuditTable();
 
             document.getElementById('navHubSection').classList.add('hidden');
             document.getElementById('sidebarContainer').classList.remove('hidden');
             document.getElementById('mainContentContainer').classList.remove('hidden');
 
-            ['secMarketing', 'secDispatch', 'secAdminJobEdit', 'secMasterDashboard', 'secSlitting', 'secCutting', 'secForming', 'secQC', 'secPackingDesk', 'secReport', 'secAdminSettings', 'secMaintenance'].forEach(id => {
-                let el = document.getElementById(id);
-                if(el) el.classList.add('hidden');
+            ['secMarketing', 'secDispatch', 'secAdminJobEdit', 'secMasterDashboard', 'secSlitting', 'secCutting', 'secForming', 'secQC', 'secPackingDesk', 'secReport', 'secAdminSettings'].forEach(id => {
+                document.getElementById(id).classList.add('hidden');
             });
             document.getElementById(secId).classList.remove('hidden');
 
             const layoutEl = document.getElementById('workspaceLayout');
             layoutEl.className = 'layout layout-with-sidebar';
 
-            ['dashSecAnalytics', 'dashSecStockMatrix', 'dashSecCustomerOrders', 'dashSecWorkstations'].forEach(d => {
-                let el = document.getElementById(d);
-                if(el) el.classList.add('hidden');
-            });
+            ['dashSecAnalytics', 'dashSecStockMatrix', 'dashSecCustomerOrders', 'dashSecWorkstations'].forEach(d => document.getElementById(d).classList.add('hidden'));
 
             if(secId === 'secMasterDashboard') {
                 document.getElementById('dashSecWorkstations').classList.remove('hidden');
@@ -1986,7 +1986,6 @@
                 loadReallocationDropdowns();
                 loadAdminRBACUsersList();
                 loadAdminReverseDropdowns();
-                loadAdminStageBalanceJobList();
             }
             updatePendingPackDropdown();
             updateDispatchCustomerDropdown();
@@ -2163,7 +2162,7 @@
             }
         }
 
-        // Export Daily Summary CSV
+        // Daily Executive Production Summary CSV Export
         function exportDailyExecutiveSummaryReport() {
             let sDate = document.getElementById('dashStartDate').value || document.getElementById('reportStartDate').value;
             let eDate = document.getElementById('dashEndDate').value || document.getElementById('reportEndDate').value;
@@ -2217,21 +2216,6 @@
             const link = document.createElement("a");
             link.setAttribute("href", encodeURI(csv));
             link.setAttribute("download", `Daily_Production_Executive_Summary_${new Date().toISOString().split('T')[0]}.csv`);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-
-        // Export Stock Matrix CSV
-        function exportStockMatrixCSV() {
-            const liveStock = calculateLiveStock();
-            let csv = "data:text/csv;charset=utf-8,Product_Item,Slit_Rolls,Cut_Crates,Formed_Crates,QC_Approved_Crates,Packed_Boxes\n";
-            products.forEach(p => {
-                csv += `"${p}","${liveStock[p].Rolls}","${liveStock[p].Cutting}","${liveStock[p].Forming}","${liveStock[p].QC}","${liveStock[p].Packed}"\n`;
-            });
-            const link = document.createElement("a");
-            link.setAttribute("href", encodeURI(csv));
-            link.setAttribute("download", `Stock_Matrix_${new Date().toISOString().split('T')[0]}.csv`);
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
@@ -2468,7 +2452,7 @@
             if(!worker) return alert('⚠️ MANDATORY FIELD MISSING!\nPlease enter Slitting Operator Name before starting job.');
 
             const jobId = getNextProductJobId(product);
-            const batchId = generateUniqueBatchId('SLIT', jobId);
+            const batchId = 'B-' + Math.floor(1000 + Math.random()*9000);
             const nowTime = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
 
             jobs.push({
@@ -2510,7 +2494,7 @@
                 const nowTime = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
                 targetBatch.status = 'Running';
                 targetBatch.endTime = '';
-                targetBatch.holdReason = "";
+                targetBatch.holdReason = ""; // <-- यह लाइन पुरानी होल्ड रीज़न को तुरंत साफ़ (Blank) कर देती है
 
                 logs.push({
                     jobId: targetJob.id, product: targetJob.product, stage: 'Slitting', machine: 'Slitting-1',
@@ -2531,7 +2515,7 @@
             const weightInput = parseInt(document.getElementById('slitOutputWeightKg').value) || 0;
 
             if(!batchId) return alert('Please select active slitting job!');
-            if(outInput <= 0) return alert('Please enter output rolls count (minimum 1)!');
+            if(outInput <= 0) return alert('Please enter output rolls count (minimum 0)!');
             if(weightInput <= 0) return alert('⚠️ MANDATORY FIELD MISSING!\nYou CANNOT finish slitting without entering Output Weight in KG.');
 
             let targetJob = null, targetBatch = null;
@@ -2671,7 +2655,7 @@
             if((job.availableRolls || 0) < reqQty) return alert(`Insufficient rolls! Only ${job.availableRolls} available.`);
             job.availableRolls -= reqQty;
 
-            const batchId = generateUniqueBatchId('CUT', job.id);
+            const batchId = 'B-' + Math.floor(1000 + Math.random()*9000);
             const nowTime = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
 
             if(!job.runningBatches) job.runningBatches = [];
@@ -2693,47 +2677,47 @@
         }
 
         function completeCuttingJob() {
-            const batchId = document.getElementById('cuttingRunningJobsSelect').value;
-            const outInput = parseInt(document.getElementById('cuttingOutputCount').value) || 0;
-            const scrapKg = parseInt(document.getElementById('cuttingScrapKgInput').value) || 0;
+    const batchId = document.getElementById('cuttingRunningJobsSelect').value;
+    const outInput = parseInt(document.getElementById('cuttingOutputCount').value) || 0;
+    const scrapKg = parseInt(document.getElementById('cuttingScrapKgInput').value) || 0;
 
-            if(!batchId) return alert('कृपया रनिंग कटिंग बैच सेलेक्ट करें!');
+    if(!batchId) return alert('कृपया रनिंग कटिंग बैच सेलेक्ट करें!');
 
-            let targetJob = null, targetBatch = null;
-            jobs.forEach(j => {
-                if(j.runningBatches) {
-                    let b = j.runningBatches.find(b => b.batchId === batchId && (b.status === 'Running' || b.status === 'Held'));
-                    if(b) { targetJob = j; targetBatch = b; }
-                }
-            });
-
-            if(targetBatch) {
-                const stopTime = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-                targetBatch.status = 'Completed';
-                targetBatch.endTime = stopTime;
-                targetBatch.producedQty = outInput;
-                targetBatch.scrapKg = scrapKg;
-
-                if(outInput > 0) {
-                    targetJob.availableCuttingCrates += outInput;
-                }
-
-                logs.push({
-                    jobId: targetJob.id, product: targetJob.product, stage: 'Cutting', machine: targetBatch.machine,
-                    shift: targetBatch.shift, action: `⏹️ Finished Cutting Batch ${targetBatch.batchId} (${outInput} Crates, Scrap: ${scrapKg} KG)`,
-                    worker: targetBatch.worker, user: currentUser.username, startTime: targetBatch.startTime, endTime: stopTime,
-                    rawDate: new Date().toISOString().split('T')[0], timestamp: new Date().toLocaleString()
-                });
-
-                document.getElementById('cuttingOutputCount').value = '';
-                document.getElementById('cuttingScrapKgInput').value = '0';
-                saveData();
-                updateCuttingPendingDropdown();
-                updateCuttingRunningDropdown();
-                renderUI();
-                alert(`✅ पुराना कटिंग बैच सफलतापूर्वक Finish कर दिया गया है!`);
-            }
+    let targetJob = null, targetBatch = null;
+    jobs.forEach(j => {
+        if(j.runningBatches) {
+            let b = j.runningBatches.find(b => b.batchId === batchId && (b.status === 'Running' || b.status === 'Held'));
+            if(b) { targetJob = j; targetBatch = b; }
         }
+    });
+
+    if(targetBatch) {
+        const stopTime = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        targetBatch.status = 'Completed';
+        targetBatch.endTime = stopTime;
+        targetBatch.producedQty = outInput;
+        targetBatch.scrapKg = scrapKg;
+
+        if(outInput > 0) {
+            targetJob.availableCuttingCrates += outInput;
+        }
+
+        logs.push({
+            jobId: targetJob.id, product: targetJob.product, stage: 'Cutting', machine: targetBatch.machine,
+            shift: targetBatch.shift, action: `⏹️ Finished Cutting Batch ${targetBatch.batchId} (${outInput} Crates, Scrap: ${scrapKg} KG)`,
+            worker: targetBatch.worker, user: currentUser.username, startTime: targetBatch.startTime, endTime: stopTime,
+            rawDate: new Date().toISOString().split('T')[0], timestamp: new Date().toLocaleString()
+        });
+
+        document.getElementById('cuttingOutputCount').value = '';
+        document.getElementById('cuttingScrapKgInput').value = '0';
+        saveData();
+        updateCuttingPendingDropdown();
+        updateCuttingRunningDropdown();
+        renderUI();
+        alert(`✅ पुराना कटिंग बैच सफलतापूर्वक Finish कर दिया गया है!`);
+    }
+}
 
         function updateCuttingRunningDropdown() {
             const machine = document.getElementById('cuttingMachineSelect') ? document.getElementById('cuttingMachineSelect').value : 'Cutting-1';
@@ -2776,6 +2760,7 @@
             });
         }
 
+        // Generic Resume Function for Cutting, Forming, and QC
         function resumeStageJob(deskType) {
             let selectId = deskType === 'cutting' ? 'cuttingRunningJobsSelect' : deskType === 'forming' ? 'formingRunningJobsSelect' : 'qcRunningJobsSelect';
             let batchId = document.getElementById(selectId).value;
@@ -2794,7 +2779,7 @@
                 const nowTime = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
                 targetBatch.status = 'Running';
                 targetBatch.endTime = '';
-                targetBatch.holdReason = "";
+                targetBatch.holdReason = ""; // <-- यह लाइन होल्ड रीज़न को साफ़ कर देगी
 
                 logs.push({
                     jobId: targetJob.id, product: targetJob.product, stage: targetBatch.stage, machine: targetBatch.machine,
@@ -2811,7 +2796,7 @@
             }
         }
 
-        // Dedicated Forming Desk Functions
+        // Dedicated Forming Desk Functions (With Same-Job Top-up & Scrap in Pieces)
         function onFormingDeskOpen() {
             updateFormingPendingDropdown();
             updateFormingRunningDropdown();
@@ -2889,7 +2874,7 @@
                 });
                 alert(`✅ Top-up Successful! Added ${reqQty} more crates to running Job ${job.id} on ${machine}. Total Issued: ${existingActiveBatch.issuedQty}`);
             } else {
-                const batchId = generateUniqueBatchId('FORM', job.id);
+                const batchId = 'B-' + Math.floor(1000 + Math.random()*9000);
                 const nowTime = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
 
                 job.runningBatches.push({
@@ -2911,48 +2896,48 @@
             renderUI();
         }
 
-        function completeFormingJob() {
-            const batchId = document.getElementById('formingRunningJobsSelect').value;
-            const outInput = parseInt(document.getElementById('formingOutputCount').value) || 0;
-            const scrapPcs = parseInt(document.getElementById('formingScrapPcsInput').value) || 0;
+       function completeFormingJob() {
+    const batchId = document.getElementById('formingRunningJobsSelect').value;
+    const outInput = parseInt(document.getElementById('formingOutputCount').value) || 0; // अब 0 या खाली होने पर भी ले लेगा
+    const scrapPcs = parseInt(document.getElementById('formingScrapPcsInput').value) || 0;
 
-            if(!batchId) return alert('कृपया रनिंग फॉर्मिंग बैच सेलेक्ट करें!');
+    if(!batchId) return alert('कृपया रनिंग फॉर्मिंग बैच सेलेक्ट करें!');
 
-            let targetJob = null, targetBatch = null;
-            jobs.forEach(j => {
-                if(j.runningBatches) {
-                    let b = j.runningBatches.find(b => b.batchId === batchId && (b.status === 'Running' || b.status === 'Held'));
-                    if(b) { targetJob = j; targetBatch = b; }
-                }
-            });
-
-            if(targetBatch) {
-                const stopTime = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-                targetBatch.status = 'Completed';
-                targetBatch.endTime = stopTime;
-                targetBatch.producedQty = outInput;
-                targetBatch.scrapPcs = scrapPcs;
-
-                if(outInput > 0) {
-                    targetJob.availableFormingCrates += outInput;
-                }
-
-                logs.push({
-                    jobId: targetJob.id, product: targetJob.product, stage: 'Forming', machine: targetBatch.machine,
-                    shift: targetBatch.shift, action: `⏹️ Finished Forming Batch ${targetBatch.batchId} (${outInput} Crates, Scrap: ${scrapPcs} Pcs)`,
-                    worker: targetBatch.worker, user: currentUser.username, startTime: targetBatch.startTime, endTime: stopTime,
-                    rawDate: new Date().toISOString().split('T')[0], timestamp: new Date().toLocaleString()
-                });
-
-                document.getElementById('formingOutputCount').value = '';
-                document.getElementById('formingScrapPcsInput').value = '0';
-                saveData();
-                updateFormingPendingDropdown();
-                updateFormingRunningDropdown();
-                renderUI();
-                alert(`✅ पुराना बैच सफलतापूर्वक Finish कर दिया गया है!`);
-            }
+    let targetJob = null, targetBatch = null;
+    jobs.forEach(j => {
+        if(j.runningBatches) {
+            let b = j.runningBatches.find(b => b.batchId === batchId && (b.status === 'Running' || b.status === 'Held'));
+            if(b) { targetJob = j; targetBatch = b; }
         }
+    });
+
+    if(targetBatch) {
+        const stopTime = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        targetBatch.status = 'Completed';
+        targetBatch.endTime = stopTime;
+        targetBatch.producedQty = outInput; // 0 भी रहेगा तो एक्सेप्ट हो जाएगा
+        targetBatch.scrapPcs = scrapPcs;
+
+        if(outInput > 0) {
+            targetJob.availableFormingCrates += outInput;
+        }
+
+        logs.push({
+            jobId: targetJob.id, product: targetJob.product, stage: 'Forming', machine: targetBatch.machine,
+            shift: targetBatch.shift, action: `⏹️ Finished Forming Batch ${targetBatch.batchId} (${outInput} Crates, Scrap: ${scrapPcs} Pcs)`,
+            worker: targetBatch.worker, user: currentUser.username, startTime: targetBatch.startTime, endTime: stopTime,
+            rawDate: new Date().toISOString().split('T')[0], timestamp: new Date().toLocaleString()
+        });
+
+        document.getElementById('formingOutputCount').value = '';
+        document.getElementById('formingScrapPcsInput').value = '0';
+        saveData();
+        updateFormingPendingDropdown();
+        updateFormingRunningDropdown();
+        renderUI();
+        alert(`✅ पुराना बैच सफलतापूर्वक Finish कर दिया गया है!`);
+    }
+}
 
         function updateFormingRunningDropdown() {
             const machine = document.getElementById('formingMachineSelect') ? document.getElementById('formingMachineSelect').value : 'Forming-1';
@@ -3049,7 +3034,7 @@
             if((job.availableFormingCrates || 0) < reqQty) return alert(`Insufficient formed crates! Only ${job.availableFormingCrates} available.`);
             job.availableFormingCrates -= reqQty;
 
-            const batchId = generateUniqueBatchId('QC', job.id);
+            const batchId = 'B-' + Math.floor(1000 + Math.random()*9000);
             const nowTime = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
 
             if(!job.runningBatches) job.runningBatches = [];
@@ -3071,47 +3056,47 @@
         }
 
         function completeQcJob() {
-            const batchId = document.getElementById('qcRunningJobsSelect').value;
-            const outInput = parseInt(document.getElementById('qcOutputCount').value) || 0;
-            const scrapKg = parseInt(document.getElementById('qcScrapKgInput').value) || 0;
+    const batchId = document.getElementById('qcRunningJobsSelect').value;
+    const outInput = parseInt(document.getElementById('qcOutputCount').value) || 0;
+    const scrapKg = parseInt(document.getElementById('qcScrapKgInput').value) || 0;
 
-            if(!batchId) return alert('कृपया एक्टिव इंस्पेक्शन बैच सेलेक्ट करें!');
+    if(!batchId) return alert('कृपया एक्टिव इंस्पेक्शन बैच सेलेक्ट करें!');
 
-            let targetJob = null, targetBatch = null;
-            jobs.forEach(j => {
-                if(j.runningBatches) {
-                    let b = j.runningBatches.find(b => b.batchId === batchId && (b.status === 'Running' || b.status === 'Held'));
-                    if(b) { targetJob = j; targetBatch = b; }
-                }
-            });
-
-            if(targetBatch) {
-                const stopTime = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-                targetBatch.status = 'Completed';
-                targetBatch.endTime = stopTime;
-                targetBatch.producedQty = outInput;
-                targetBatch.scrapKg = scrapKg;
-
-                if(outInput > 0) {
-                    targetJob.availableQcCrates += outInput;
-                }
-
-                logs.push({
-                    jobId: targetJob.id, product: targetJob.product, stage: 'QC', machine: 'QC-Desk',
-                    shift: targetBatch.shift, action: `⏹️ Completed QC Inspection (${outInput} Crates, Scrap: ${scrapKg} KG)`,
-                    worker: targetBatch.worker, user: currentUser.username, startTime: targetBatch.startTime, endTime: stopTime,
-                    rawDate: new Date().toISOString().split('T')[0], timestamp: new Date().toLocaleString()
-                });
-
-                document.getElementById('qcOutputCount').value = '';
-                document.getElementById('qcScrapKgInput').value = '0';
-                saveData();
-                updateQcPendingDropdown();
-                updateQcRunningDropdown();
-                renderUI();
-                alert(`✅ QC बैच सफलतापूर्वक Finish कर दिया गया है!`);
-            }
+    let targetJob = null, targetBatch = null;
+    jobs.forEach(j => {
+        if(j.runningBatches) {
+            let b = j.runningBatches.find(b => b.batchId === batchId && (b.status === 'Running' || b.status === 'Held'));
+            if(b) { targetJob = j; targetBatch = b; }
         }
+    });
+
+    if(targetBatch) {
+        const stopTime = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        targetBatch.status = 'Completed';
+        targetBatch.endTime = stopTime;
+        targetBatch.producedQty = outInput;
+        targetBatch.scrapKg = scrapKg;
+
+        if(outInput > 0) {
+            targetJob.availableQcCrates += outInput;
+        }
+
+        logs.push({
+            jobId: targetJob.id, product: targetJob.product, stage: 'QC', machine: 'QC-Desk',
+            shift: targetBatch.shift, action: `⏹️ Completed QC Inspection (${outInput} Crates, Scrap: ${scrapKg} KG)`,
+            worker: targetBatch.worker, user: currentUser.username, startTime: targetBatch.startTime, endTime: stopTime,
+            rawDate: new Date().toISOString().split('T')[0], timestamp: new Date().toLocaleString()
+        });
+
+        document.getElementById('qcOutputCount').value = '';
+        document.getElementById('qcScrapKgInput').value = '0';
+        saveData();
+        updateQcPendingDropdown();
+        updateQcRunningDropdown();
+        renderUI();
+        alert(`✅ QC बैच सफलतापूर्वक Finish कर दिया गया है!`);
+    }
+}
 
         function updateQcRunningDropdown() {
             const rSelect = document.getElementById('qcRunningJobsSelect');
@@ -3153,150 +3138,134 @@
             });
         }
 
-        // ==========================================
-        // DEDICATED PACKING DESK (FULLY INTEGRATED & SYNCHRONIZED)
-        // ==========================================
-
+        // Dedicated Packing Desk Real-Time Local Status Update & Auto-Hide 100% finished orders
         function renderPackingDeskLiveCards() {
-            const container = document.getElementById('packingDeskLiveGrid');
-            if(!container) return;
-            container.innerHTML = '';
+    const container = document.getElementById('packingDeskLiveGrid');
+    if(!container) return;
+    container.innerHTML = '';
 
-            let packingLanes = ['Packing-1', 'Packing-2', 'Manual-1', 'Manual-2', 'Manual-3'];
+    // अब इसमें मशीनों के साथ-साथ सभी मैनुअल लेन्स भी लाइव दिखेंगी
+    let packingLanes = ['Packing-1', 'Packing-2', 'Manual-1', 'Manual-2', 'Manual-3'];
 
-            packingLanes.forEach(mName => {
-                let activePack = packJobs.find(p => p.machine === mName && (p.status === 'Running' || p.status === 'Held'));
-                let statusClass = activePack ? (activePack.status === 'Held' ? 'held' : 'running') : 'idle';
-                let statusText = activePack ? (activePack.status === 'Held' ? '⏸️ HELD' : '▶ RUNNING') : '⚪ IDLE';
-                
-                let detail = activePack ? 
-                    `<b>${activePack.customer}</b> (${activePack.id})<br>Item: <b>${activePack.kitType}</b><br>Op: <b>${activePack.worker || 'Packing'}</b>` : 
-                    `<span style="color:#718096;">Ready / Available</span>`;
+    packingLanes.forEach(mName => {
+        let activePack = packJobs.find(p => p.machine === mName && (p.status === 'Running' || p.status === 'Held'));
+        let statusClass = activePack ? (activePack.status === 'Held' ? 'held' : 'running') : 'idle';
+        let statusText = activePack ? (activePack.status === 'Held' ? '⏸️ HELD' : '▶ RUNNING') : '⚪ IDLE';
+        
+        let detail = activePack ? 
+            `<b>${activePack.customer}</b><br>Item: ${activePack.kitType}<br>Op: <b>${activePack.worker || 'Packing'}</b>` : 
+            `<span style="color:#718096;">Ready for assignment</span>`;
 
-                container.innerHTML += `
-                    <div class="packing-desk-live-card ${statusClass}" onclick="selectPackingMachineDirectly('${mName}')" style="cursor:pointer;">
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
-                            <b style="color:#1a365d; font-size:11px;">${mName}</b>
-                            <span style="font-weight:bold; font-size:10px;">${statusText}</span>
-                        </div>
-                        <div style="font-size:10px; line-height:1.3;">${detail}</div>
-                    </div>`;
-            });
-        }
+        container.innerHTML += `
+            <div class="packing-desk-live-card ${statusClass}">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                    <b style="color:#1a365d; font-size:11px;">${mName}</b>
+                    <span style="font-weight:bold; font-size:10px;">${statusText}</span>
+                </div>
+                <div style="font-size:10px; line-height:1.3;">${detail}</div>
+            </div>`;
+    });
+}
 
-        function selectPackingMachineDirectly(mName) {
-            const mSelect = document.getElementById('packMachineSelect');
-            if(mSelect) {
-                mSelect.value = mName;
-                onPackingMachineChange();
-            }
-        }
-
+        // Packing Station Module
         function onPackingMachineChange() {
-            updatePendingPackDropdown();
-            loadPackJobDetails();
-            renderPackingDeskLiveCards();
-            updatePackingRunningDropdown();
-        }
+    if(typeof updatePendingPackDropdown === 'function') updatePendingPackDropdown();
+    if(typeof loadPackJobDetails === 'function') loadPackJobDetails();
+    if(typeof renderPackingDeskLiveCards === 'function') renderPackingDeskLiveCards();
+    updatePackingRunningDropdown();
+}
 
         function updatePendingPackDropdown() {
             const pSelect = document.getElementById('pendingPackOrderSelect');
             if(!pSelect) return;
-            pSelect.innerHTML = '<option value="">-- SELECT PENDING PACKING ORDER --</option><option value="REGULAR_STOCK">-- BULK WAREHOUSE STOCK --</option>';
-            
+            pSelect.innerHTML = '<option value="">-- SELECT PACKING ORDER --</option><option value="REGULAR_STOCK">-- BULK WAREHOUSE STOCK --</option>';
             packJobs.forEach(pj => {
                 let balance = (pj.orderQty || 0) - ((pj.packedBoxes || 0) * (pj.pcsPerBox || 0));
-                // सिर्फ वही ऑर्डर लिस्ट में आएँगे जो पूरे पैक नहीं हुए हैं और किसी मशीन पर रनिंग नहीं हैं
-                if(balance > 0 && pj.status !== '100% Dispatched & Closed' && pj.status !== 'Running') {
+                if(balance > 0 && pj.status !== '100% Dispatched & Closed') {
                     pSelect.innerHTML += `<option value="${pj.id}">${pj.id} | ${pj.customer} [Bal: ${balance} Pcs] (${pj.status})</option>`;
                 }
             });
         }
 
         function loadPackJobDetails() {
-            const packId = document.getElementById('pendingPackOrderSelect') ? document.getElementById('pendingPackOrderSelect').value : '';
-            const crateContainer = document.getElementById('crateInputsContainer');
-            const panel = document.getElementById('packOrderDetailsPanel');
-            if(!crateContainer || !panel) return;
-            
-            crateContainer.innerHTML = '';
-            if(!packId) {
-                panel.classList.add('hidden');
-                return;
-            }
-            panel.classList.remove('hidden');
+    const packId = document.getElementById('pendingPackOrderSelect') ? document.getElementById('pendingPackOrderSelect').value : '';
+    const crateContainer = document.getElementById('crateInputsContainer');
+    const panel = document.getElementById('packOrderDetailsPanel');
+    if(!crateContainer || !panel) return;
+    
+    crateContainer.innerHTML = '';
+    if(!packId) {
+        panel.classList.add('hidden');
+        return;
+    }
+    panel.classList.remove('hidden');
 
-            if(packId === 'REGULAR_STOCK') {
-                document.getElementById('lblCustName').innerText = 'Internal Bulk Stock';
-                document.getElementById('lblKitType').innerText = 'Bulk Single Items';
-                document.getElementById('lblOrderQty').innerText = 'Open';
-                document.getElementById('lblPcsBox').innerText = '1000';
-                document.getElementById('lblTargetBoxes').innerText = '-';
-                document.getElementById('lblBalanceQty').innerText = '-';
-                document.getElementById('lblWrapVal').innerText = 'NO';
-                document.getElementById('lblLabelVal').innerText = 'NO';
-                document.getElementById('lblRemarkVal').innerText = 'General Warehouse Bulk Packing';
+    if(packId === 'REGULAR_STOCK') {
+        document.getElementById('lblCustName').innerText = 'Internal Bulk Stock';
+        document.getElementById('lblKitType').innerText = 'Bulk Single Items';
+        document.getElementById('lblOrderQty').innerText = 'Open';
+        document.getElementById('lblPcsBox').innerText = '1000';
+        document.getElementById('lblTargetBoxes').innerText = '-';
+        document.getElementById('lblBalanceQty').innerText = '-';
+        document.getElementById('lblWrapVal').innerText = 'NO';
+        document.getElementById('lblLabelVal').innerText = 'NO';
+        document.getElementById('lblRemarkVal').innerText = 'General Warehouse Bulk Packing';
 
-                products.forEach(prod => {
-                    let availJobs = getQcJobsForProduct(prod);
-                    let options = availJobs.map(j => `<option value="${j.id}">${j.id} (Avail: ${j.availableQcCrates} Crates)</option>`).join('');
+        products.forEach(prod => {
+            let availJobs = getQcJobsForProduct(prod);
+            let options = availJobs.map(j => `<option value="${j.id}">${j.id} (Avail: ${j.availableQcCrates} Crates)</option>`).join('');
+            crateContainer.innerHTML += `
+                <div style="display:grid; grid-template-columns:1fr 1.4fr 0.6fr; gap:8px; margin-top:6px;">
+                    <label style="margin:0;"><b>${prod}:</b></label>
+                    <select class="pack-job-select" data-product="${prod}">${options || '<option value="">0 QC Crates (No Stock)</option>'}</select>
+                    <input type="text" inputmode="numeric" class="pack-crate-input" data-product="${prod}" value="0" style="margin:0; padding:5px;">
+                </div>`;
+        });
+    } else {
+        const pj = packJobs.find(p => p.id === packId);
+        if(pj) {
+            let targetBoxes = Math.ceil(pj.orderQty / pj.pcsPerBox);
+            let balance = (pj.orderQty || 0) - ((pj.packedBoxes || 0) * (pj.pcsPerBox || 0));
+            document.getElementById('lblCustName').innerText = pj.customer;
+            document.getElementById('lblKitType').innerText = pj.kitType;
+            document.getElementById('lblOrderQty').innerText = pj.orderQty.toLocaleString();
+            document.getElementById('lblPcsBox').innerText = pj.pcsPerBox.toLocaleString();
+            document.getElementById('lblTargetBoxes').innerText = `${pj.packedBoxes || 0} / ${targetBoxes}`;
+            document.getElementById('lblBalanceQty').innerText = (balance > 0 ? balance : 0).toLocaleString();
+            document.getElementById('lblWrapVal').innerText = pj.wrapping || 'NO';
+            document.getElementById('lblLabelVal').innerText = pj.labeling || 'NO';
+            document.getElementById('lblRemarkVal').innerText = pj.remarks || 'Standard Packing';
+
+            pj.kitItems.forEach(item => {
+                if(item === 'Tissue') {
                     crateContainer.innerHTML += `
                         <div style="display:grid; grid-template-columns:1fr 1.4fr 0.6fr; gap:8px; margin-top:6px;">
-                            <label style="margin:0;"><b>${prod}:</b></label>
-                            <select class="pack-job-select" data-product="${prod}">${options || '<option value="">0 QC Crates (No Stock)</option>'}</select>
-                            <input type="text" inputmode="numeric" class="pack-crate-input" data-product="${prod}" value="0" style="margin:0; padding:5px;">
+                            <label style="margin:0;"><b>Tissue:</b></label>
+                            <span style="font-size:12px; color:#718096;">Direct Roll/Paper Pack</span>
+                            <input type="text" inputmode="numeric" class="pack-crate-input" data-product="Tissue" value="1" style="margin:0; padding:5px;">
                         </div>`;
-                });
-            } else {
-                const pj = packJobs.find(p => p.id === packId);
-                if(pj) {
-                    let targetBoxes = Math.ceil(pj.orderQty / pj.pcsPerBox);
-                    let balance = (pj.orderQty || 0) - ((pj.packedBoxes || 0) * (pj.pcsPerBox || 0));
-                    document.getElementById('lblCustName').innerText = pj.customer;
-                    document.getElementById('lblKitType').innerText = pj.kitType;
-                    document.getElementById('lblOrderQty').innerText = pj.orderQty.toLocaleString();
-                    document.getElementById('lblPcsBox').innerText = pj.pcsPerBox.toLocaleString();
-                    document.getElementById('lblTargetBoxes').innerText = `${pj.packedBoxes || 0} / ${targetBoxes}`;
-                    document.getElementById('lblBalanceQty').innerText = (balance > 0 ? balance : 0).toLocaleString();
-                    document.getElementById('lblWrapVal').innerText = pj.wrapping || 'NO';
-                    document.getElementById('lblLabelVal').innerText = pj.labeling || 'NO';
-                    document.getElementById('lblRemarkVal').innerText = pj.remarks || 'Standard Packing';
-
-                    pj.kitItems.forEach(item => {
-                        if(item === 'Tissue') {
-                            crateContainer.innerHTML += `
-                                <div style="display:grid; grid-template-columns:1fr 1.4fr 0.6fr; gap:8px; margin-top:6px;">
-                                    <label style="margin:0;"><b>Tissue:</b></label>
-                                    <span style="font-size:12px; color:#718096;">Direct Roll/Paper Pack</span>
-                                    <input type="text" inputmode="numeric" class="pack-crate-input" data-product="Tissue" value="1" style="margin:0; padding:5px;">
-                                </div>`;
-                        } else {
-                            let availJobs = getQcJobsForProduct(item);
-                            let options = availJobs.map(j => `<option value="${j.id}">${j.id} (Avail: ${j.availableQcCrates} Crates)</option>`).join('');
-                            let totalAvail = availJobs.reduce((sum, j) => sum + (j.availableQcCrates || 0), 0);
-                            
-                            crateContainer.innerHTML += `
-                                <div style="display:grid; grid-template-columns:1fr 1.4fr 0.6fr; gap:8px; margin-top:6px;">
-                                    <label style="margin:0;"><b>${item}:</b> <span style="font-size:11px; color:${totalAvail>0?'#2f855a':'#e53e3e'};">[Stock: ${totalAvail}]</span></label>
-                                    <select class="pack-job-select" data-product="${item}">${options || '<option value="">0 QC Crates (Out of Stock)</option>'}</select>
-                                    <input type="text" inputmode="numeric" class="pack-crate-input" data-product="${item}" value="${totalAvail > 0 ? 1 : 0}" style="margin:0; padding:5px;">
-                                </div>`;
-                        }
-                    });
+                } else {
+                    let availJobs = getQcJobsForProduct(item);
+                    let options = availJobs.map(j => `<option value="${j.id}">${j.id} (Avail: ${j.availableQcCrates} Crates)</option>`).join('');
+                    let totalAvail = availJobs.reduce((sum, j) => sum + (j.availableQcCrates || 0), 0);
+                    
+                    crateContainer.innerHTML += `
+                        <div style="display:grid; grid-template-columns:1fr 1.4fr 0.6fr; gap:8px; margin-top:6px;">
+                            <label style="margin:0;"><b>${item}:</b> <span style="font-size:11px; color:${totalAvail>0?'#2f855a':'#e53e3e'};">[Stock: ${totalAvail}]</span></label>
+                            <select class="pack-job-select" data-product="${item}">${options || '<option value="">0 QC Crates (Out of Stock)</option>'}</select>
+                            <input type="text" inputmode="numeric" class="pack-crate-input" data-product="${item}" value="${totalAvail > 0 ? 1 : 0}" style="margin:0; padding:5px;">
+                        </div>`;
                 }
-            }
+            });
         }
+    }
+}
 
         function addMoreCratesToActiveRun() {
-            const pendingId = document.getElementById('pendingPackOrderSelect').value;
-            const runningId = document.getElementById('packRunningJobsSelect').value;
-            let targetPackId = runningId || pendingId;
-
-            if(!targetPackId || targetPackId === 'REGULAR_STOCK') {
-                return alert('कृपया पहले रनिंग बैच या पेंडिंग आर्डर सेलेक्ट करें!');
-            }
-
+            const packId = document.getElementById('pendingPackOrderSelect').value;
+            if(!packId) return alert('Please select Packing Order first!');
             let inputs = document.querySelectorAll('.pack-crate-input');
+
             let anyAllocated = false;
             let missingItems = [];
 
@@ -3310,13 +3279,10 @@
                         let j = jobs.find(x => x.id === selectedJobId);
                         if(j && (j.availableQcCrates || 0) >= reqQty) {
                             j.availableQcCrates -= reqQty;
-                            let pj = packJobs.find(p => p.id === targetPackId);
+                            let pj = packJobs.find(p => p.id === packId);
                             if(pj) {
                                 if(!pj.issuedCrates) pj.issuedCrates = {};
                                 pj.issuedCrates[pName] = (pj.issuedCrates[pName] || 0) + reqQty;
-                                if(!pj.issuedJobSources) pj.issuedJobSources = {};
-                                if(!pj.issuedJobSources[pName]) pj.issuedJobSources[pName] = {};
-                                pj.issuedJobSources[pName][selectedJobId] = (pj.issuedJobSources[pName][selectedJobId] || 0) + reqQty;
                                 anyAllocated = true;
                             }
                         } else {
@@ -3329,535 +3295,327 @@
             });
 
             if(missingItems.length > 0) {
-                alert(`⚠️ QC STOCK ERROR!\nनिम्न आइटम्स के लिए क्रेट्स आवंटित नहीं हो सके:\n• ${missingItems.join('\n• ')}`);
+                alert(`⚠️ QC STOCK ERROR!\nCannot allocate crates for following items:\n• ${missingItems.join('\n• ')}\n\nPlease ensure QC approved crates exist before packing.`);
             }
 
             if(anyAllocated) {
                 saveData();
                 loadPackJobDetails();
-                updatePackRunningDisplayInfo();
-                renderUI();
-                alert('✅ QC Crates सफलतापूर्वक रनिंग बैच में अलॉट हो गए हैं!');
+                alert('✅ QC Crates allocated to active packing run successfully!');
             }
         }
 
-        function startPackingJob() {
-            const pendingSelect = document.getElementById('pendingPackOrderSelect');
-            const machineSelect = document.getElementById('packMachineSelect');
-            const shiftSelect = document.getElementById('packShiftSelect');
-            const workerInput = document.getElementById('packWorkerNameInput');
+// ==========================================
+// PACKING DESK MODULE: MASTER SYNCHRONIZED
+// ==========================================
 
-            if(!pendingSelect || !machineSelect) return alert('❌ एरर: फॉर्म इनपुट्स उपलब्ध नहीं हैं।');
+     function updatePackingRunningDropdown() {
+    const machineSelect = document.getElementById('packMachineSelect');
+    const rSelect = document.getElementById('packRunningJobsSelect');
+    if(!machineSelect || !rSelect) return;
 
-            const packId = pendingSelect.value;
-            const targetMachine = machineSelect.value;
-            const shift = shiftSelect ? shiftSelect.value : 'DAY';
-            const worker = workerInput ? (workerInput.value || '').trim().toUpperCase() : '';
-
-            if(!worker) {
-                alert('⚠️ ऑपरेटर का नाम अनिवार्य है!\nकृपया पैकिंग ऑपरेटर का नाम दर्ज करें।');
-                if(workerInput) workerInput.focus();
-                return;
+    const currentMachine = machineSelect.value; // e.g. "Packing-1"
+    rSelect.innerHTML = '<option value="">-- SELECT RUNNING / HELD PACKING BATCH --</option>';
+    
+    let count = 0;
+    if(typeof packJobs !== 'undefined' && Array.isArray(packJobs)) {
+        packJobs.forEach(pj => {
+            // फॉर्मिंग की तरह बिल्कुल सटीक मशीन मैचिंग
+            if(pj.machine && currentMachine && pj.machine.toUpperCase().trim() === currentMachine.toUpperCase().trim() && (pj.status === 'Running' || pj.status === 'Held')) {
+                rSelect.innerHTML += `<option value="${pj.id}" ${count===0?'selected':''}>${pj.id} | ${pj.customer} (${pj.kitType}) - [${pj.status}]</option>`;
+                count++;
             }
-            if(!packId) {
-                return alert('⚠️ कृपया पेंडिंग लिस्ट में से कोई आर्डर सेलेक्ट करें!');
-            }
+        });
+    }
+    updatePackRunningDisplayInfo();
+}
 
-            // चेक करें कि जिस मशीन को चुना है, वह पहले से रनिंग तो नहीं है
-            let activeOnSelectedMachine = packJobs.find(p => p.machine === targetMachine && (p.status === 'Running' || p.status === 'Held'));
-            if(activeOnSelectedMachine) {
-                return alert(`⚠️ WORKSTATION BUSY!\nमशीन [${targetMachine}] पर पहले से आर्डर [${activeOnSelectedMachine.id}] रनिंग/होल्ड पर है।\nकृपया पहले उसे Finish या Cancel करें।`);
-            }
+function updatePackRunningDisplayInfo() {
+    const packId = document.getElementById('packRunningJobsSelect') ? document.getElementById('packRunningJobsSelect').value : '';
+    const box = document.getElementById('packActiveStatusBox');
+    if(!box) return;
 
-            const nowTime = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-            
-            let pj = packJobs.find(p => p.id === packId);
-            if(pj) {
-                pj.status = 'Running';
-                pj.machine = targetMachine;
-                pj.shift = shift;
-                pj.startTime = nowTime;
-                pj.worker = worker;
-                pj.holdReason = "";
+    if(!packId) {
+        box.innerHTML = "⚪ No Active Packing Batch Selected on this Workstation";
+        box.style.background = '#edf2f7';
+        box.style.borderColor = '#cbd5e0';
+        return;
+    }
 
-                // पहली बार क्रेट्स अलॉट करने की कोशिश
-                let inputs = document.querySelectorAll('.pack-crate-input');
-                inputs.forEach(inp => {
-                    let pName = inp.getAttribute('data-product');
-                    let reqQty = parseInt(inp.value) || 0;
-                    if(pName !== 'Tissue' && reqQty > 0) {
-                        let jobSelect = document.querySelector(`.pack-job-select[data-product="${pName}"]`);
-                        let selectedJobId = jobSelect ? jobSelect.value : null;
-                        if(selectedJobId) {
-                            let j = jobs.find(x => x.id === selectedJobId);
-                            if(j && (j.availableQcCrates || 0) >= reqQty) {
-                                j.availableQcCrates -= reqQty;
-                                if(!pj.issuedCrates) pj.issuedCrates = {};
-                                pj.issuedCrates[pName] = (pj.issuedCrates[pName] || 0) + reqQty;
-                                if(!pj.issuedJobSources) pj.issuedJobSources = {};
-                                if(!pj.issuedJobSources[pName]) pj.issuedJobSources[pName] = {};
-                                pj.issuedJobSources[pName][selectedJobId] = (pj.issuedJobSources[pName][selectedJobId] || 0) + reqQty;
-                            }
-                        }
-                    }
-                });
+    const pj = packJobs.find(p => p.id === packId);
+    if(pj) {
+        box.innerHTML = `📦 <b>Order ID: ${pj.id}</b> | Customer: <b>${pj.customer}</b> (${pj.kitType})<br>👤 Operator: <b>${pj.worker || 'Packing'}</b> | Started: <b>${pj.startTime || '-'}</b> | Status: <b style="color:${pj.status==='Held'?'#dd6b20':'#2b6cb0'}">${(pj.status || 'RUNNING').toUpperCase()}</b>`;
+        box.style.background = pj.status === 'Held' ? '#fffaf0' : '#ebf8ff';
+        box.style.borderColor = pj.status === 'Held' ? '#dd6b20' : '#3182ce';
+    } else {
+        box.innerHTML = "⚠️ Selected batch data not found.";
+    }
+}
 
-                logs.push({
-                    jobId: pj.id, product: pj.kitType, stage: 'Packing', machine: targetMachine,
-                    shift: shift, action: `Started Packing Run on ${targetMachine} | Worker: ${worker}`,
-                    worker: worker, user: currentUser.username, startTime: nowTime, endTime: '',
-                    rawDate: new Date().toISOString().split('T')[0], timestamp: new Date().toLocaleString()
-                });
-            }
+function startPackingJob() {
+    const pendingSelect = document.getElementById('pendingPackOrderSelect');
+    const machineSelect = document.getElementById('packMachineSelect');
+    const shiftSelect = document.getElementById('packShiftSelect');
+    const workerInput = document.getElementById('packWorkerNameInput');
 
-            saveData();
-            updatePendingPackDropdown();
-            updatePackingRunningDropdown();
-            renderPackingDeskLiveCards();
-            renderUI();
-            alert(`✅ पैकिंग रन मशीन [${targetMachine}] पर सफलतापूर्वक चालू (Running) हो गया है!`);
-        }
+    if(!pendingSelect || !machineSelect) {
+        alert('❌ Critical Error: Packing form elements missing in HTML.');
+        return;
+    }
 
-        function updatePackingRunningDropdown() {
-            const rSelect = document.getElementById('packRunningJobsSelect');
-            const targetMachine = document.getElementById('packMachineSelect') ? document.getElementById('packMachineSelect').value : '';
-            if(!rSelect) return;
-            rSelect.innerHTML = '<option value="">-- SELECT ACTIVE / HELD PACKING BATCH --</option>';
-            
-            let matchedJobs = [];
-            packJobs.forEach(pj => {
-                if(pj.machine === targetMachine && (pj.status === 'Running' || pj.status === 'Held')) {
-                    matchedJobs.push(pj);
-                    rSelect.innerHTML += `<option value="${pj.id}">${pj.id} - ${pj.customer} (${pj.machine}) [${pj.status.toUpperCase()}]</option>`;
-                }
-            });
+    const packId = pendingSelect.value;
+    const targetMachine = machineSelect.value;
+    const shift = shiftSelect ? shiftSelect.value : 'DAY';
+    const worker = workerInput ? (workerInput.value || '').trim().toUpperCase() : '';
 
-            // अगर चुनी हुई मशीन पर कोई बैच रनिंग है, तो उसे स्वतः पहला सेलेक्ट कर लें
-            if(matchedJobs.length > 0) {
-                rSelect.value = matchedJobs[0].id;
-            } else {
-                rSelect.value = '';
-            }
+    if(!worker) {
+        alert('⚠️ MANDATORY FIELD MISSING!\nPlease enter Packing Operator Name before starting run.');
+        if(workerInput) workerInput.focus();
+        return;
+    }
+    if(!packId) {
+        alert('⚠️ Please select a Packing Job from the pending queue first!');
+        return;
+    }
 
-            updatePackRunningDisplayInfo();
-        }
+    let activeOnSelectedMachine = packJobs.find(p => p.machine === targetMachine && (p.status === 'Running' || p.status === 'Held'));
+    if(activeOnSelectedMachine && activeOnSelectedMachine.id !== packId) {
+        alert(`⚠️ WORKSTATION BUSY!\nWorkstation [${targetMachine}] is currently running Order [${activeOnSelectedMachine.id}] for ${activeOnSelectedMachine.customer}.\nYou must FINISH or HOLD the active run before starting a new job on ${targetMachine}.`);
+        return;
+    }
 
-        function updatePackRunningDisplayInfo() {
-            const packId = document.getElementById('packRunningJobsSelect') ? document.getElementById('packRunningJobsSelect').value : '';
-            const box = document.getElementById('packActiveStatusBox');
-            const lotsPanel = document.getElementById('packIssuedLotsPanel');
-            const breakdownDiv = document.getElementById('packIssuedLotsBreakdown');
-            const unissueSelect = document.getElementById('packUnissueProductSelect');
-            const currentMachine = document.getElementById('packMachineSelect') ? document.getElementById('packMachineSelect').value : 'Packing-1';
-            
-            if(!box) return;
-
-            if(!packId) {
-                box.innerHTML = `⚪ No Active Packing Batch Running on [${currentMachine}] (Machine IDLE)`;
-                box.style.background = '#edf2f7';
-                box.style.borderColor = '#cbd5e0';
-                if(lotsPanel) lotsPanel.classList.add('hidden');
-                return;
-            }
-
-            const pj = packJobs.find(p => p.id === packId);
-            if(pj) {
-                box.innerHTML = `📦 <b>Order ID: ${pj.id}</b> | Customer: <b>${pj.customer}</b> (${pj.kitType})<br>👤 Operator: <b>${pj.worker || 'Packing'}</b> | Started: <b>${pj.startTime || '-'}</b> | Status: <b style="color:${pj.status==='Held'?'#dd6b20':'#2b6cb0'}">${(pj.status || 'RUNNING').toUpperCase()}</b>`;
-                box.style.background = pj.status === 'Held' ? '#fffaf0' : '#ebf8ff';
-                box.style.borderColor = pj.status === 'Held' ? '#dd6b20' : '#3182ce';
-
-                if(lotsPanel && breakdownDiv && unissueSelect) {
-                    lotsPanel.classList.remove('hidden');
-                    unissueSelect.innerHTML = '<option value="">-- Select Product to Un-issue --</option>';
-                    
-                    let issuedMap = pj.issuedCrates || {};
-                    let keys = Object.keys(issuedMap);
-                    
-                    if(keys.length === 0) {
-                        breakdownDiv.innerHTML = '<span style="color:#718096;">No specific crates currently issued.</span>';
-                    } else {
-                        let text = '';
-                        keys.forEach(pName => {
-                            let qty = issuedMap[pName] || 0;
-                            if(qty > 0) {
-                                text += `• <b>${pName}:</b> <span style="color:#2f855a; font-weight:bold;">${qty} Crates</span> &nbsp; `;
-                                unissueSelect.innerHTML += `<option value="${pName}">${pName} (Issued: ${qty})</option>`;
-                            }
-                        });
-                        breakdownDiv.innerHTML = text || '<span style="color:#718096;">All issued crates processed or returned.</span>';
-                    }
-                }
-            }
-        }
-
-        function completePackingJob() {
-            const targetMachine = document.getElementById('packMachineSelect').value;
-            let pj = packJobs.find(p => p.machine === targetMachine && (p.status === 'Running' || p.status === 'Held'));
-            
-            if(!pj) {
-                return alert(`मशीन [${targetMachine}] पर कोई भी एक्टिव या रनिंग आर्डर नहीं मिला जिसे Finish किया जा सके!`);
-            }
-
-            const boxesDone = parseInt(document.getElementById('packedBoxesOutput').value) || 0;
-            const worker = (document.getElementById('packWorkerNameInput').value || '').trim().toUpperCase() || pj.worker || 'Operator';
-            const stopTime = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-
-            let componentLots = {};
-            document.querySelectorAll('.pack-job-select').forEach(sel => {
-                let pName = sel.getAttribute('data-product');
-                let jId = sel.value;
-                if(pName && jId) {
-                    let inp = document.querySelector(`.pack-crate-input[data-product="${pName}"]`);
-                    let q = inp ? inp.value : '1';
-                    componentLots[pName] = `${jId} (${q} Crates)`;
-                }
-            });
-
-            if(boxesDone > 0) {
-                pj.packedBoxes = (pj.packedBoxes || 0) + boxesDone;
-                if(!pj.historyRuns) pj.historyRuns = [];
-                if(!pj.tracedLots) pj.tracedLots = {};
-                Object.assign(pj.tracedLots, componentLots);
-
-                pj.historyRuns.push({
-                    machine: targetMachine,
-                    boxes: boxesDone,
-                    pcs: boxesDone * pj.pcsPerBox,
-                    date: new Date().toISOString().split('T')[0],
-                    time: stopTime,
-                    worker: worker,
-                    usedLots: componentLots
-                });
-            }
-
-            let balance = (pj.orderQty || 0) - ((pj.packedBoxes || 0) * (pj.pcsPerBox || 0));
-            if(balance <= 0) {
-                pj.status = '100% Packed & Completed';
-            } else {
-                pj.status = 'Partially Packed';
-            }
-
-            // मशीन से आर्डर को डी-लिंक करके मशीन को तत्काल IDLE करें
-            pj.machine = "";
-            pj.holdReason = "";
-
-            let lotSummaryStr = Object.keys(componentLots).map(k => `${k}: ${componentLots[k]}`).join(' | ');
-
-            logs.push({
-                jobId: pj.id, product: pj.kitType, stage: 'Packing', machine: targetMachine,
-                shift: document.getElementById('packShiftSelect') ? document.getElementById('packShiftSelect').value : 'DAY',
-                action: `⏹ Finished Packing Run on ${targetMachine} (${boxesDone} Boxes) | Worker: ${worker}${lotSummaryStr ? ' | Lots: [' + lotSummaryStr + ']' : ''}`,
-                worker: worker, user: currentUser.username, startTime: pj.startTime || stopTime, endTime: stopTime,
-                rawDate: new Date().toISOString().split('T')[0], timestamp: new Date().toLocaleString()
-            });
-
-            // UI रीसेट
-            document.getElementById('packedBoxesOutput').value = '';
-            document.getElementById('packWorkerNameInput').value = '';
-            
-            saveData();
-            updateDispatchCustomerDropdown();
-            updatePendingPackDropdown();
-            updatePackingRunningDropdown();
-            renderPackingDeskLiveCards();
-            renderOrdersTable();
-            renderUI();
-            
-            alert(`✅ मशीन [${targetMachine}] का रन सफलतापूर्वक Finish और STOP हो गया है! अब मशीन पूरी तरह IDLE/खाली है।`);
-        }
-
-        function resumePackingJob() {
-            const targetMachine = document.getElementById('packMachineSelect').value;
-            let pj = packJobs.find(p => p.machine === targetMachine && p.status === 'Held');
-            
-            if(!pj) {
-                const packId = document.getElementById('packRunningJobsSelect').value;
-                if(packId) pj = packJobs.find(p => p.id === packId);
-            }
-
-            if(!pj) return alert(`मशीन [${targetMachine}] पर कोई भी रुका (HELD) हुआ आर्डर नहीं मिला जिसे Resume किया जा सके!`);
-
-            if(pj.status === 'Running') return alert('यह आर्डर पहले से ही RUNNING स्टेट में है।');
-
-            const nowTime = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    const nowTime = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    
+    if(packId === 'REGULAR_STOCK') {
+        alert('ℹ️ Regular stock bulk packing mode initiated.');
+    } else {
+        let pj = packJobs.find(p => p.id === packId);
+        if(pj) {
             pj.status = 'Running';
             pj.machine = targetMachine;
+            pj.shift = shift;
+            pj.startTime = nowTime;
+            pj.worker = worker;
             pj.holdReason = "";
-
-            logs.push({
-                jobId: pj.id, product: pj.kitType, stage: 'Packing', machine: targetMachine,
-                shift: document.getElementById('packShiftSelect').value, action: `▶️ Packing Run Resumed on ${targetMachine} | Worker: ${pj.worker}`,
-                worker: pj.worker, user: currentUser.username, startTime: nowTime, endTime: '',
-                rawDate: new Date().toISOString().split('T')[0], timestamp: new Date().toLocaleString()
-            });
-
-            saveData();
-            updatePackingRunningDropdown();
-            renderPackingDeskLiveCards();
-            renderUI();
-            alert(`▶️ आर्डर [${pj.id}] मशीन [${targetMachine}] पर दोबारा RUNNING चालू हो गया है!`);
+        } else {
+            alert('❌ Error: Selected pack job not found in system memory.');
+            return;
         }
+    }
 
-        function cancelActivePackingRun() {
-            const targetMachine = document.getElementById('packMachineSelect').value;
-            let pj = packJobs.find(p => p.machine === targetMachine && (p.status === 'Running' || p.status === 'Held'));
+    if(typeof saveData === 'function') saveData();
+    if(typeof updatePendingPackDropdown === 'function') updatePendingPackDropdown();
+    
+    updatePackingRunningDropdown();
+    if(typeof renderPackingDeskLiveCards === 'function') renderPackingDeskLiveCards();
+    
+    alert(`✅ Packing Run Successfully Started on ${targetMachine}!`);
+}
 
-            if(!pj) {
-                const packId = document.getElementById('packRunningJobsSelect').value;
-                if(packId) pj = packJobs.find(p => p.id === packId);
-            }
+function resumePackingJob() {
+    const packId = document.getElementById('packRunningJobsSelect').value;
+    const targetMachine = document.getElementById('packMachineSelect').value;
+    if(!packId) return alert('Please select active packing batch to resume!');
 
-            if(!pj) return alert('रद्द (Cancel) करने के लिए कोई एक्टिव रन नहीं मिला!');
+    let pj = packJobs.find(p => p.id === packId);
+    if(pj) {
+        if(pj.status === 'Running') return alert('This order is ALREADY RUNNING.');
+        const nowTime = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        pj.status = 'Running';
+        pj.machine = targetMachine;
+        pj.holdReason = "";
 
-            if(!confirm(`⚠️ क्या आप वाकई मशीन [${targetMachine}] पर चल रहे आर्डर [${pj.id}] का रन रद्द (Cancel & Revert) करना चाहते हैं?`)) return;
+        logs.push({
+            jobId: pj.id, product: pj.kitType, stage: 'Packing', machine: targetMachine,
+            shift: document.getElementById('packShiftSelect').value, action: `▶️ Packing Run Resumed on ${targetMachine} | Worker: ${pj.worker}`,
+            worker: pj.worker, user: currentUser.username, startTime: nowTime, endTime: '',
+            rawDate: new Date().toISOString().split('T')[0], timestamp: new Date().toLocaleString()
+        });
 
-            // मशीन को पूरी तरह खाली और आर्डर को पेंडिंग करना
-            pj.status = (pj.packedBoxes > 0) ? 'Partially Packed' : 'Pending Queue';
-            pj.machine = "";
-            pj.holdReason = "";
+        saveData();
+        updatePackingRunningDropdown();
+        if(typeof renderPackingDeskLiveCards === 'function') renderPackingDeskLiveCards();
+        alert(`▶️ Order [${pj.id}] Resumed to RUNNING on ${targetMachine}!`);
+    }
+}
 
-            logs.push({
-                jobId: pj.id, product: pj.kitType, stage: 'Packing Cancelled', machine: targetMachine,
-                shift: pj.shift || 'DAY', action: `❌ Packing Run Cancelled & Reverted on ${targetMachine} for ${pj.id}`,
-                worker: pj.worker || 'Operator', user: currentUser.username, rawDate: new Date().toISOString().split('T')[0], timestamp: new Date().toLocaleString()
-            });
+function completePackingJob() {
+    const packId = document.getElementById('packRunningJobsSelect').value;
+    const targetMachine = document.getElementById('packMachineSelect').value;
+    const boxesDone = parseInt(document.getElementById('packedBoxesOutput').value) || 0;
+    const worker = (document.getElementById('packWorkerNameInput').value || '').trim().toUpperCase() || (currentUser ? currentUser.username : '');
 
-            saveData();
-            updatePendingPackDropdown();
-            updatePackingRunningDropdown();
-            renderPackingDeskLiveCards();
-            renderUI();
-            alert(`✅ मशीन [${targetMachine}] का रन रद्द कर दिया गया है और मशीन अब IDLE है!`);
+    let pj = packJobs.find(p => p.id === packId);
+    if(!pj) return alert('कृपया एक्टिव पैकिंग बैच सेलेक्ट करें!');
+
+    const stopTime = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+
+    let componentLots = {};
+    document.querySelectorAll('.pack-job-select').forEach(sel => {
+        let pName = sel.getAttribute('data-product');
+        let jId = sel.value;
+        if(pName && jId) {
+            let inp = document.querySelector(`.pack-crate-input[data-product="${pName}"]`);
+            let q = inp ? inp.value : '1';
+            componentLots[pName] = `${jId} (${q} Crates)`;
         }
+    });
 
-        function forwardPartialPackingOutput() {
-            const targetMachine = document.getElementById('packMachineSelect').value;
-            let pj = packJobs.find(p => p.machine === targetMachine && (p.status === 'Running' || p.status === 'Held'));
+    if(boxesDone > 0) {
+        pj.packedBoxes = (pj.packedBoxes || 0) + boxesDone;
+        if(!pj.historyRuns) pj.historyRuns = [];
+        if(!pj.tracedLots) pj.tracedLots = {};
+        Object.assign(pj.tracedLots, componentLots);
 
-            if(!pj) return alert(`मशीन [${targetMachine}] पर कोई एक्टिव पैकिंग रन नहीं मिला!`);
+        pj.historyRuns.push({
+            machine: targetMachine, boxes: boxesDone, pcs: boxesDone * pj.pcsPerBox,
+            date: new Date().toISOString().split('T')[0], time: stopTime, worker: worker,
+            usedLots: componentLots
+        });
 
-            let boxesStr = prompt("इस रन से कितने बॉक्स तत्काल फिनिश/वेयरहाउस में आगे पास (Forward) करना चाहते हैं?");
-            let boxes = parseInt(boxesStr);
-            if(isNaN(boxes) || boxes <= 0) return alert('अमान्य संख्या! कृपया सही बॉक्स संख्या दर्ज करें।');
+        let balance = (pj.orderQty || 0) - ((pj.packedBoxes || 0) * (pj.pcsPerBox || 0));
+        if(balance <= 0) pj.status = '100% Packed & Completed';
+        else pj.status = 'Partially Packed';
+    } else {
+        pj.status = 'Idle / Paused';
+    }
 
-            const nowTime = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-            pj.packedBoxes = (pj.packedBoxes || 0) + boxes;
+    let lotSummaryStr = Object.keys(componentLots).map(k => `${k}: ${componentLots[k]}`).join(' | ');
 
-            if(!pj.historyRuns) pj.historyRuns = [];
-            pj.historyRuns.push({
-                machine: targetMachine, boxes: boxes, pcs: boxes * pj.pcsPerBox,
-                date: new Date().toISOString().split('T')[0], time: nowTime,
-                worker: pj.worker || 'Packing Team', usedLots: pj.tracedLots || {}
-            });
+    logs.push({
+        jobId: pj.id, product: pj.kitType, stage: 'Packing', machine: targetMachine,
+        shift: document.getElementById('packShiftSelect') ? document.getElementById('packShiftSelect').value : 'DAY',
+        action: `⏹ Finished Packing Run on ${targetMachine} (${boxesDone} Boxes) | Worker: ${worker}${lotSummaryStr ? ' | Lots: [' + lotSummaryStr + ']' : ''}`,
+        worker: worker, user: currentUser.username, startTime: pj.startTime || stopTime, endTime: stopTime,
+        rawDate: new Date().toISOString().split('T')[0], timestamp: new Date().toLocaleString()
+    });
 
-            let balance = (pj.orderQty || 0) - ((pj.packedBoxes || 0) * (pj.pcsPerBox || 0));
-            if(balance <= 0) pj.status = '100% Packed & Completed';
-            else pj.status = 'Partially Packed';
+    pj.machine = ""; 
+    document.getElementById('packedBoxesOutput').value = '';
+    saveData();
+    if(typeof updateDispatchCustomerDropdown === 'function') updateDispatchCustomerDropdown();
+    if(typeof updatePendingPackDropdown === 'function') updatePendingPackDropdown();
+    updatePackingRunningDropdown();
+    if(typeof renderPackingDeskLiveCards === 'function') renderPackingDeskLiveCards();
+    if(typeof populateUniversalSearchSuggestions === 'function') populateUniversalSearchSuggestions();
+    alert(`✅ Packing Run on ${targetMachine} Finished Successfully!`);
+}
 
-            logs.push({
-                jobId: pj.id, product: pj.kitType, stage: 'Packing Forward', machine: targetMachine,
-                shift: pj.shift || 'DAY', action: `⚡ Partial Forward: ${boxes} Boxes तैयार स्टॉक में भेजे गए।`,
-                worker: pj.worker || 'Operator', user: currentUser.username, rawDate: new Date().toISOString().split('T')[0], timestamp: new Date().toLocaleString()
-            });
+function onPackingMachineChange() {
+    if(typeof updatePendingPackDropdown === 'function') updatePendingPackDropdown();
+    if(typeof loadPackJobDetails === 'function') loadPackJobDetails();
+    if(typeof renderPackingDeskLiveCards === 'function') renderPackingDeskLiveCards();
+    updatePackingRunningDropdown();
+}
 
-            saveData();
-            updateDispatchCustomerDropdown();
-            renderOrdersTable();
-            renderPackingDeskLiveCards();
-            renderUI();
-            alert(`✅ ${boxes} बॉक्स सफलतापूर्वक तैयार स्टॉक में जोड़ दिए गए हैं!`);
+// ==========================================
+// ADMIN OVERRIDES & CORRECTIONS (AS PREserved)
+// ==========================================
+
+function loadAdminPackOrderList() {
+    const select = document.getElementById('adminPackOrderSelect');
+    if(!select) return;
+    select.innerHTML = '<option value="">-- SELECT ORDER TO EDIT --</option>';
+    packJobs.forEach(p => select.innerHTML += `<option value="${p.id}">${p.id} - ${p.customer} (${p.kitType})</option>`);
+}
+
+function toggleAdminEditPackType() {
+    const type = document.getElementById('editPackTypeSelect').value;
+    if(type === 'INDIVIDUAL') {
+        document.getElementById('adminEditKitSec').classList.add('hidden');
+        document.getElementById('adminEditSingleSec').classList.remove('hidden');
+    } else {
+        document.getElementById('adminEditKitSec').classList.remove('hidden');
+        document.getElementById('adminEditSingleSec').classList.add('hidden');
+    }
+}
+
+function loadPackOrderForAdminEdit() {
+    const id = document.getElementById('adminPackOrderSelect').value;
+    const panel = document.getElementById('adminOrderEditPanel');
+    if(!id) { panel.classList.add('hidden'); return; }
+    const pj = packJobs.find(p => p.id === id);
+    if(pj) {
+        panel.classList.remove('hidden');
+        document.getElementById('editOrderQtyInput').value = pj.orderQty;
+        document.getElementById('editBoxSizeInput').value = pj.pcsPerBox;
+        document.getElementById('editPackTypeSelect').value = pj.packType || 'KIT';
+        toggleAdminEditPackType();
+        if(pj.packType === 'INDIVIDUAL') {
+            document.getElementById('adminEditSingleItemSelect').value = pj.kitItems[0] || 'Spoon';
+        } else {
+            document.querySelectorAll('.admin-edit-kit-item').forEach(cb => { cb.checked = pj.kitItems.includes(cb.value); });
         }
+    }
+}
 
-        function quickReturnUnprocessedPackingBoxes() {
-            const targetMachine = document.getElementById('packMachineSelect').value;
-            let pj = packJobs.find(p => p.machine === targetMachine && (p.status === 'Running' || p.status === 'Held'));
+function saveAdminOrderCorrection() {
+    const id = document.getElementById('adminPackOrderSelect').value;
+    const newQty = parseInt(document.getElementById('editOrderQtyInput').value) || 0;
+    const newBox = parseInt(document.getElementById('editBoxSizeInput').value) || 0;
+    const packType = document.getElementById('editPackTypeSelect').value;
+    const pj = packJobs.find(p => p.id === id);
+    if(!pj || newQty <= 0 || newBox <= 0) return alert('Enter valid quantity & box size!');
 
-            if(!pj) return alert(`मशीन [${targetMachine}] पर कोई एक्टिव पैकिंग रन नहीं मिला!`);
+    pj.orderQty = newQty;
+    pj.pcsPerBox = newBox;
+    pj.packType = packType;
+    if(packType === 'INDIVIDUAL') {
+        let single = document.getElementById('adminEditSingleItemSelect').value;
+        pj.kitItems = [single];
+        pj.kitType = `Individual ${single} Box`;
+    } else {
+        pj.kitItems = Array.from(document.querySelectorAll('.admin-edit-kit-item:checked')).map(cb => cb.value);
+        pj.kitType = `${pj.kitItems.length}-in-1 Kit (${pj.kitItems.join(', ')})`;
+    }
 
-            let boxesStr = prompt("गलती से दर्ज किए गए कितने बॉक्स आप माइनस/रिमूव करना चाहते हैं?");
-            let boxes = parseInt(boxesStr);
-            if(isNaN(boxes) || boxes <= 0) return alert('अमान्य संख्या! कृपया सही बॉक्स संख्या दर्ज करें।');
+    saveData();
+    loadAdminPackOrderList();
+    alert(`✅ Customer Order [${id}] Updated Successfully!`);
+}
 
-            if((pj.packedBoxes || 0) < boxes) {
-                return alert(`⚠️ कुल पैक्ड बॉक्स (${pj.packedBoxes || 0}) से अधिक माइनस नहीं किए जा सकते!`);
-            }
+function loadAdminBatchJobList() {
+    const select = document.getElementById('adminBatchJobSelect');
+    if(!select) return;
+    select.innerHTML = '<option value="">-- SELECT JOB FOR BATCH FIX --</option>';
+    jobs.forEach(j => select.innerHTML += `<option value="${j.id}">${j.id} - ${j.product}</option>`);
+}
 
-            pj.packedBoxes -= boxes;
-            logs.push({
-                jobId: pj.id, product: pj.kitType, stage: 'Packing Reverse', machine: targetMachine,
-                shift: pj.shift || 'DAY', action: `↩️ Packing Box Un-issue: -${boxes} Boxes हटाए गए।`,
-                worker: pj.worker || 'Operator', user: currentUser.username, rawDate: new Date().toISOString().split('T')[0], timestamp: new Date().toLocaleString()
-            });
+function loadBatchesForSelectedJob() {
+    const jobId = document.getElementById('adminBatchJobSelect').value;
+    const panel = document.getElementById('adminBatchEditPanel');
+    const batchSelect = document.getElementById('adminBatchSelect');
+    batchSelect.innerHTML = '<option value="">-- SELECT BATCH --</option>';
+    if(!jobId) { panel.classList.add('hidden'); return; }
+    const job = jobs.find(j => j.id === jobId);
+    if(job && job.runningBatches && job.runningBatches.length > 0) {
+        panel.classList.remove('hidden');
+        job.runningBatches.forEach(b => {
+            batchSelect.innerHTML += `<option value="${b.batchId}">[${b.stage}] Batch ${b.batchId} (${b.producedQty || 0} Units)</option>`;
+        });
+        loadBatchQtyForEdit();
+    } else { panel.classList.add('hidden'); }
+}
 
-            saveData();
-            updateDispatchCustomerDropdown();
-            renderOrdersTable();
-            renderUI();
-            alert(`✅ ${boxes} बॉक्स सफलतापूर्वक स्टॉक से घटा दिए गए हैं!`);
-        }
+function loadBatchQtyForEdit() {
+    const jobId = document.getElementById('adminBatchJobSelect').value;
+    const batchId = document.getElementById('adminBatchSelect').value;
+    const job = jobs.find(j => j.id === jobId);
+    const weightSec = document.getElementById('adminSlitWeightEditSec');
 
-        function executePackingProductUnissue() {
-            const targetMachine = document.getElementById('packMachineSelect').value;
-            let pj = packJobs.find(p => p.machine === targetMachine && (p.status === 'Running' || p.status === 'Held'));
-
-            if(!pj) return alert(`मशीन [${targetMachine}] पर कोई एक्टिव पैकिंग बैच नहीं मिला!`);
-
-            const prodName = document.getElementById('packUnissueProductSelect').value;
-            const returnQty = parseInt(document.getElementById('packUnissueQtyInput').value) || 0;
-
-            if(!prodName) return alert('कृपया अन-इश्यू करने के लिए प्रोडक्ट सेलेक्ट करें!');
-            if(returnQty <= 0) return alert('कृपया वापस करने के लिए सही क्रेट्स संख्या दर्ज करें!');
-
-            if(!pj.issuedCrates || !pj.issuedCrates[prodName]) {
-                return alert('इस प्रोडक्ट का कोई एक्टिव इश्यू रिकॉर्ड नहीं मिला!');
-            }
-
-            let currentIssued = pj.issuedCrates[prodName];
-            if(returnQty > currentIssued) {
-                return alert(`इश्यू की गई कुल मात्रा (${currentIssued}) से ज्यादा क्रेट्स रिटर्न नहीं किए जा सकते!`);
-            }
-
-            pj.issuedCrates[prodName] -= returnQty;
-
-            let returnedLeft = returnQty;
-            if(pj.issuedJobSources && pj.issuedJobSources[prodName]) {
-                for(let srcJobId of Object.keys(pj.issuedJobSources[prodName])) {
-                    if(returnedLeft <= 0) break;
-                    let availToReturn = pj.issuedJobSources[prodName][srcJobId] || 0;
-                    let toRefund = Math.min(returnedLeft, availToReturn);
-                    let jObj = jobs.find(x => x.id === srcJobId);
-                    if(jObj) {
-                        jObj.availableQcCrates = (jObj.availableQcCrates || 0) + toRefund;
-                        pj.issuedJobSources[prodName][srcJobId] -= toRefund;
-                        returnedLeft -= toRefund;
-                    }
-                }
-            }
-
-            if(returnedLeft > 0) {
-                let anyJob = jobs.find(j => j.product === prodName);
-                if(anyJob) anyJob.availableQcCrates = (anyJob.availableQcCrates || 0) + returnedLeft;
-            }
-
-            logs.push({
-                jobId: pj.id, product: pj.kitType, stage: 'Packing Un-issue', machine: targetMachine,
-                shift: pj.shift || 'DAY', action: `↩️ Packing Un-issue: Returned ${returnQty} crates of [${prodName}] back to QC stock.`,
-                worker: pj.worker || 'Operator', user: currentUser.username, rawDate: new Date().toISOString().split('T')[0], timestamp: new Date().toLocaleString()
-            });
-
-            saveData();
-            updatePackRunningDisplayInfo();
-            document.getElementById('packUnissueQtyInput').value = '';
-            renderUI();
-
-            alert(`✅ सफलतापूर्वक ${returnQty} क्रेट्स [${prodName}] QC Approved स्टॉक में वापस जमा हो गए हैं!`);
-        }
-
-        // Admin Overrides & Corrections
-        function loadAdminPackOrderList() {
-            const select = document.getElementById('adminPackOrderSelect');
-            if(!select) return;
-            select.innerHTML = '<option value="">-- SELECT ORDER TO EDIT --</option>';
-            packJobs.forEach(p => select.innerHTML += `<option value="${p.id}">${p.id} - ${p.customer} (${p.kitType})</option>`);
-        }
-
-        function toggleAdminEditPackType() {
-            const type = document.getElementById('editPackTypeSelect').value;
-            if(type === 'INDIVIDUAL') {
-                document.getElementById('adminEditKitSec').classList.add('hidden');
-                document.getElementById('adminEditSingleSec').classList.remove('hidden');
+    if(job && job.runningBatches) {
+        const b = job.runningBatches.find(x => x.batchId === batchId);
+        if(b) {
+            document.getElementById('editBatchOutputQtyInput').value = b.producedQty || 0;
+            if(b.stage === 'Slitting') {
+                weightSec.classList.remove('hidden');
+                document.getElementById('editBatchOutputWeightInput').value = b.outputWeightKg || 0;
             } else {
-                document.getElementById('adminEditKitSec').classList.remove('hidden');
-                document.getElementById('adminEditSingleSec').classList.add('hidden');
+                weightSec.classList.add('hidden');
             }
         }
-
-        function loadPackOrderForAdminEdit() {
-            const id = document.getElementById('adminPackOrderSelect').value;
-            const panel = document.getElementById('adminOrderEditPanel');
-            if(!id) { panel.classList.add('hidden'); return; }
-            const pj = packJobs.find(p => p.id === id);
-            if(pj) {
-                panel.classList.remove('hidden');
-                document.getElementById('editOrderQtyInput').value = pj.orderQty;
-                document.getElementById('editBoxSizeInput').value = pj.pcsPerBox;
-                document.getElementById('editPackTypeSelect').value = pj.packType || 'KIT';
-                toggleAdminEditPackType();
-                if(pj.packType === 'INDIVIDUAL') {
-                    document.getElementById('adminEditSingleItemSelect').value = pj.kitItems[0] || 'Spoon';
-                } else {
-                    document.querySelectorAll('.admin-edit-kit-item').forEach(cb => { cb.checked = pj.kitItems.includes(cb.value); });
-                }
-            }
-        }
-
-        function saveAdminOrderCorrection() {
-            const id = document.getElementById('adminPackOrderSelect').value;
-            const newQty = parseInt(document.getElementById('editOrderQtyInput').value) || 0;
-            const newBox = parseInt(document.getElementById('editBoxSizeInput').value) || 0;
-            const packType = document.getElementById('editPackTypeSelect').value;
-            const pj = packJobs.find(p => p.id === id);
-            if(!pj || newQty <= 0 || newBox <= 0) return alert('Enter valid quantity & box size!');
-
-            pj.orderQty = newQty;
-            pj.pcsPerBox = newBox;
-            pj.packType = packType;
-            if(packType === 'INDIVIDUAL') {
-                let single = document.getElementById('adminEditSingleItemSelect').value;
-                pj.kitItems = [single];
-                pj.kitType = `Individual ${single} Box`;
-            } else {
-                pj.kitItems = Array.from(document.querySelectorAll('.admin-edit-kit-item:checked')).map(cb => cb.value);
-                pj.kitType = `${pj.kitItems.length}-in-1 Kit (${pj.kitItems.join(', ')})`;
-            }
-
-            saveData();
-            loadAdminPackOrderList();
-            alert(`✅ Customer Order [${id}] Updated Successfully!`);
-        }
-
-        function loadAdminBatchJobList() {
-            const select = document.getElementById('adminBatchJobSelect');
-            if(!select) return;
-            select.innerHTML = '<option value="">-- SELECT JOB FOR BATCH FIX --</option>';
-            jobs.forEach(j => select.innerHTML += `<option value="${j.id}">${j.id} - ${j.product}</option>`);
-        }
-
-        function loadBatchesForSelectedJob() {
-            const jobId = document.getElementById('adminBatchJobSelect').value;
-            const panel = document.getElementById('adminBatchEditPanel');
-            const batchSelect = document.getElementById('adminBatchSelect');
-            batchSelect.innerHTML = '<option value="">-- SELECT BATCH --</option>';
-            if(!jobId) { panel.classList.add('hidden'); return; }
-            const job = jobs.find(j => j.id === jobId);
-            if(job && job.runningBatches && job.runningBatches.length > 0) {
-                panel.classList.remove('hidden');
-                job.runningBatches.forEach(b => {
-                    batchSelect.innerHTML += `<option value="${b.batchId}">[${b.stage}] Batch ${b.batchId} (${b.producedQty || 0} Units)</option>`;
-                });
-                loadBatchQtyForEdit();
-            } else { panel.classList.add('hidden'); }
-        }
-
-        function loadBatchQtyForEdit() {
-            const jobId = document.getElementById('adminBatchJobSelect').value;
-            const batchId = document.getElementById('adminBatchSelect').value;
-            const job = jobs.find(j => j.id === jobId);
-            const weightSec = document.getElementById('adminSlitWeightEditSec');
-
-            if(job && job.runningBatches) {
-                const b = job.runningBatches.find(x => x.batchId === batchId);
-                if(b) {
-                    document.getElementById('editBatchOutputQtyInput').value = b.producedQty || 0;
-                    if(b.stage === 'Slitting') {
-                        weightSec.classList.remove('hidden');
-                        document.getElementById('editBatchOutputWeightInput').value = b.outputWeightKg || 0;
-                    } else {
-                        weightSec.classList.add('hidden');
-                    }
-                }
-            }
-        }
+    }
+}
 
         function saveAdminBatchQtyCorrection() {
             const jobId = document.getElementById('adminBatchJobSelect').value;
@@ -3884,7 +3642,7 @@
             alert(`✅ Batch Output & Weight (KG) Updated Successfully!`);
         }
 
-        // Admin Reverse Functions
+        // --- Admin Reverse / Un-issue Functions ---
         function loadAdminReverseDropdowns() {
             const jobSelect = document.getElementById('adminReverseJobSelect');
             if(!jobSelect) return;
@@ -4060,530 +3818,360 @@
         function closeHoldModal() { document.getElementById('holdBreakdownModal').style.display = 'none'; }
         
         function confirmExecuteHold(sendWhatsApp) {
-            const reason = document.getElementById('holdReasonSelect').value;
-            const remarks = document.getElementById('holdRemarksInput').value.trim();
-            const machine = currentTargetHoldMachine;
-            const nowTime = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-            let fullReason = reason + (remarks ? ` (${remarks})` : '');
-            let targetJob = null, targetBatch = null;
+    const reason = document.getElementById('holdReasonSelect').value;
+    const remarks = document.getElementById('holdRemarksInput').value.trim();
+    const machine = currentTargetHoldMachine;
+    const nowTime = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    let fullReason = reason + (remarks ? ` (${remarks})` : '');
+    let targetJob = null, targetBatch = null;
 
-            if(machine === 'Slitting-1') {
-                const batchId = document.getElementById('runningSlitJobsSelect').value;
-                jobs.forEach(j => {
-                    if(j.runningBatches) {
-                        let b = j.runningBatches.find(x => x.batchId === batchId && x.status === 'Running');
-                        if(b) { targetJob = j; targetBatch = b; }
-                    }
-                });
-            } else if(machine.startsWith('Packing-') || machine.startsWith('Manual-')) {
-                const packId = document.getElementById('packRunningJobsSelect') ? document.getElementById('packRunningJobsSelect').value : '';
-                let pj = packJobs.find(p => (p.id === packId || p.machine === machine) && p.status === 'Running');
-                if(pj) { 
-                    pj.status = 'Held'; 
-                    pj.holdReason = fullReason; 
-                    logs.push({
-                        jobId: pj.id, product: pj.kitType, stage: 'Packing', machine: machine,
-                        shift: pj.shift || 'DAY', action: `⏸️ Machine HELD: ${fullReason}`,
-                        worker: pj.worker || 'Packing', user: currentUser.username, startTime: pj.startTime, endTime: nowTime,
-                        rawDate: new Date().toISOString().split('T')[0], timestamp: new Date().toLocaleString()
-                    });
-                }
-            } else {
-                jobs.forEach(j => {
-                    if(j.runningBatches) {
-                        let b = j.runningBatches.find(x => x.machine === machine && x.status === 'Running');
-                        if(b) { targetJob = j; targetBatch = b; }
-                    }
-                });
+    if(machine === 'Slitting-1') {
+        const batchId = document.getElementById('runningSlitJobsSelect').value;
+        jobs.forEach(j => {
+            if(j.runningBatches) {
+                let b = j.runningBatches.find(x => x.batchId === batchId && x.status === 'Running');
+                if(b) { targetJob = j; targetBatch = b; }
             }
-
-            if(targetBatch) {
-                targetBatch.status = 'Held';
-                targetBatch.endTime = nowTime;
-                targetBatch.holdReason = fullReason;
-                logs.push({
-                    jobId: targetJob.id, product: targetJob.product, stage: targetBatch.stage, machine: machine,
-                    shift: targetBatch.shift, action: `⏸️ Machine HELD: ${fullReason}`,
-                    worker: targetBatch.worker, user: currentUser.username, startTime: targetBatch.startTime, endTime: nowTime,
-                    rawDate: new Date().toISOString().split('T')[0], timestamp: new Date().toLocaleString()
-                });
+        });
+    } else if(machine.startsWith('Packing-') || machine.startsWith('Manual-')) {
+        const packId = document.getElementById('pendingPackOrderSelect').value;
+        let pj = packJobs.find(p => p.id === packId && (p.status === 'Running' || p.machine === machine));
+        if(pj) { 
+            pj.status = 'Held'; 
+            pj.holdReason = fullReason; 
+        }
+    } else {
+        jobs.forEach(j => {
+            if(j.runningBatches) {
+                let b = j.runningBatches.find(x => x.machine === machine && x.status === 'Running');
+                if(b) { targetJob = j; targetBatch = b; }
             }
+        });
+    }
 
-            saveData();
-            closeHoldModal();
-            updateRunningSlitDropdown();
-            updateCuttingRunningDropdown();
-            updateFormingRunningDropdown();
-            updateQcRunningDropdown();
-            updatePackingRunningDropdown();
-            renderPackingDeskLiveCards();
+    if(targetBatch) {
+        targetBatch.status = 'Held';
+        targetBatch.endTime = nowTime;
+        targetBatch.holdReason = fullReason;
+        logs.push({
+            jobId: targetJob.id, product: targetJob.product, stage: targetBatch.stage, machine: machine,
+            shift: targetBatch.shift, action: `⏸️ Machine HELD: ${fullReason}`,
+            worker: targetBatch.worker, user: currentUser.username, startTime: targetBatch.startTime, endTime: nowTime,
+            rawDate: new Date().toISOString().split('T')[0], timestamp: new Date().toLocaleString()
+        });
+    }
 
-            if(sendWhatsApp) {
-                let text = `🚨 *MACHINE BREAKDOWN / PAUSE ALERT*\n⚙️ *Machine:* ${machine}\n⚠️ *Reason:* ${fullReason}\n👤 *Reported by:* ${currentUser.username.toUpperCase()}`;
-                executeWhatsAppApiCall(whatsappConfig.phone, whatsappConfig.apiKey, text, false);
-            } else {
-                alert(`⏸️ Machine [${machine}] has been placed on HOLD.`);
-            }
+    saveData();
+    closeHoldModal();
+    updateRunningSlitDropdown();
+    updateCuttingRunningDropdown();
+    updateFormingRunningDropdown();
+    updateQcRunningDropdown();
+    loadPackJobDetails();
+
+    if(sendWhatsApp) {
+        let text = `🚨 *MACHINE BREAKDOWN / PAUSE ALERT*\n⚙️ *Machine:* ${machine}\n⚠️ *Reason:* ${fullReason}\n👤 *Reported by:* ${currentUser.username.toUpperCase()}`;
+        executeWhatsAppApiCall(whatsappConfig.phone, whatsappConfig.apiKey, text, false);
+    } else {
+        alert(`⏸️ Machine [${machine}] has been placed on HOLD.`);
+    }
+}
+
+        // Order Sorting & Filtered CSV Export
+        function toggleOrderSorting() {
+            orderSortAscending = !orderSortAscending;
+            renderOrdersTable();
         }
 
-        function confirmExecuteHoldAndReroute() {
-            const reason = document.getElementById('holdReasonSelect').value;
-            const remarks = document.getElementById('holdRemarksInput').value.trim();
-            const sourceMachine = currentTargetHoldMachine;
-            const targetMachine = document.getElementById('rerouteTargetMachineSelect').value;
-            
-            if(!targetMachine) {
-                return alert('कृपया ड्रॉपडाउन से वह टारगेट मशीन सेलेक्ट करें जिसपर स्टॉक शिफ्ट करना है!');
-            }
+        function exportFilteredOrdersCSV() {
+            let custFilter = (document.getElementById('filterCustOrderName') ? document.getElementById('filterCustOrderName').value : '').trim().toUpperCase();
+            let sDate = document.getElementById('filterCustOrderStart') ? document.getElementById('filterCustOrderStart').value : '';
+            let eDate = document.getElementById('filterCustOrderEnd') ? document.getElementById('filterCustOrderEnd').value : '';
 
-            const nowTime = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-            let fullReason = reason + (remarks ? ` (${remarks})` : '');
-            let targetJob = null, targetBatch = null;
-
-            jobs.forEach(j => {
-                if(j.runningBatches) {
-                    let b = j.runningBatches.find(x => x.machine === sourceMachine && (x.status === 'Running' || x.status === 'Held'));
-                    if(b) { targetJob = j; targetBatch = b; }
-                }
+            let filtered = packJobs.filter(pj => {
+                if(custFilter && !pj.customer.toUpperCase().includes(custFilter)) return false;
+                if(sDate && pj.dispatchDate && pj.dispatchDate < sDate) return false;
+                if(eDate && pj.dispatchDate && pj.dispatchDate > eDate) return false;
+                return true;
             });
 
-            if(!targetBatch) {
-                return alert(`⚠️ एरर: ${sourceMachine} पर कोई भी एक्टिव बैच नहीं मिला जिसे री-रूट किया जाए!`);
-            }
-
-            targetBatch.status = 'Held';
-            targetBatch.endTime = nowTime;
-            targetBatch.holdReason = `Re-routed to ${targetMachine}: ${fullReason}`;
-
-            logs.push({
-                jobId: targetJob.id, product: targetJob.product, stage: targetBatch.stage, machine: sourceMachine,
-                shift: targetBatch.shift, action: `⏸️ Machine HELD & Re-routed: ${sourceMachine} ➔ ${targetMachine} (${fullReason})`,
-                worker: targetBatch.worker, user: currentUser.username, startTime: targetBatch.startTime, endTime: nowTime,
-                rawDate: new Date().toISOString().split('T')[0], timestamp: new Date().toLocaleString()
+            let csv = "data:text/csv;charset=utf-8,Order_ID,Customer_Brand,Packing_Type,Total_Order_Pcs,Pcs_Per_Box,Target_Boxes,Produced_Boxes,Dispatched_Boxes,Ready_In_WH_Boxes,Target_Dispatch_Date,Status\n";
+            filtered.forEach(pj => {
+                let targetBoxes = Math.ceil(pj.orderQty / pj.pcsPerBox);
+                let readyBoxes = Math.max(0, (pj.packedBoxes || 0) - (pj.dispatchedBoxes || 0));
+                csv += `"${pj.id}","${pj.customer}","${pj.kitType}","${pj.orderQty}","${pj.pcsPerBox}","${targetBoxes}","${pj.packedBoxes || 0}","${pj.dispatchedBoxes || 0}","${readyBoxes}","${pj.dispatchDate || ''}","${pj.status}"\n`;
             });
 
-            let newBatchId = generateUniqueBatchId(targetBatch.stage, targetJob.id);
-            let remainingQty = targetBatch.issuedQty || 0;
-
-            if(!targetJob.runningBatches) targetJob.runningBatches = [];
-            targetJob.runningBatches.push({
-                batchId: newBatchId,
-                stage: targetBatch.stage,
-                machine: targetMachine,
-                shift: targetBatch.shift,
-                issuedQty: remainingQty,
-                producedQty: 0,
-                worker: targetBatch.worker,
-                user: currentUser.username,
-                startTime: nowTime,
-                endTime: '',
-                status: 'Running'
-            });
-
-            logs.push({
-                jobId: targetJob.id, product: targetJob.product, stage: targetBatch.stage, machine: targetMachine,
-                shift: targetBatch.shift, action: `▶️ Re-routed Batch Started on ${targetMachine} (${remainingQty} Units Shifted from ${sourceMachine})`,
-                worker: targetBatch.worker, user: currentUser.username, startTime: nowTime, endTime: '',
-                rawDate: new Date().toISOString().split('T')[0], timestamp: new Date().toLocaleString()
-            });
-
-            saveData();
-            closeHoldModal();
-            updateCuttingRunningDropdown();
-            updateFormingRunningDropdown();
-            updateQcRunningDropdown();
-            renderUI();
-
-            alert(`✅ सफलतापूर्वक मशीन [${sourceMachine}] को होल्ड कर दिया गया है और उसका रनिंग स्टॉक [${targetMachine}] पर ट्रांसफर हो गया है!`);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodeURI(csv));
+            link.setAttribute("download", `Filtered_Customer_Orders_${new Date().toISOString().split('T')[0]}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
 
-        function cancelActiveStageRun(deskType) {
-            let selectId = deskType === 'slitting' ? 'runningSlitJobsSelect' : 
-                           deskType === 'cutting' ? 'cuttingRunningJobsSelect' : 
-                           deskType === 'forming' ? 'formingRunningJobsSelect' : 'qcRunningJobsSelect';
-                           
-            let batchId = document.getElementById(selectId) ? document.getElementById(selectId).value : '';
-            if(!batchId) return alert('कृपया रद्द (Cancel) करने के लिए एक्टिव बैच या रन सेलेक्ट करें!');
+        function renderOrdersTable() {
+            const kitBody = document.getElementById('kitStockSummaryBody');
+            if(!kitBody) return;
+            kitBody.innerHTML = '';
 
-            let targetJob = null, targetBatchIndex = -1, targetBatch = null;
-            
-            jobs.forEach(j => {
-                if(j.runningBatches) {
-                    let idx = j.runningBatches.findIndex(x => x.batchId === batchId);
-                    if(idx !== -1) { targetJob = j; targetBatchIndex = idx; targetBatch = j.runningBatches[idx]; }
-                }
+            let custFilter = (document.getElementById('filterCustOrderName') ? document.getElementById('filterCustOrderName').value : '').trim().toUpperCase();
+            let sDate = document.getElementById('filterCustOrderStart') ? document.getElementById('filterCustOrderStart').value : '';
+            let eDate = document.getElementById('filterCustOrderEnd') ? document.getElementById('filterCustOrderEnd').value : '';
+
+            let filtered = packJobs.filter(pj => {
+                if(custFilter && !pj.customer.toUpperCase().includes(custFilter)) return false;
+                if(sDate && pj.dispatchDate && pj.dispatchDate < sDate) return false;
+                if(eDate && pj.dispatchDate && pj.dispatchDate > eDate) return false;
+                return true;
             });
 
-            if(!targetBatch) return alert('बैच डेटा नहीं मिला!');
-
-            let confirmMsg = `⚠️ चेतावनी: क्या आप वाकई इस रन (Batch ID: ${targetBatch.batchId}, Job: ${targetJob.id}) को 100% रद्द करना चाहते हैं?\n\nइश्यू किया गया सारा मटेरियल वापस अपनी जगह पर लौट जाएगा और यह एंट्री डिलीट हो जाएगी!`;
-            if(!confirm(confirmMsg)) return;
-
-            let issuedQty = targetBatch.issuedQty || 0;
-
-            if(deskType === 'cutting') {
-                targetJob.availableRolls = (targetJob.availableRolls || 0) + issuedQty;
-            } else if(deskType === 'forming') {
-                targetJob.availableCuttingCrates = (targetJob.availableCuttingCrates || 0) + issuedQty;
-            } else if(deskType === 'qc') {
-                targetJob.availableFormingCrates = (targetJob.availableFormingCrates || 0) + issuedQty;
-            } else if(deskType === 'slitting') {
-                targetJob.availableRolls = Math.max(0, (targetJob.availableRolls || 0) - (targetBatch.producedQty || 0));
-            }
-
-            targetJob.runningBatches.splice(targetBatchIndex, 1);
-
-            logs.push({
-                jobId: targetJob.id, product: targetJob.product, stage: `${deskType.toUpperCase()} Cancelled`, machine: targetBatch.machine || 'DESK',
-                shift: targetBatch.shift || 'DAY', action: `❌ Run Cancelled & Reverted: Batch ${targetBatch.batchId} deleted, ${issuedQty} units returned to stock.`,
-                worker: targetBatch.worker || 'ADMIN', user: currentUser.username, rawDate: new Date().toISOString().split('T')[0], timestamp: new Date().toLocaleString()
-            });
-
-            saveData();
-            if(deskType === 'slitting') updateRunningSlitDropdown();
-            if(deskType === 'cutting') { updateCuttingPendingDropdown(); updateCuttingRunningDropdown(); }
-            if(deskType === 'forming') { updateFormingPendingDropdown(); updateFormingRunningDropdown(); }
-            if(deskType === 'qc') { updateQcPendingDropdown(); updateQcRunningDropdown(); }
-            renderUI();
-
-            alert(`✅ गलत एंट्री सफलतापूर्वक रद्द (Cancel) कर दी गई है और सारा मटेरियल वापस अपनी जगह पर सुरक्षित पहुँच गया है!`);
-        }
-
-        function addBatchToExistingJobPrompt() {
-            let existingJobId = prompt("कृपया वह पुराना Job ID दर्ज करें जिसमें नया रील/बैच जोड़ना है (जैसे SPN-001):");
-            if(!existingJobId) return;
-            existingJobId = existingJobId.trim().toUpperCase();
-
-            let targetJob = jobs.find(j => j.id === existingJobId);
-            if(!targetJob) {
-                return alert(`⚠️ एरर: [${existingJobId}] नाम का कोई जॉब डेटाबेस में नहीं मिला! कृपया सही Job ID डालें।`);
-            }
-
-            let worker = prompt(`ऑपरेटर का नाम दर्ज करें (${targetJob.product} - ${targetJob.paperBrand || 'ITC'}):`, "RAMESH_SLIT");
-            if(!worker) return;
-            worker = worker.trim().toUpperCase();
-
-            let shift = document.getElementById('slitShiftSelect') ? document.getElementById('slitShiftSelect').value : 'DAY';
-            let batchId = generateUniqueBatchId('SLIT', targetJob.id);
-            let nowTime = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-
-            if(!targetJob.runningBatches) targetJob.runningBatches = [];
-            targetJob.runningBatches.push({
-                batchId: batchId,
-                stage: 'Slitting',
-                machine: 'Slitting-1',
-                shift: shift,
-                startTime: nowTime,
-                endTime: '',
-                status: 'Running',
-                issuedQty: 1,
-                producedQty: 0,
-                outputWeightKg: 0,
-                worker: worker,
-                user: currentUser.username
-            });
-
-            logs.push({
-                jobId: targetJob.id, product: targetJob.product, stage: 'Slitting Re-open', machine: 'Slitting-1', shift: shift,
-                action: `➕ Added New Batch/Reel to Existing Job ${targetJob.id} | Worker: ${worker}`,
-                worker: worker, user: currentUser.username, startTime: nowTime, endTime: '', rawDate: new Date().toISOString().split('T')[0], timestamp: new Date().toLocaleString()
-            });
-
-            saveData();
-            updateRunningSlitDropdown();
-            renderUI();
-
-            alert(`✅ सफलतापूर्वक पुराने जॉब [${targetJob.id}] के अंदर नया बैच (${batchId}) चालू कर दिया गया है!`);
-        }
-
-        function openAddBatchToExistingJobModal() {
-            addBatchToExistingJobPrompt();
-        }
-
-        // Maintenance & Breakdown Audit Log Table Renderer
-        function renderMaintenanceAuditTable() {
-            const tbody = document.getElementById('maintenanceAuditTableBody');
-            if(!tbody) return;
-            tbody.innerHTML = '';
-
-            let holdLogs = logs.filter(l => l.action && l.action.includes('HOLD'));
-            if(holdLogs.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="7" style="color:#a0aec0; padding:12px;">कोई होल्ड या ब्रेकडाउन रिकॉर्ड नहीं मिला।</td></tr>';
+            if(filtered.length === 0) {
+                kitBody.innerHTML = `<tr><td colspan="8" style="color:#a0aec0; padding:12px;">No active orders match the filter.</td></tr>`;
                 return;
             }
 
-            holdLogs.slice().reverse().forEach(l => {
-                let reason = l.action.replace('⏸️ Machine HELD:', '').replace('⏸️ Machine HELD & Re-routed:', '').trim();
-                let dur = (l.startTime && l.endTime) ? calculateTimeDifference(l.startTime, l.endTime) : 'Held / In-Progress';
-                tbody.innerHTML += `
+            let sortedOrders = [...filtered].sort((a, b) => {
+                let d1 = a.dispatchDate || '2099-12-31';
+                let d2 = b.dispatchDate || '2099-12-31';
+                return orderSortAscending ? d1.localeCompare(d2) : d2.localeCompare(d1);
+            });
+
+            sortedOrders.forEach(pj => {
+                let readyBoxes = Math.max(0, (pj.packedBoxes || 0) - (pj.dispatchedBoxes || 0));
+                kitBody.innerHTML += `
                     <tr>
-                        <td>${l.rawDate || '-'}</td>
-                        <td style="font-weight:bold; color:#1a365d;">${l.machine || '-'}</td>
-                        <td style="text-align:left; color:#dd6b20; font-weight:bold;">${reason}</td>
-                        <td>${l.startTime || '-'}</td>
-                        <td>${l.endTime || 'In-Progress'}</td>
-                        <td><b>${dur}</b></td>
-                        <td>${l.worker || l.user || 'ADMIN'}</td>
+                        <td class="clickable-cell" onclick="openOrderSpecModal('${pj.id}')"><b>${pj.customer}</b></td>
+                        <td>${pj.kitType}</td>
+                        <td>${pj.orderQty.toLocaleString()}</td>
+                        <td style="font-weight:bold; color:#e53e3e;">${pj.dispatchDate || 'N/A'}</td>
+                        <td>${pj.packedBoxes || 0}</td>
+                        <td>${pj.dispatchedBoxes || 0}</td>
+                        <td style="color:#2f855a; font-weight:bold;">${readyBoxes}</td>
+                        <td><span style="background:#edf2f7; padding:3px 8px; border-radius:4px; font-weight:bold;">${pj.status}</span></td>
                     </tr>`;
             });
         }
 
-        // Forward & Un-issue in Stage Runs
-        function forwardPartialStageOutput(deskType) {
-            let selectId = deskType === 'cutting' ? 'cuttingRunningJobsSelect' : deskType === 'forming' ? 'formingRunningJobsSelect' : 'qcRunningJobsSelect';
-            let batchId = document.getElementById(selectId).value;
-            if(!batchId) return alert('कृपया पहले कोई एक्टिव रनिंग बैच सेलेक्ट करें!');
+        // Order Spec Sheet Modal
+        function openOrderSpecModal(packId) {
+            const pj = packJobs.find(p => p.id === packId);
+            if(!pj) return;
+            activeModalOrderObj = pj;
+            const content = document.getElementById('orderSpecContent');
+            let targetBoxes = Math.ceil(pj.orderQty / pj.pcsPerBox);
+            let readyBoxes = Math.max(0, (pj.packedBoxes || 0) - (pj.dispatchedBoxes || 0));
 
-            let qtyStr = prompt(`आप ${deskType.toUpperCase()} से कितने क्रेट्स आगे पास (Forward) करना चाहते हैं?`);
-            let qty = parseInt(qtyStr);
-            if(isNaN(qty) || qty <= 0) return alert('अमान्य संख्या! कृपया सही क्वांटिटी डालें।');
-
-            let targetJob = null, targetBatch = null;
-            jobs.forEach(j => {
-                if(j.runningBatches) {
-                    let b = j.runningBatches.find(x => x.batchId === batchId && (x.status === 'Running' || x.status === 'Held'));
-                    if(b) { targetJob = j; targetBatch = b; }
-                }
-            });
-
-            if(targetBatch) {
-                let currentIssued = targetBatch.issuedQty || 0;
-                if(qty > currentIssued) {
-                    return alert(`⚠️ एरर: आप इश्यू की गई कुल मात्रा (${currentIssued}) से ज्यादा आगे नहीं भेज सकते!`);
-                }
-
-                targetBatch.issuedQty -= qty;
-
-                if(deskType === 'cutting') {
-                    targetJob.availableCuttingCrates = (targetJob.availableCuttingCrates || 0) + qty;
-                } else if (deskType === 'forming') {
-                    targetJob.availableFormingCrates = (targetJob.availableFormingCrates || 0) + qty;
-                } else if (deskType === 'qc') {
-                    targetJob.availableQcCrates = (targetJob.availableQcCrates || 0) + qty;
-                }
-
-                logs.push({
-                    jobId: targetJob.id, product: targetJob.product, stage: `${deskType.toUpperCase()} Forward`, machine: targetBatch.machine,
-                    shift: targetBatch.shift, action: `⚡ Partial Forward: ${qty} Crates आगे पास किए गए (शेष इश्यू: ${targetBatch.issuedQty})`,
-                    worker: targetBatch.worker, user: currentUser.username, rawDate: new Date().toISOString().split('T')[0], timestamp: new Date().toLocaleString()
+            let dispatchRows = '';
+            if(pj.dispatchLogs && pj.dispatchLogs.length > 0) {
+                pj.dispatchLogs.forEach(dl => {
+                    dispatchRows += `<tr><td>${dl.date}</td><td><b>${dl.boxes} Boxes</b></td><td>${dl.pcs.toLocaleString()} Pcs</td><td><b>${dl.invoiceNo}</b></td><td>${dl.gtNo}</td><td>${dl.user}</td></tr>`;
                 });
-
-                saveData();
-                if(deskType === 'cutting') updateCuttingRunningDropdown();
-                if(deskType === 'forming') updateFormingRunningDropdown();
-                if(deskType === 'qc') updateQcRunningDropdown();
-
-                alert(`✅ सफलतापूर्वक ${qty} क्रेट्स आगे पास कर दिए गए हैं! अब इस बैच में ${targetBatch.issuedQty} क्रेट्स बाकी हैं।`);
+            } else {
+                dispatchRows = '<tr><td colspan="6" style="color:#a0aec0;">No dispatches logged yet.</td></tr>';
             }
+
+            content.innerHTML = `
+                <div class="spec-step" style="border-left: 5px solid #2b6cb0;">
+                    <h4>🏷️ Step 1: Customer & Order Identification</h4>
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
+                        <div><b>Customer / Brand Name:</b> <span style="font-weight:800; color:#1a365d;">${pj.customer}</span></div>
+                        <div><b>Order Identifier No:</b> <span style="font-weight:800; color:#2b6cb0;">${pj.id}</span></div>
+                        <div><b>Packing Item Configuration:</b> <span style="font-weight:700; color:#2f855a;">${pj.kitType}</span></div>
+                        <div><b>Order Created By:</b> <span>${pj.createdBy || 'MARKETING'}</span></div>
+                    </div>
+                </div>
+
+                <div class="spec-step" style="border-left: 5px solid #dd6b20;">
+                    <h4>📦 Step 2: Packaging Specifications & Target</h4>
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
+                        <div><b>Total Order Target:</b> <span>${pj.orderQty.toLocaleString()} Pieces</span></div>
+                        <div><b>Box Packing Capacity:</b> <span>${pj.pcsPerBox.toLocaleString()} Pcs/Box</span></div>
+                        <div><b>Calculated Total Boxes:</b> <span>${targetBoxes} Boxes</span></div>
+                        <div><b>Target Dispatch Date:</b> <span style="color:#e53e3e; font-weight:800;">${pj.dispatchDate || 'N/A'}</span></div>
+                        <div><b>Outer Box Wrapping:</b> <b>${pj.wrapping || 'NO'}</b></div>
+                        <div><b>Brand Label Placement:</b> <b>${pj.labeling || 'NO'}</b></div>
+                        <div style="grid-column: span 2;"><b>Special Packaging Remarks:</b> <span style="font-style:italic; color:#4a5568;">${pj.remarks || 'None'}</span></div>
+                        <div style="grid-column: span 2; background:#f0fff4; border:1px solid #c6f6d5; padding:8px; border-radius:6px; margin-top:6px;">
+                            <b>🔍 Component Lots Used in Packing:</b><br>
+                            <span style="color:#22543d; font-weight:700;">${pj.tracedLots ? Object.keys(pj.tracedLots).map(k => `• ${k}: ${pj.tracedLots[k]}`).join('<br>') : 'Standard Factory Lot Allocation'}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="spec-step" style="border-left: 5px solid #38a169;">
+                    <h4>🚚 Step 3: Live Warehouse Stock & Dispatch History</h4>
+                    <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:8px; margin-bottom:10px;">
+                        <div style="background:#f7fafc; padding:8px; border-radius:6px; text-align:center;"><b>Produced:</b><br><span style="font-size:15px; font-weight:800;">${pj.packedBoxes || 0} Boxes</span></div>
+                        <div style="background:#f0fff4; padding:8px; border-radius:6px; text-align:center;"><b>Dispatched:</b><br><span style="font-size:15px; font-weight:800; color:#2f855a;">${pj.dispatchedBoxes || 0} Boxes</span></div>
+                        <div style="background:#ebf8ff; padding:8px; border-radius:6px; text-align:center;"><b>Ready in WH:</b><br><span style="font-size:15px; font-weight:800; color:#2b6cb0;">${readyBoxes} Boxes</span></div>
+                    </div>
+                    <b>Dispatch Details Log:</b>
+                    <div class="table-responsive">
+                        <table class="summary-table">
+                            <thead><tr><th>Date</th><th>Boxes</th><th>Pieces</th><th>Invoice No</th><th>Vehicle / GT</th><th>User</th></tr></thead>
+                            <tbody>${dispatchRows}</tbody>
+                        </table>
+                    </div>
+                </div>`;
+            document.getElementById('orderSpecModal').style.display = 'block';
         }
+        function closeOrderSpecModal() { document.getElementById('orderSpecModal').style.display = 'none'; activeModalOrderObj = null; }
 
-        // Quick Un-issue for Cutting, Forming & QC
-        function quickReturnUnprocessedCrates(deskType) {
-            let selectId = deskType === 'cutting' ? 'cuttingRunningJobsSelect' : deskType === 'forming' ? 'formingRunningJobsSelect' : 'qcRunningJobsSelect';
-            let batchId = document.getElementById(selectId).value;
-            if(!batchId) return alert('कृपया पहले अन-इश्यू (Un-issue) करने के लिए एक्टिव बैच सेलेक्ट करें!');
-
-            let qtyStr = prompt(`आप कितनी क्वांटिटी (रोल्स या क्रेट्स) वापस पिछले स्टेज में रिटर्न करना चाहते हैं?`);
-            let qty = parseInt(qtyStr);
-            if(isNaN(qty) || qty <= 0) return alert('अमान्य संख्या! कृपया सही क्वांटिटी डालें।');
-
-            let targetJob = null, targetBatch = null;
-            jobs.forEach(j => {
-                if(j.runningBatches) {
-                    let b = j.runningBatches.find(x => x.batchId === batchId && (x.status === 'Running' || x.status === 'Held'));
-                    if(b) { targetJob = j; targetBatch = b; }
-                }
-            });
-
-            if(targetBatch) {
-                let currentIssued = targetBatch.issuedQty || 0;
-                if(qty > currentIssued) {
-                    return alert(`⚠️ एरर: आप इश्यू की गई कुल मात्रा (${currentIssued}) से ज्यादा वापस नहीं कर सकते!`);
-                }
-
-                targetBatch.issuedQty -= qty;
-
-                if(deskType === 'cutting') {
-                    targetJob.availableRolls = (targetJob.availableRolls || 0) + qty;
-                } else if(deskType === 'forming') {
-                    targetJob.availableCuttingCrates = (targetJob.availableCuttingCrates || 0) + qty;
-                } else if(deskType === 'qc') {
-                    targetJob.availableFormingCrates = (targetJob.availableFormingCrates || 0) + qty;
-                }
-
-                logs.push({
-                    jobId: targetJob.id, product: targetJob.product, stage: `${deskType.toUpperCase()} Un-issue`, machine: targetBatch.machine,
-                    shift: targetBatch.shift, action: `↩️ Quick Un-issue: ${qty} यूनिट्स वापस पिछले स्टेज के स्टॉक में जोड़े गए।`,
-                    worker: targetBatch.worker, user: currentUser.username, rawDate: new Date().toISOString().split('T')[0], timestamp: new Date().toLocaleString()
-                });
-
-                saveData();
-                
-                if(deskType === 'cutting') { updateCuttingPendingDropdown(); updateCuttingRunningDropdown(); }
-                if(deskType === 'forming') { updateFormingPendingDropdown(); updateFormingRunningDropdown(); }
-                if(deskType === 'qc') { updateQcPendingDropdown(); updateQcRunningDropdown(); }
-                renderUI();
-                
-                alert(`✅ सफलतापूर्वक ${qty} यूनिट्स वापस पिछले स्टेज के स्टॉक में जमा हो गए हैं!`);
-            }
-        }
-
-        // Direct Stage Balance & Rollback Functions
-        function loadAdminStageBalanceJobList() {
-            const select = document.getElementById('adminStageBalanceJobSelect');
-            if(!select) return;
-            select.innerHTML = '<option value="">-- SELECT JOB FOR STAGE BALANCING --</option>';
-            jobs.forEach(j => select.innerHTML += `<option value="${j.id}">${j.id} - ${j.product} (${j.paperBrand || 'ITC'})</option>`);
-            loadJobStagesForAdminBalance();
-        }
-
-        function loadJobStagesForAdminBalance() {
-            const jobId = document.getElementById('adminStageBalanceJobSelect') ? document.getElementById('adminStageBalanceJobSelect').value : '';
-            const panel = document.getElementById('adminStageBalancePanel');
-            if(!panel) return;
-            if(!jobId) { panel.classList.add('hidden'); return; }
-            panel.classList.remove('hidden');
-
-            const job = jobs.find(j => j.id === jobId);
-            if(job) {
-                document.getElementById('balRollsInput').value = job.availableRolls || 0;
-                document.getElementById('balCutCratesInput').value = job.availableCuttingCrates || 0;
-                document.getElementById('balFormedCratesInput').value = job.availableFormingCrates || 0;
-                document.getElementById('balQcCratesInput').value = job.availableQcCrates || 0;
-            }
-        }
-
-        function saveAdminStageBalanceCorrection() {
-            const jobId = document.getElementById('adminStageBalanceJobSelect').value;
-            const job = jobs.find(j => j.id === jobId);
-            if(!job) return alert('Select a Job first!');
-
-            const newRolls = parseInt(document.getElementById('balRollsInput').value) || 0;
-            const newCut = parseInt(document.getElementById('balCutCratesInput').value) || 0;
-            const newForm = parseInt(document.getElementById('balFormedCratesInput').value) || 0;
-            const newQc = parseInt(document.getElementById('balQcCratesInput').value) || 0;
-
-            let oldSummary = `Rolls: ${job.availableRolls || 0}, Cut: ${job.availableCuttingCrates || 0}, Form: ${job.availableFormingCrates || 0}, QC: ${job.availableQcCrates || 0}`;
-            let newSummary = `Rolls: ${newRolls}, Cut: ${newCut}, Form: ${newForm}, QC: ${newQc}`;
-
-            job.availableRolls = newRolls;
-            job.availableCuttingCrates = newCut;
-            job.availableFormingCrates = newForm;
-            job.availableQcCrates = newQc;
-
-            logs.push({
-                jobId: job.id, product: job.product, stage: 'Admin Stock Balance', machine: 'ADMIN',
-                action: `🔄 Direct Stage Balance: Changed from [${oldSummary}] ➔ to [${newSummary}]`,
-                worker: 'ADMIN', user: currentUser.username, rawDate: new Date().toISOString().split('T')[0], timestamp: new Date().toLocaleString()
-            });
-
-            saveData();
-            loadJobStagesForAdminBalance();
-            alert(`✅ Stage Inventory for Job [${job.id}] balanced and saved successfully!`);
-        }
-
-        function executeQuickStageRollback() {
-            const jobId = document.getElementById('adminStageBalanceJobSelect').value;
-            const job = jobs.find(j => j.id === jobId);
-            if(!job) return alert('Select Job first!');
-
-            const mode = document.getElementById('quickRollbackFromStage').value;
-            const qty = parseInt(document.getElementById('quickRollbackQtyInput').value) || 0;
-
-            if(qty <= 0) return alert('Please enter valid crates/units quantity to rollback!');
-
-            if(mode === 'Forming_to_Cutting') {
-                if((job.availableFormingCrates || 0) < qty) return alert(`Cannot rollback more than available Formed crates (${job.availableFormingCrates || 0})!`);
-                job.availableFormingCrates -= qty;
-                job.availableCuttingCrates = (job.availableCuttingCrates || 0) + qty;
-                logs.push({
-                    jobId: job.id, product: job.product, stage: 'Admin Rollback', machine: 'ADMIN',
-                    action: `↩️ Quick Rollback: Returned -${qty} Formed Crates back to +${qty} Cut Crates`,
-                    worker: 'ADMIN', user: currentUser.username, rawDate: new Date().toISOString().split('T')[0], timestamp: new Date().toLocaleString()
-                });
-            } else if(mode === 'Cutting_to_Rolls') {
-                if((job.availableCuttingCrates || 0) < qty) return alert(`Cannot rollback more than available Cut crates (${job.availableCuttingCrates || 0})!`);
-                job.availableCuttingCrates -= qty;
-                job.availableRolls = (job.availableRolls || 0) + qty;
-                logs.push({
-                    jobId: job.id, product: job.product, stage: 'Admin Rollback', machine: 'ADMIN',
-                    action: `↩️ Quick Rollback: Returned -${qty} Cut Crates back to +${qty} Slit Rolls`,
-                    worker: 'ADMIN', user: currentUser.username, rawDate: new Date().toISOString().split('T')[0], timestamp: new Date().toLocaleString()
-                });
-            } else if(mode === 'QC_to_Forming') {
-                if((job.availableQcCrates || 0) < qty) return alert(`Cannot rollback more than available QC crates (${job.availableQcCrates || 0})!`);
-                job.availableQcCrates -= qty;
-                job.availableFormingCrates = (job.availableFormingCrates || 0) + qty;
-                logs.push({
-                    jobId: job.id, product: job.product, stage: 'Admin Rollback', machine: 'ADMIN',
-                    action: `↩️ Quick Rollback: Returned -${qty} QC Crates back to +${qty} Formed Crates`,
-                    worker: 'ADMIN', user: currentUser.username, rawDate: new Date().toISOString().split('T')[0], timestamp: new Date().toLocaleString()
+        function exportCurrentOrderSpecCSV() {
+            if(!activeModalOrderObj) return alert('No active order selected!');
+            let pj = activeModalOrderObj;
+            let csv = "data:text/csv;charset=utf-8,Section,Field,Value\n";
+            csv += `"Step 1","Customer","${pj.customer}"\n`;
+            csv += `"Step 1","Order ID","${pj.id}"\n`;
+            csv += `"Step 1","Kit Type","${pj.kitType}"\n`;
+            csv += `"Step 2","Target Qty Pcs","${pj.orderQty}"\n`;
+            csv += `"Step 2","Pcs Per Box","${pj.pcsPerBox}"\n`;
+            csv += `"Step 2","Target Dispatch Date","${pj.dispatchDate || ''}"\n`;
+            csv += `"Step 2","Box Wrapping","${pj.wrapping || 'NO'}"\n`;
+            csv += `"Step 2","Labeling","${pj.labeling || 'NO'}"\n`;
+            csv += `"Step 2","Remarks","${(pj.remarks || '').replace(/"/g, '""')}"\n`;
+            csv += `"Step 3","Total Packed Boxes","${pj.packedBoxes || 0}"\n`;
+            csv += `"Step 3","Dispatched Boxes","${pj.dispatchedBoxes || 0}"\n`;
+            csv += `"Step 3","Ready in Warehouse","${Math.max(0, (pj.packedBoxes || 0) - (pj.dispatchedBoxes || 0))}"\n`;
+            
+            if(pj.dispatchLogs && pj.dispatchLogs.length > 0) {
+                pj.dispatchLogs.forEach(dl => {
+                    csv += `"Dispatch Log","${dl.date}","Boxes: ${dl.boxes} | Pcs: ${dl.pcs} | Inv: ${dl.invoiceNo} | GT: ${dl.gtNo}"\n`;
                 });
             }
 
-            saveData();
-            loadJobStagesForAdminBalance();
-            document.getElementById('quickRollbackQtyInput').value = '';
-            alert(`✅ Rollback of ${qty} units completed successfully!`);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodeURI(csv));
+            link.setAttribute("download", `Order_Spec_${pj.id}_${pj.customer}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
 
-        // Admin Time, Operator & Audit Log Correction Functions
-        function loadLogEntriesForAdminCorrection() {
-            const jobId = document.getElementById('adminEditLogJobSelect').value;
-            const panel = document.getElementById('adminLogEditPanel');
-            const select = document.getElementById('adminSelectedLogEntry');
-            if(!panel || !select) return;
-            select.innerHTML = '<option value="">-- SELECT LOG ENTRY --</option>';
+        // Stock Matrix Lot Drilldown
+        function openStockModal(product, stage) {
+            const modal = document.getElementById('stockDetailModal');
+            document.getElementById('modalTitle').innerText = `${product.toUpperCase()} - Available ${stage} Stock Breakdown`;
+            const mBody = document.getElementById('modalBody');
+            
+            let matchedJobs = [];
+            if(stage === 'Rolls') matchedJobs = jobs.filter(j => j.product === product && j.availableRolls > 0);
+            else if(stage === 'Cutting') matchedJobs = jobs.filter(j => j.product === product && j.availableCuttingCrates > 0);
+            else if(stage === 'Forming') matchedJobs = jobs.filter(j => j.product === product && j.availableFormingCrates > 0);
+            else if(stage === 'QC') matchedJobs = jobs.filter(j => j.product === product && j.availableQcCrates > 0);
 
-            if(!jobId) { panel.classList.add('hidden'); return; }
-            panel.classList.remove('hidden');
+            if(matchedJobs.length === 0) {
+                mBody.innerHTML = '<p style="color:#e53e3e;">No active stock in this stage.</p>';
+            } else {
+                let html = '<table class="summary-table"><thead><tr><th>Job ID</th><th>Paper Brand</th><th>Available Qty</th></tr></thead><tbody>';
+                matchedJobs.forEach(j => {
+                    let qty = (stage === 'Rolls' ? `${j.availableRolls} Rolls` : stage === 'Cutting' ? `${j.availableCuttingCrates} Crates` : stage === 'Forming' ? `${j.availableFormingCrates} Crates` : `${j.availableQcCrates} Crates`);
+                    html += `<tr><td style="font-weight:bold;">${j.id}</td><td>${j.paperBrand || 'ITC'}</td><td style="color:#2f855a; font-weight:bold;">${qty}</td></tr>`;
+                });
+                html += '</tbody></table>';
+                mBody.innerHTML = html;
+            }
+            modal.style.display = 'block';
+        }
+        function closeStockModal() { document.getElementById('stockDetailModal').style.display = 'none'; }
 
-            logs.forEach((l, idx) => {
-                if(l.jobId === jobId) {
-                    select.innerHTML += `<option value="${idx}">[${l.stage}] ${l.action.substring(0, 45)}... (${l.timestamp || l.rawDate})</option>`;
-                }
+        // Workstation Run History Modal & Exact Matched Table CSV Export
+        function openStationAnalytics(machineName) {
+            currentActiveModalMachine = machineName;
+            document.getElementById('stationModalTitle').innerText = `⚙️ Analytics & Run History: ${machineName}`;
+            const tableBody = document.getElementById('stationConsolidatedHistoryBody');
+            tableBody.innerHTML = '';
+            currentStationModalRecords = [];
+
+            if(machineName.startsWith('Packing-')) {
+                packJobs.forEach(pj => {
+                    if(pj.historyRuns && pj.historyRuns.length > 0) {
+                        pj.historyRuns.forEach((hr) => {
+                            if(!hr.machine || hr.machine === machineName) {
+                                currentStationModalRecords.push({
+                                    jobId: pj.id, product: pj.kitType,
+                                    worker: hr.worker || pj.worker || 'Packing Team',
+                                    outputText: `${hr.boxes} Boxes (${hr.pcs} Pcs)`,
+                                    startTime: hr.date || pj.startTime || '-',
+                                    endTime: hr.time || 'Completed',
+                                    duration: 'Logged', stageStatus: pj.status
+                                });
+                            }
+                        });
+                    } else if((pj.status === 'Running' || pj.status === 'Held') && pj.machine === machineName) {
+                        currentStationModalRecords.push({
+                            jobId: pj.id, product: pj.kitType,
+                            worker: pj.worker || 'Packing Team',
+                            outputText: `${pj.packedBoxes || 0} Boxes`,
+                            startTime: pj.startTime || '-',
+                            endTime: pj.status === 'Held' ? 'HELD' : 'RUNNING',
+                            duration: 'In-Progress', stageStatus: pj.status
+                        });
+                    }
+                });
+            } else {
+                jobs.forEach(j => {
+                    if(j.runningBatches) {
+                        j.runningBatches.forEach(b => {
+                            if(b.machine === machineName) {
+                                let dur = calculateTimeDifference(b.startTime, b.endTime);
+                                let outStr = (b.stage === 'Slitting') ? `${b.producedQty || 0} Rolls (${b.outputWeightKg || 0} KG)` : (b.stage === 'Forming') ? `${b.producedQty || 0} Crates (Scrap: ${b.scrapPcs || 0} Pcs)` : `${b.producedQty || 0} Crates (Scrap: ${b.scrapKg || 0} KG)`;
+                                currentStationModalRecords.push({
+                                    jobId: j.id, product: `${j.product} (${j.paperBrand || 'ITC'})`,
+                                    worker: b.worker || 'Operator', outputText: outStr,
+                                    startTime: b.startTime || '-',
+                                    endTime: b.endTime || (b.status === 'Held' ? 'HELD' : 'RUNNING'),
+                                    duration: dur, stageStatus: `${b.stage} (${b.status})`,
+                                    loggedBy: b.user || 'SYSTEM'
+                                });
+                            }
+                        });
+                    }
+                });
+            }
+
+            if(currentStationModalRecords.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="8" style="color:#a0aec0;">No logged runs on this machine yet.</td></tr>';
+            } else {
+                currentStationModalRecords.slice().reverse().forEach(r => {
+                    tableBody.innerHTML += `
+                        <tr>
+                            <td style="font-weight:bold; color:#1a365d;">${r.jobId}</td>
+                            <td>${r.product}</td>
+                            <td><b>${r.worker}</b></td>
+                            <td style="color:#2b6cb0; font-weight:bold;">${r.outputText}</td>
+                            <td>${r.startTime}</td>
+                            <td>${r.endTime}</td>
+                            <td><b>${r.duration}</b></td>
+                            <td><span style="background:#edf2f7; padding:3px 8px; border-radius:4px; font-weight:bold;">${r.stageStatus}</span></td>
+                            <td><span style="color:#2b6cb0; font-weight:bold; font-size:11px;">${r.loggedBy || 'SYSTEM'}</span></td>
+                        </tr>`;
+                });
+            }
+            document.getElementById('stationDetailModal').style.display = 'block';
+        }
+        function closeStationModal() { document.getElementById('stationDetailModal').style.display = 'none'; }
+
+        function exportCurrentStationModalTableCSV() {
+            if(!currentStationModalRecords || currentStationModalRecords.length === 0) {
+                return alert('No records to export for this machine.');
+            }
+
+            let csv = "data:text/csv;charset=utf-8,Job_ID,Product_Origin,Operator_Name,Output_Produced,Start_Time,End_Time,Duration,Stage_Status,Logged_By\n";
+            currentStationModalRecords.slice().reverse().forEach(r => {
+                csv += `"${r.jobId}","${r.product}","${r.worker}","${r.outputText}","${r.startTime}","${r.endTime}","${r.duration}","${r.stageStatus}","${r.loggedBy || 'SYSTEM'}"\n`;
             });
-            populateAdminLogCorrectionFields();
+
+            const link = document.createElement("a");
+            link.setAttribute("href", encodeURI(csv));
+            link.setAttribute("download", `Station_Log_${currentActiveModalMachine}_${new Date().toISOString().split('T')[0]}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
 
-        function populateAdminLogCorrectionFields() {
-            const idx = document.getElementById('adminSelectedLogEntry') ? document.getElementById('adminSelectedLogEntry').value : '';
-            if(idx === '' || !logs[idx]) return;
-            const l = logs[idx];
-            document.getElementById('editLogStartTime').value = l.startTime || '';
-            document.getElementById('editLogEndTime').value = l.endTime || '';
-            document.getElementById('editLogWorkerName').value = l.worker || '';
-            document.getElementById('editLogShift').value = l.shift || 'DAY';
-            document.getElementById('editLogActionText').value = l.action || '';
-        }
-
-        function saveAdminLogCorrection() {
-            const idx = document.getElementById('adminSelectedLogEntry').value;
-            if(idx === '' || !logs[idx]) return alert('Select log entry first!');
-
-            logs[idx].startTime = document.getElementById('editLogStartTime').value.trim();
-            logs[idx].endTime = document.getElementById('editLogEndTime').value.trim();
-            logs[idx].worker = document.getElementById('editLogWorkerName').value.trim();
-            logs[idx].shift = document.getElementById('editLogShift').value;
-            logs[idx].action = document.getElementById('editLogActionText').value.trim();
-
-            saveData();
-            loadLogEntriesForAdminCorrection();
-            alert('💾 Log entry successfully updated!');
-        }
-
-        function deleteAdminLogEntry() {
-            const idx = document.getElementById('adminSelectedLogEntry') ? document.getElementById('adminSelectedLogEntry').value : '';
-            if(idx === '' || !logs[idx]) return alert('Select log entry to delete!');
-            if(!confirm('Are you sure you want to PERMANENTLY remove this audit log entry?')) return;
-
-            logs.splice(idx, 1);
-            saveData();
-            loadLogEntriesForAdminCorrection();
-            alert('🗑️ Log entry removed from audit trail.');
-        }
-
-        // Live Autocomplete and Search Traceability
+        // Dynamic Universal Search Autocomplete Suggestions & Traceability
         function populateUniversalSearchSuggestions() {
             const dl = document.getElementById('universalSearchSuggestionsList');
             if(!dl) return;
@@ -4709,6 +4297,7 @@
 
             renderOrdersTable();
 
+            // Real-Time Live Workstations Dashboard Cards
             const dash = document.getElementById('machineDashboard');
             if(dash) {
                 dash.innerHTML = '';
@@ -4718,7 +4307,7 @@
                     let isRunning = false, isHeld = false;
                     let activeInfoList = [];
 
-                    if(m.startsWith('Packing-') || m.startsWith('Manual-')) {
+                    if(m.startsWith('Packing-')) {
                         let activePacks = packJobs.filter(p => p.machine === m && (p.status === 'Running' || p.status === 'Held'));
                         if(activePacks.length > 0) {
                             activePacks.forEach(activePack => {
@@ -4726,8 +4315,7 @@
                                 if(activePack.status === 'Held') isHeld = true;
                                 activeInfoList.push({
                                     jobId: activePack.id, product: activePack.kitType,
-                                    worker: activePack.worker || 'Packing Team', startTime: activePack.startTime || '-',
-                                    holdReason: activePack.holdReason || ''
+                                    worker: activePack.worker || 'Packing Team', startTime: activePack.startTime || '-'
                                 });
                             });
                         }
@@ -4765,7 +4353,7 @@
                     }
 
                     let statusClass = isHeld ? 'held' : isRunning ? 'running-active' : 'idle';
-                    let statusTag = isHeld ? '<span class="live-tag live-tag-held">⏸️ ON HOLD</span>' : isRunning ? `<span class="live-tag live-tag-running">▶ RUNNING</span>` : '<span class="live-tag live-tag-idle">⚪ IDLE</span>';
+                    let statusTag = isHeld ? '<span class="live-tag live-tag-held">⏸️ ON HOLD</span>' : isRunning ? `<span class="live-tag live-tag-running">▶ RUNNING ${activeInfoList.length>1?'('+activeInfoList.length+')':''}</span>` : '<span class="live-tag live-tag-idle">⚪ IDLE</span>';
                     
                     let detailHtml = '';
                     if(activeInfoList.length > 0) {
@@ -4791,31 +4379,498 @@
                         </div>`;
                 });
             }
+
             renderDashboardAnalytics();
             renderPackingDeskLiveCards();
             applyBrandLogo();
         }
 
-       // Initialize On Load & Start Firebase Sync
+        // Initialize On Load & Start Firebase Sync
         renderUserLoginAutocomplete();
         applyBrandLogo();
         populateUniversalSearchSuggestions();
         initFirebaseSync();
 
-        // Restored Admin Functions
-        function loadAdminPackOrderList() {
-            const select = document.getElementById('adminPackOrderSelect');
+        function renderMasterExecutiveDashboard() {
+            const quickCards = document.getElementById('masterDashQuickCards');
+            const machineGrid = document.getElementById('masterDashMachineGrid');
+            if(!quickCards || !machineGrid) return;
+
+            let totalSlitKg = 0, totalPackedBoxes = 0;
+            logs.forEach(l => {
+                if(l.action && l.action.includes('Finished') && l.stage === 'Slitting') {
+                    let matchKg = l.action.match(/(\d+)\s*KG/i);
+                    if(matchKg) totalSlitKg += parseInt(matchKg[1]) || 0;
+                }
+                if(l.action && l.action.includes('Packed')) {
+                    let matchBox = l.action.match(/(\d+)\s*Boxes/i);
+                    if(matchBox) totalPackedBoxes += parseInt(matchBox[1]) || 0;
+                }
+            });
+
+            quickCards.innerHTML = `
+                <div class="analytics-card"><h5>TOTAL SLIT PAPER</h5><div class="val" style="color:#2b6cb0;">${totalSlitKg} KG</div></div>
+                <div class="analytics-card"><h5>PACKED BOXES</h5><div class="val" style="color:#2f855a;">${totalPackedBoxes} Boxes</div></div>
+                <div class="analytics-card"><h5>SCRAP STOCK</h5><div class="val" style="color:#e53e3e;">${calculateAvailableScrapKg()} KG</div></div>
+            `;
+
+            machineGrid.innerHTML = '';
+            let allMachines = ['Slitting-1', 'Cutting-1', 'Cutting-2', 'Forming-1', 'Forming-2', 'Forming-3', 'QC-Desk', 'Packing-1', 'Packing-2'];
+            
+            allMachines.forEach(m => {
+                let isRunning = false, isHeld = false, opName = 'None', activeJob = '-';
+                jobs.forEach(j => {
+                    if(j.runningBatches) {
+                        j.runningBatches.forEach(b => {
+                            if(b.machine === m && (b.status === 'Running' || b.status === 'Held')) {
+                                if(b.status === 'Running') isRunning = true;
+                                if(b.status === 'Held') isHeld = true;
+                                opName = b.worker || 'Operator';
+                                activeJob = `${j.id} (${j.product})`;
+                            }
+                        });
+                    }
+                });
+                packJobs.forEach(pj => {
+                    if(pj.machine === m && (pj.status === 'Running' || pj.status === 'Held')) {
+                        if(pj.status === 'Running') isRunning = true;
+                        if(pj.status === 'Held') isHeld = true;
+                        opName = pj.worker || 'Packing';
+                        activeJob = `${pj.id} (${pj.customer})`;
+                    }
+                });
+
+                let statusClass = isHeld ? 'held' : isRunning ? 'running-active' : 'idle';
+                let statusBadge = isHeld ? '<span class="live-tag live-tag-held">⏸️ HELD</span>' : isRunning ? '<span class="live-tag live-tag-running">▶ RUNNING</span>' : '<span class="live-tag live-tag-idle">⚪ IDLE</span>';
+
+                machineGrid.innerHTML += `
+                    <div class="machine-card ${statusClass}" onclick="openStationAnalytics('${m}')" style="padding:10px;">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <b style="font-size:13px; color:#1a365d;">${m}</b>
+                            ${statusBadge}
+                        </div>
+                        <div style="font-size:11px; margin-top:4px; color:#4a5568;">
+                            Job: <b>${activeJob}</b><br>Op: <b>${opName}</b>
+                        </div>
+                    </div>`;
+            });
+        }
+    
+        // ==========================================
+        // UPGRADED FEATURE: DIRECT STAGE-TO-STAGE INVENTORY BALANCING & ROLLBACK
+        // ==========================================
+        function loadAdminStageBalanceJobList() {
+            const select = document.getElementById('adminStageBalanceJobSelect');
             if(!select) return;
-            select.innerHTML = '<option value="">-- SELECT ORDER TO EDIT --</option>';
-            packJobs.forEach(p => select.innerHTML += `<option value="${p.id}">${p.id} - ${p.customer} (${p.kitType})</option>`);
+            select.innerHTML = '<option value="">-- SELECT JOB FOR STAGE BALANCING --</option>';
+            jobs.forEach(j => select.innerHTML += `<option value="${j.id}">${j.id} - ${j.product} (${j.paperBrand || 'ITC'})</option>`);
+            loadJobStagesForAdminBalance();
         }
 
-        function loadAdminJobList() {
-            const aSelect = document.getElementById('adminEditJobSelect');
-            if(!aSelect) return;
-            aSelect.innerHTML = '<option value="">-- SELECT JOB META --</option>';
-            jobs.forEach(j => aSelect.innerHTML += `<option value="${j.id}">${j.id} (${j.product})</option>`);
+        function loadJobStagesForAdminBalance() {
+            const jobId = document.getElementById('adminStageBalanceJobSelect') ? document.getElementById('adminStageBalanceJobSelect').value : '';
+            const panel = document.getElementById('adminStageBalancePanel');
+            if(!panel) return;
+            if(!jobId) { panel.classList.add('hidden'); return; }
+            panel.classList.remove('hidden');
+
+            const job = jobs.find(j => j.id === jobId);
+            if(job) {
+                document.getElementById('balRollsInput').value = job.availableRolls || 0;
+                document.getElementById('balCutCratesInput').value = job.availableCuttingCrates || 0;
+                document.getElementById('balFormedCratesInput').value = job.availableFormingCrates || 0;
+                document.getElementById('balQcCratesInput').value = job.availableQcCrates || 0;
+            }
         }
+
+        function saveAdminStageBalanceCorrection() {
+            const jobId = document.getElementById('adminStageBalanceJobSelect').value;
+            const job = jobs.find(j => j.id === jobId);
+            if(!job) return alert('Select a Job first!');
+
+            const newRolls = parseInt(document.getElementById('balRollsInput').value) || 0;
+            const newCut = parseInt(document.getElementById('balCutCratesInput').value) || 0;
+            const newForm = parseInt(document.getElementById('balFormedCratesInput').value) || 0;
+            const newQc = parseInt(document.getElementById('balQcCratesInput').value) || 0;
+
+            let oldSummary = `Rolls: ${job.availableRolls || 0}, Cut: ${job.availableCuttingCrates || 0}, Form: ${job.availableFormingCrates || 0}, QC: ${job.availableQcCrates || 0}`;
+            let newSummary = `Rolls: ${newRolls}, Cut: ${newCut}, Form: ${newForm}, QC: ${newQc}`;
+
+            job.availableRolls = newRolls;
+            job.availableCuttingCrates = newCut;
+            job.availableFormingCrates = newForm;
+            job.availableQcCrates = newQc;
+
+            logs.push({
+                jobId: job.id, product: job.product, stage: 'Admin Stock Balance', machine: 'ADMIN',
+                action: `🔄 Direct Stage Balance: Changed from [${oldSummary}] ➔ to [${newSummary}]`,
+                worker: 'ADMIN', user: currentUser.username, rawDate: new Date().toISOString().split('T')[0], timestamp: new Date().toLocaleString()
+            });
+
+            saveData();
+            loadJobStagesForAdminBalance();
+            alert(`✅ Stage Inventory for Job [${job.id}] balanced and saved successfully!`);
+        }
+
+        function executeQuickStageRollback() {
+            const jobId = document.getElementById('adminStageBalanceJobSelect').value;
+            const job = jobs.find(j => j.id === jobId);
+            if(!job) return alert('Select Job first!');
+
+            const mode = document.getElementById('quickRollbackFromStage').value;
+            const qty = parseInt(document.getElementById('quickRollbackQtyInput').value) || 0;
+
+            if(qty <= 0) return alert('Please enter valid crates/units quantity to rollback!');
+
+            if(mode === 'Forming_to_Cutting') {
+                if((job.availableFormingCrates || 0) < qty) return alert(`Cannot rollback more than available Formed crates (${job.availableFormingCrates || 0})!`);
+                job.availableFormingCrates -= qty;
+                job.availableCuttingCrates = (job.availableCuttingCrates || 0) + qty;
+                logs.push({
+                    jobId: job.id, product: job.product, stage: 'Admin Rollback', machine: 'ADMIN',
+                    action: `↩️ Quick Rollback: Returned -${qty} Formed Crates back to +${qty} Cut Crates`,
+                    worker: 'ADMIN', user: currentUser.username, rawDate: new Date().toISOString().split('T')[0], timestamp: new Date().toLocaleString()
+                });
+            } else if(mode === 'Cutting_to_Rolls') {
+                if((job.availableCuttingCrates || 0) < qty) return alert(`Cannot rollback more than available Cut crates (${job.availableCuttingCrates || 0})!`);
+                job.availableCuttingCrates -= qty;
+                job.availableRolls = (job.availableRolls || 0) + qty;
+                logs.push({
+                    jobId: job.id, product: job.product, stage: 'Admin Rollback', machine: 'ADMIN',
+                    action: `↩️ Quick Rollback: Returned -${qty} Cut Crates back to +${qty} Slit Rolls`,
+                    worker: 'ADMIN', user: currentUser.username, rawDate: new Date().toISOString().split('T')[0], timestamp: new Date().toLocaleString()
+                });
+            } else if(mode === 'QC_to_Forming') {
+                if((job.availableQcCrates || 0) < qty) return alert(`Cannot rollback more than available QC crates (${job.availableQcCrates || 0})!`);
+                job.availableQcCrates -= qty;
+                job.availableFormingCrates = (job.availableFormingCrates || 0) + qty;
+                logs.push({
+                    jobId: job.id, product: job.product, stage: 'Admin Rollback', machine: 'ADMIN',
+                    action: `↩️ Quick Rollback: Returned -${qty} QC Crates back to +${qty} Formed Crates`,
+                    worker: 'ADMIN', user: currentUser.username, rawDate: new Date().toISOString().split('T')[0], timestamp: new Date().toLocaleString()
+                });
+            }
+
+            saveData();
+            loadJobStagesForAdminBalance();
+            document.getElementById('quickRollbackQtyInput').value = '';
+            alert(`✅ Rollback of ${qty} units completed successfully!`);
+        }
+
+        // Admin Log Entry Deletion
+        function deleteAdminLogEntry() {
+            const idx = document.getElementById('adminSelectedLogEntry') ? document.getElementById('adminSelectedLogEntry').value : '';
+            if(idx === '') return alert('Select log entry to delete!');
+            if(!confirm('Are you sure you want to PERMANENTLY remove this audit log entry?')) return;
+
+            let removed = logs.splice(idx, 1);
+            saveData();
+            loadLogEntriesForAdminCorrection();
+            alert('🗑️ Log entry removed from audit trail.');
+        }
+// Upgraded Forward Partial Function (Cutting, Forming aur QC तीनों के लिए)
+function forwardPartialStageOutput(deskType) {
+    let selectId = deskType === 'cutting' ? 'cuttingRunningJobsSelect' : deskType === 'forming' ? 'formingRunningJobsSelect' : 'qcRunningJobsSelect';
+    let batchId = document.getElementById(selectId).value;
+    if(!batchId) return alert('कृपया पहले कोई एक्टिव रनिंग बैच सेलेक्ट करें!');
+
+    let qtyStr = prompt(`आप ${deskType.toUpperCase()} से कितने क्रेट्स आगे पास (Forward) करना चाहते हैं?`);
+    let qty = parseInt(qtyStr);
+    if(isNaN(qty) || qty <= 0) return alert('अमान्य संख्या! कृपया सही क्वांटिटी डालें।');
+
+    let targetJob = null, targetBatch = null;
+    jobs.forEach(j => {
+        if(j.runningBatches) {
+            let b = j.runningBatches.find(x => x.batchId === batchId && (x.status === 'Running' || x.status === 'Held'));
+            if(b) { targetJob = j; targetBatch = b; }
+        }
+    });
+
+    if(targetBatch) {
+        // चेक करें कि जितनी क्वांटिटी आगे भेज रहे हैं, उतनी बैच में बची है या नहीं
+        let currentIssued = targetBatch.issuedQty || 0;
+        if(qty > currentIssued) {
+            return alert(`⚠️ एरर: आप इश्यू की गई कुल मात्रा (${currentIssued}) से ज्यादा आगे नहीं भेज सकते!`);
+        }
+
+        // जिस स्टेज से आगे भेज रहे हैं, वहाँ से issuedQty कम हो जाएगी ताकि 5 में से 1 माइनस होकर 4 बचे
+        targetBatch.issuedQty -= qty;
+
+        // अगले स्टेज के स्टॉक में जोड़ें
+        if(deskType === 'cutting') {
+            targetJob.availableCuttingCrates = (targetJob.availableCuttingCrates || 0) + qty;
+        } else if (deskType === 'forming') {
+            targetJob.availableFormingCrates = (targetJob.availableFormingCrates || 0) + qty;
+        } else if (deskType === 'qc') {
+            targetJob.availableQcCrates = (targetJob.availableQcCrates || 0) + qty; // QC OK होकर सीधा फिनिश स्टॉक में जुड़ेगा
+        }
+
+        logs.push({
+            jobId: targetJob.id, product: targetJob.product, stage: `${deskType.toUpperCase()} Forward`, machine: targetBatch.machine,
+            shift: targetBatch.shift, action: `⚡ Partial Forward: ${qty} Crates आगे पास किए गए (शेष इश्यू: ${targetBatch.issuedQty})`,
+            worker: targetBatch.worker, user: currentUser.username, rawDate: new Date().toISOString().split('T')[0], timestamp: new Date().toLocaleString()
+        });
+
+        saveData();
+        
+        // ड्रॉप डाउन रिफ्रेश करें
+        if(deskType === 'cutting') updateCuttingRunningDropdown();
+        if(deskType === 'forming') updateFormingRunningDropdown();
+        if(deskType === 'qc') updateQcRunningDropdown();
+
+        alert(`✅ सफलतापूर्वक ${qty} क्रेट्स आगे पास कर दिए गए हैं! अब इस बैच में ${targetBatch.issuedQty} क्रेट्स बाकी हैं।`);
+    }
+}
+
+// Quick Un-issue (इश्यू किए गए क्रेट्स या रोल्स को वापस सही पिछले स्टेज के स्टॉक में जोड़ने वाला सही फंक्शन)
+function quickReturnUnprocessedCrates(deskType) {
+    let selectId = deskType === 'cutting' ? 'cuttingRunningJobsSelect' : deskType === 'forming' ? 'formingRunningJobsSelect' : 'qcRunningJobsSelect';
+    let batchId = document.getElementById(selectId).value;
+    if(!batchId) return alert('कृपया पहले अन-इश्यू (Un-issue) करने के लिए एक्टिव बैच सेलेक्ट करें!');
+
+    let qtyStr = prompt(`आप कितनी क्वांटिटी (रोल्स या क्रेट्स) वापस पिछले स्टेज में रिटर्न करना चाहते हैं?`);
+    let qty = parseInt(qtyStr);
+    if(isNaN(qty) || qty <= 0) return alert('अमान्य संख्या! कृपया सही क्वांटिटी डालें।');
+
+    let targetJob = null, targetBatch = null;
+    jobs.forEach(j => {
+        if(j.runningBatches) {
+            let b = j.runningBatches.find(x => x.batchId === batchId && (x.status === 'Running' || x.status === 'Held'));
+            if(b) { targetJob = j; targetBatch = b; }
+        }
+    });
+
+    if(targetBatch) {
+        let currentIssued = targetBatch.issuedQty || 0;
+        if(qty > currentIssued) {
+            return alert(`⚠️ एरर: आप इश्यू की गई कुल मात्रा (${currentIssued}) से ज्यादा वापस नहीं कर सकते!`);
+        }
+
+        // 1. बैच की इश्यू की गई मात्रा से माइनस करें
+        targetBatch.issuedQty -= qty;
+
+        // 2. सही पिछले स्टेज के स्टॉक में वापस जोड़ें (प्लस करें)
+        if(deskType === 'cutting') {
+            targetJob.availableRolls = (targetJob.availableRolls || 0) + qty; // कटिंग से किया था, तो रोल्स वापस बढ़ेंगे
+        } else if(deskType === 'forming') {
+            targetJob.availableCuttingCrates = (targetJob.availableCuttingCrates || 0) + qty; // फॉर्मिंग से किया था, तो कट क्रेट्स वापस बढ़ेंगे
+        } else if(deskType === 'qc') {
+            targetJob.availableFormingCrates = (targetJob.availableFormingCrates || 0) + qty; // QC से किया था, तो फॉर्मड क्रेट्स वापस बढ़ेंगे
+        }
+
+        logs.push({
+            jobId: targetJob.id, product: targetJob.product, stage: `${deskType.toUpperCase()} Un-issue`, machine: targetBatch.machine,
+            shift: targetBatch.shift, action: `↩️ Quick Un-issue: ${qty} यूनिट्स वापस पिछले स्टेज के स्टॉक में जोड़े गए।`,
+            worker: targetBatch.worker, user: currentUser.username, rawDate: new Date().toISOString().split('T')[0], timestamp: new Date().toLocaleString()
+        });
+
+        saveData();
+        
+        // ड्रॉपडाउन और स्टॉक मैट्रिक्स को रिफ्रेश करें
+        if(deskType === 'cutting') { updateCuttingPendingDropdown(); updateCuttingRunningDropdown(); }
+        if(deskType === 'forming') { updateFormingPendingDropdown(); updateFormingRunningDropdown(); }
+        if(deskType === 'qc') { updateQcPendingDropdown(); updateQcRunningDropdown(); }
+        renderUI();
+        
+        alert(`✅ सफलतापूर्वक ${qty} यूनिट्स वापस पिछले स्टेज के स्टॉक में जमा हो गए हैं!`);
+    }
+}
+        // मशीन होल्ड करके रनिंग स्टॉक/बैच को तुरंत दूसरी मशीन पर शिफ्ट (Re-route) करने के लिए (Fixed)
+function confirmExecuteHoldAndReroute() {
+    const reason = document.getElementById('holdReasonSelect').value;
+    const remarks = document.getElementById('holdRemarksInput').value.trim();
+    const sourceMachine = currentTargetHoldMachine; // जिस मशीन को होल्ड किया जा रहा है
+    const targetMachine = document.getElementById('rerouteTargetMachineSelect').value; // जिस मशीन पर माल भेजना है
+    
+    if(!targetMachine) {
+        return alert('कृपया ड्रॉपडाउन से वह टारगेट मशीन सेलेक्ट करें जिसपर स्टॉक शिफ्ट करना है!');
+    }
+
+    const nowTime = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    let fullReason = reason + (remarks ? ` (${remarks})` : '');
+    let targetJob = null, targetBatch = null;
+
+    // सोर्स मशीन पर चल रहे एक्टिव बैच को ढूंढें
+    jobs.forEach(j => {
+        if(j.runningBatches) {
+            let b = j.runningBatches.find(x => x.machine === sourceMachine && (x.status === 'Running' || x.status === 'Held'));
+            if(b) { targetJob = j; targetBatch = b; }
+        }
+    });
+
+    if(!targetBatch) {
+        return alert(`⚠️ एरर: ${sourceMachine} पर कोई भी एक्टिव बैच नहीं मिला जिसे री-रूट किया जाए!`);
+    }
+
+    // 1. पुरानी मशीन वाले बैच को होल्ड/बंद करें
+    targetBatch.status = 'Held';
+    targetBatch.endTime = nowTime;
+    targetBatch.holdReason = `Re-routed to ${targetMachine}: ${fullReason}`;
+
+    logs.push({
+        jobId: targetJob.id, product: targetJob.product, stage: targetBatch.stage, machine: sourceMachine,
+        shift: targetBatch.shift, action: `⏸️ Machine HELD & Re-routed: ${sourceMachine} ➔ ${targetMachine} (${fullReason})`,
+        worker: targetBatch.worker, user: currentUser.username, startTime: targetBatch.startTime, endTime: nowTime,
+        rawDate: new Date().toISOString().split('T')[0], timestamp: new Date().toLocaleString()
+    });
+
+    // 2. टारगेट मशीन पर उसी जॉब का नया रनिंग बैच चालू करें (यहाँ targetJob इस्तेमाल किया गया है)
+    let newBatchId = 'B-' + Math.floor(1000 + Math.random()*9000);
+    let remainingQty = targetBatch.issuedQty || 0;
+
+    if(!targetJob.runningBatches) targetJob.runningBatches = [];
+    targetJob.runningBatches.push({
+        batchId: newBatchId,
+        stage: targetBatch.stage,
+        machine: targetMachine, // नई मशीन असाइन की गई
+        shift: targetBatch.shift,
+        issuedQty: remainingQty,
+        producedQty: 0,
+        worker: targetBatch.worker, // वही ऑपरेटर
+        user: currentUser.username,
+        startTime: nowTime,
+        endTime: '',
+        status: 'Running' // नई मशीन पर रनिंग हो गया
+    });
+
+    logs.push({
+        jobId: targetJob.id, product: targetJob.product, stage: targetBatch.stage, machine: targetMachine,
+        shift: targetBatch.shift, action: `▶️ Re-routed Batch Started on ${targetMachine} (${remainingQty} Units Shifted from ${sourceMachine})`,
+        worker: targetBatch.worker, user: currentUser.username, startTime: nowTime, endTime: '',
+        rawDate: new Date().toISOString().split('T')[0], timestamp: new Date().toLocaleString()
+    });
+
+    saveData();
+    closeHoldModal();
+    
+    // सभी डैशबोर्ड और ड्रॉपडाउन रिफ्रेश करें
+    updateCuttingRunningDropdown();
+    updateFormingRunningDropdown();
+    updateQcRunningDropdown();
+    renderUI();
+
+    alert(`✅ सफलतापूर्वक मशीन [${sourceMachine}] को होल्ड कर दिया गया है और उसका रनिंग स्टॉक [${targetMachine}] पर ट्रांसफर हो गया है!`);
+}
+        // गलती से चालू हुए रन या बैच को रद्द (Cancel) करके पूरा मटेरियल वापस उनकी जगह भेजने का फंक्शन
+function cancelActiveStageRun(deskType) {
+    let selectId = deskType === 'slitting' ? 'runningSlitJobsSelect' : 
+                   deskType === 'cutting' ? 'cuttingRunningJobsSelect' : 
+                   deskType === 'forming' ? 'formingRunningJobsSelect' : 'qcRunningJobsSelect';
+                   
+    let batchId = document.getElementById(selectId) ? document.getElementById(selectId).value : '';
+    if(!batchId) return alert('कृपया रद्द (Cancel) करने के लिए एक्टिव बैच या रन सेलेक्ट करें!');
+
+    let targetJob = null, targetBatchIndex = -1, targetBatch = null;
+    
+    if(deskType === 'slitting') {
+        jobs.forEach(j => {
+            if(j.runningBatches) {
+                let idx = j.runningBatches.findIndex(x => x.batchId === batchId && x.machine === 'Slitting-1');
+                if(idx !== -1) { targetJob = j; targetBatchIndex = idx; targetBatch = j.runningBatches[idx]; }
+            }
+        });
+    } else {
+        jobs.forEach(j => {
+            if(j.runningBatches) {
+                let idx = j.runningBatches.findIndex(x => x.batchId === batchId);
+                if(idx !== -1) { targetJob = j; targetBatchIndex = idx; targetBatch = j.runningBatches[idx]; }
+            }
+        });
+    }
+
+    if(!targetBatch) return alert('बैच डेटा नहीं मिला!');
+
+    let confirmMsg = `⚠️ चेतावनी: क्या आप वाकई इस रन (Batch ID: ${targetBatch.batchId}, Job: ${targetJob.id}) को 100% रद्द करना चाहते हैं?\n\nइश्यू किया गया सारा मटेरियल वापस अपनी जगह पर लौट जाएगा और यह एंट्री डिलीट हो जाएगी!`;
+    if(!confirm(confirmMsg)) return;
+
+    let issuedQty = targetBatch.issuedQty || 0;
+
+    // मटेरियल को उसकी सही पिछली जगह पर वापस रीवरोट (Revert) करना
+    if(deskType === 'cutting') {
+        targetJob.availableRolls = (targetJob.availableRolls || 0) + issuedQty; // रोल्स वापस कटिंग स्टॉक में
+    } else if(deskType === 'forming') {
+        targetJob.availableCuttingCrates = (targetJob.availableCuttingCrates || 0) + issuedQty; // कट क्रेट्स वापस फॉर्मिंग स्टॉक में
+    } else if(deskType === 'qc') {
+        targetJob.availableFormingCrates = (targetJob.availableFormingCrates || 0) + issuedQty; // फॉर्मड क्रेट्स वापस QC स्टॉक में
+    } else if(deskType === 'slitting') {
+        // स्लीटिंग के लिए अगर रोल्स बने थे और डिलीट करना है
+        targetJob.availableRolls = Math.max(0, (targetJob.availableRolls || 0) - (targetBatch.producedQty || 0));
+    }
+
+    // रनिंग बैचेस की लिस्ट से इस गलत एंट्री को पूरी तरह डिलीट/उड़ा देना
+    targetJob.runningBatches.splice(targetBatchIndex, 1);
+
+    logs.push({
+        jobId: targetJob.id, product: targetJob.product, stage: `${deskType.toUpperCase()} Cancelled`, machine: targetBatch.machine || 'DESK',
+        shift: targetBatch.shift || 'DAY', action: `❌ Run Cancelled & Reverted: Batch ${targetBatch.batchId} deleted, ${issuedQty} units returned to stock.`,
+        worker: targetBatch.worker || 'ADMIN', user: currentUser.username, rawDate: new Date().toISOString().split('T')[0], timestamp: new Date().toLocaleString()
+    });
+
+    saveData();
+    
+    // सभी ड्रॉपडाउन और डैशबोर्ड रिफ्रेश करें
+    if(deskType === 'slitting') updateRunningSlitDropdown();
+    if(deskType === 'cutting') { updateCuttingPendingDropdown(); updateCuttingRunningDropdown(); }
+    if(deskType === 'forming') { updateFormingPendingDropdown(); updateFormingRunningDropdown(); }
+    if(deskType === 'qc') { updateQcPendingDropdown(); updateQcRunningDropdown(); }
+    renderUI();
+
+    alert(`✅ गलत एंट्री सफलतापूर्वक रद्द (Cancel) कर दी गई है और सारा मटेरियल वापस अपनी जगह पर सुरक्षित पहुँच गया है!`);
+}
+        // किसी भी पुराने/मौजूदा जॉब में नया रील या बैच जोड़ने (Re-open / Add Batch) का फंक्शन
+function addBatchToExistingJobPrompt() {
+    let existingJobId = prompt("कृपया वह पुराना Job ID दर्ज करें जिसमें नया रील/बैच जोड़ना है (जैसे SPN-001):");
+    if(!existingJobId) return;
+    existingJobId = existingJobId.trim().toUpperCase();
+
+    let targetJob = jobs.find(j => j.id === existingJobId);
+    if(!targetJob) {
+        return alert(`⚠️ एरर: [${existingJobId}] नाम का कोई जॉब डेटाबेस में नहीं मिला! कृपया सही Job ID डालें।`);
+    }
+
+    let worker = prompt(`ऑपरेटर का नाम दर्ज करें (${targetJob.product} - ${targetJob.paperBrand || 'ITC'}):`, "RAMESH_SLIT");
+    if(!worker) return;
+    worker = worker.trim().toUpperCase();
+
+    let shift = document.getElementById('slitShiftSelect') ? document.getElementById('slitShiftSelect').value : 'DAY';
+    let batchId = 'B-' + Math.floor(1000 + Math.random()*9000);
+    let nowTime = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+
+    if(!targetJob.runningBatches) targetJob.runningBatches = [];
+    
+    // उसी पुराने जॉब के अंदर एक नया रनिंग बैच जोड़ दिया जाएगा
+    targetJob.runningBatches.push({
+        batchId: batchId,
+        stage: 'Slitting',
+        machine: 'Slitting-1',
+        shift: shift,
+        startTime: nowTime,
+        endTime: '',
+        status: 'Running',
+        issuedQty: 1,
+        producedQty: 0,
+        outputWeightKg: 0,
+        worker: worker,
+        user: currentUser.username
+    });
+
+    logs.push({
+        jobId: targetJob.id, product: targetJob.product, stage: 'Slitting Re-open', machine: 'Slitting-1', shift: shift,
+        action: `➕ Added New Batch/Reel to Existing Job ${targetJob.id} | Worker: ${worker}`,
+        worker: worker, user: currentUser.username, startTime: nowTime, endTime: '', rawDate: new Date().toISOString().split('T')[0], timestamp: new Date().toLocaleString()
+    });
+
+    saveData();
+    updateRunningSlitDropdown();
+    renderUI();
+
+    alert(`✅ सफलतापूर्वक पुराने जॉब [${targetJob.id}] के अंदर नया बैच (${batchId}) चालू कर दिया गया है! अब आप इसका आउटपुट दर्ज कर सकते हैं।`);
+}
+
+// ऊपर वाले प्रॉम्ट को ट्रिगर करने के लिए हेलर फंक्शन
+function openAddBatchToExistingJobModal() {
+    addBatchToExistingJobPrompt();
+}
     </script>
 </body>
 </html>

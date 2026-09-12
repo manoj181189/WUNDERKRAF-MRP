@@ -4801,6 +4801,21 @@
         applyBrandLogo();
         populateUniversalSearchSuggestions();
         initFirebaseSync();
+        
+        // Restored Admin Functions
+        function loadAdminPackOrderList() {
+            const select = document.getElementById('adminPackOrderSelect');
+            if(!select) return;
+            select.innerHTML = '<option value="">-- SELECT ORDER TO EDIT --</option>';
+            packJobs.forEach(p => select.innerHTML += `<option value="${p.id}">${p.id} - ${p.customer} (${p.kitType})</option>`);
+        }
+
+        function loadAdminJobList() {
+            const aSelect = document.getElementById('adminEditJobSelect');
+            if(!aSelect) return;
+            aSelect.innerHTML = '<option value="">-- SELECT JOB META --</option>';
+            jobs.forEach(j => aSelect.innerHTML += `<option value="${j.id}">${j.id} (${j.product})</option>`);
+        }
     </script>
 </body>
 </html>
